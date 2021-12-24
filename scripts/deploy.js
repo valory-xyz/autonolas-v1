@@ -1,11 +1,34 @@
-/*global ethers, process*/
+/*global hre, ethers, process*/
+
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 async function main() {
-    // We get the contract to deploy
+    await hre.run("compile");
+
     const ComponentRegistry = await ethers.getContractFactory("ComponentRegistry");
-    const componentRegistry = await ComponentRegistry.deploy();
+    const componentRegistry = await ComponentRegistry.deploy("agent components", "MECHCOMP",
+        "https://localhost/component/");
+    await componentRegistry.deployed();
+
+    const AgentRegistry = await ethers.getContractFactory("AgentRegistry");
+    const agentRegistry = await AgentRegistry.deploy("agent", "MECH", "https://localhost/agent/",
+        componentRegistry.address);
+    await agentRegistry.deployed();
+
+    const MechMinter = await ethers.getContractFactory("MechMinter");
+    const mechMinter = await MechMinter.deploy(componentRegistry.address, agentRegistry.address, "mech minter",
+        "MECHMINTER");
+    await mechMinter.deployed();
 
     console.log("ComponentRegistry deployed to:", componentRegistry.address);
+    console.log("AgentRegistry deployed to:", agentRegistry.address);
+    console.log("MechMinter deployed to:", mechMinter.address);
+
+    await sleep(10000);
 }
 
 main()

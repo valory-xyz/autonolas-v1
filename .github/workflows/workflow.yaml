@@ -34,7 +34,8 @@ jobs:
     - name: Slither short summary
       run: slither . --print human-summary
     - name: Slither full summary
-      run: slither .
+      run: |
+        slither .
     - name: Coverage summary
       run: npx hardhat coverage
 

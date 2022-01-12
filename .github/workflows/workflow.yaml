@@ -34,7 +34,7 @@ jobs:
     - name: Slither short summary
       run: slither . --print human-summary
     - name: Slither full summary
-      run: slither . &> out.txt
+      run: python3 test.py
     - name: Coverage summary
       run: npx hardhat coverage
 

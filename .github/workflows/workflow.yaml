@@ -13,40 +13,28 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install modules
       run: yarn install
-
-  linter:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
+      
     - name: Run ESLint
       run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
     - name: Run solhint
       run: ./node_modules/.bin/solhint contracts/*
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
     - name: Run tests
       run: ./node_modules/.bin/hardhat test
 
-  audit:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Install dependencies
-        run: |
-          sudo snap install solc
-          python -m pip install --upgrade pip
-          pip install slither-analyzer solc-select
-      - name: Slither summary
-        run: slither . --print human-summary
-      - name: Coverage summary
-        run: npx hardhat coverage
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        sudo snap install solc
+        python -m pip install --upgrade pip
+        pip install slither-analyzer solc-select
+    - name: Slither summary
+      run: slither . --print human-summary
+    - name: Coverage summary
+      run: npx hardhat coverage
 
   docker:
     needs: build

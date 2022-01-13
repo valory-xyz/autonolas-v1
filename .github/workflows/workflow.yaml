@@ -38,6 +38,8 @@ jobs:
         run: |
           mkdir repo
           cp -r artifacts cache test node_modules contracts package.json hardhat.config.js repo/.
+          ls -ltr
+          git clone https://github.com/valory-xyz/audit-process.git
           cd audit-process/scripts
           ./driver.sh -r ../../repo -l all
 

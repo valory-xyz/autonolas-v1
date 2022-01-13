@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          name: valory-xyz/onchain-protocol
+          repository: valory-xyz/onchain-protocol
       - name: Install modules
         run: yarn
       - name: Run ESLint

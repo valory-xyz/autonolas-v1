@@ -14,7 +14,9 @@ jobs:
         with:
           repository: valory-xyz/onchain-protocol
       - name: Install modules
-        run: yarn
+        run: |
+          ls -ltr
+          yarn
       - name: Run ESLint
         run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
       - name: Run solhint
@@ -31,6 +33,12 @@ jobs:
           sudo snap install solc
           python -m pip install --upgrade pip
           pip install slither-analyzer solc-select
+
+      - name: Running linters
+        run: |
+          mkdir repo
+          cp -r * repo
+          ./audit-process/scripts/driver.sh -r repo -l all -n n
 
   docker:
     runs-on: ubuntu-latest

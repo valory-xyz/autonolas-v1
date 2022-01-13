@@ -41,6 +41,15 @@ jobs:
     - name: Coverage summary
       run: npx hardhat coverage
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: tests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
   docker:
     needs: build
     runs-on: ubuntu-latest

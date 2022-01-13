@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      with:
+        name: valory-xyz/onchain-protocol
+        ref: refs/heads/release
       - name: Install modules
         run: yarn
       - name: Run ESLint
@@ -29,15 +32,6 @@ jobs:
           sudo snap install solc
           python -m pip install --upgrade pip
           pip install slither-analyzer solc-select
-
-      - name: Slither short summary
-        run: slither . --print human-summary
-
-      - name: Slither full summary
-        run: python3 misc/slither.py
-
-      - name: Coverage summary
-        run: npx hardhat coverage
 
   docker:
     runs-on: ubuntu-latest

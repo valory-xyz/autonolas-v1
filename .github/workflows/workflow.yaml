@@ -17,6 +17,7 @@ jobs:
         with:
           repository: valory-xyz/audit-process
           path: ./audit-process
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install modules
         run: |

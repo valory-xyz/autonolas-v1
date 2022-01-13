@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone original repository
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
       - name: Clone audit process repository
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           repository: valory-xyz/audit-process
           path: ./audit-process

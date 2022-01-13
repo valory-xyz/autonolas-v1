@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      with:
-        name: valory-xyz/onchain-protocol
-        ref: refs/heads/release
+        with:
+          name: valory-xyz/onchain-protocol
+          ref: refs/heads/release
       - name: Install modules
         run: yarn
       - name: Run ESLint

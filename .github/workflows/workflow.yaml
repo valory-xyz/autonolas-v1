@@ -37,8 +37,9 @@ jobs:
       - name: Running linters
         run: |
           mkdir repo
-          cp -r * repo
-          ./audit-process/scripts/driver.sh -r repo -l all -n n
+          cp -r artifacts cache test node_modules contracts package.json hardhat.config.js repo/.
+          cd audit-process/scripts
+          ./driver.sh -r ../../repo -l all
 
   docker:
     runs-on: ubuntu-latest

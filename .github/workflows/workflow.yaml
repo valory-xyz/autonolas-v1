@@ -12,7 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: valory-xyz/onchain-protocol
+          repository: valory-xyz/audit-process
+          path: ./audit-process
       - name: Install modules
         run: |
           ls -ltr

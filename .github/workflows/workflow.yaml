@@ -20,25 +20,25 @@ jobs:
       - name: Run tests
         run: ./node_modules/.bin/hardhat test
 
-    - name: Run ESLint
-      run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
-    - name: Run solhint
-      run: ./node_modules/.bin/solhint contracts/*
+      - name: Run ESLint
+        run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
+      - name: Run solhint
+        run: ./node_modules/.bin/solhint contracts/*
 
-    - name: Run tests
-      run: ./node_modules/.bin/hardhat test
+      - name: Run tests
+        run: ./node_modules/.bin/hardhat test
 
-    - name: Solidity coverage summary
-      run: npx hardhat coverage
+      - name: Solidity coverage summary
+        run: npx hardhat coverage
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: ./coverage
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
 
   docker:
     runs-on: ubuntu-latest

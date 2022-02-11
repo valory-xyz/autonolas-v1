@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: valory-xyz/audit-process
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
           path: ./audit-process
           ref: main
       - name: Install modules

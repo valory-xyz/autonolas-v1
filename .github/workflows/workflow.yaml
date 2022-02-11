@@ -16,7 +16,9 @@ jobs:
       - name: Run ESLint
         run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
       - name: Run solhint
-        run: ./node_modules/.bin/solhint contracts/*
+        run: ./node_modules/.bin/solhint contracts/*.sol contracts/interfaces/*.sol contracts/governance/*.sol
+      - name: Compile
+        run: ./node_modules/.bin/hardhat compile
       - name: Run tests
         run: ./node_modules/.bin/hardhat test
 
@@ -30,6 +32,10 @@ jobs:
 
       - name: Solidity coverage summary
         run: npx hardhat coverage
+  
+      - name: Run script(s)
+        run: ./node_modules/.bin/hardhat run scripts/deploy.js
+
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

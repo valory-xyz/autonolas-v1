@@ -1,32 +1,26 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./ComponentRegistry.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./interfaces/IRegistry.sol";
 
 /// @title Agent Registry - Smart contract for registering agents
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
-contract AgentRegistry is ERC721Enumerable, Ownable {
-    using Counters for Counters.Counter;
-
-    // Possible differentiation of component types
-    enum AgentType {ATYPE0, ATYPE1}
-
+contract AgentRegistry is IMultihash, ERC721Enumerable, Ownable, ReentrancyGuard {
+    // Agent parameters
     struct Agent {
         // Developer of the agent
         address developer;
         // IPFS hash of the agent
-        string agentHash; // can be obtained via mapping, consider for optimization
+        Multihash[] agentHashes; // can be obtained via mapping, consider for optimization
         // Description of the agent
         string description;
         // Set of component dependencies
         uint256[] dependencies;
         // Agent activity
         bool active;
-        // Agent type
-        AgentType componentType;
     }
 
     // Component registry
@@ -34,28 +28,40 @@ contract AgentRegistry is ERC721Enumerable, Ownable {
     // Base URI
     string public _BASEURI;
     // Agent counter
-    Counters.Counter private _tokenIds;
-    // Agent minter
-    address private _minter;
+    uint256 private _tokenIds;
+    // Agent manager
+    address private _manager;
     // Map of token Id => component
     mapping(uint256 => Agent) private _mapTokenIdAgent;
     // Map of IPFS hash => token Id
-    mapping(string => uint256) private _mapHashTokenId;
-    // Map for checking on unique token Ids
-    mapping(uint256 => bool) private _mapDependencies;
+    mapping(bytes32 => uint256) private _mapHashTokenId;
 
     // name = "agent", symbol = "MECH"
     constructor(string memory _name, string memory _symbol, string memory _bURI, address _componentRegistry)
         ERC721(_name, _symbol) {
-        require(bytes(_bURI).length > 0, "Base URI can not be empty");
         _BASEURI = _bURI;
         componentRegistry = _componentRegistry;
     }
 
-    /// @dev Changes the agent minter.
-    /// @param newMinter Address of a new agent minter.
-    function changeMinter(address newMinter) public onlyOwner {
-        _minter = newMinter;
+    // Only the manager has a privilege to manipulate an agent
+    modifier onlyManager {
+        require(_manager == msg.sender, "agentManager: MANAGER_ONLY");
+        _;
+    }
+
+    // Checks for supplied IPFS hash
+    modifier checkHash(Multihash memory hashStruct) {
+        // Check hash IPFS current standard validity
+        require(hashStruct.hashFunction == 0x12 && hashStruct.size == 0x20, "checkHash: WRONG_HASH");
+        // Check for the existent IPFS hashes
+        require(_mapHashTokenId[hashStruct.hash] == 0, "checkHash: HASH_EXISTS");
+        _;
+    }
+
+    /// @dev Changes the agent manager.
+    /// @param newManager Address of a new agent manager.
+    function changeManager(address newManager) public onlyOwner {
+        _manager = newManager;
     }
 
     /// @dev Set the agent data.
@@ -64,18 +70,17 @@ contract AgentRegistry is ERC721Enumerable, Ownable {
     /// @param agentHash IPFS hash of the agent.
     /// @param description Description of the agent.
     /// @param dependencies Set of component dependencies.
-    function _setAgentInfo(uint256 tokenId, address developer, string memory agentHash,
+    function _setAgentInfo(uint256 tokenId, address developer, Multihash memory agentHash,
         string memory description, uint256[] memory dependencies)
         private
     {
-        Agent memory agent;
+        Agent storage agent = _mapTokenIdAgent[tokenId];
         agent.developer = developer;
-        agent.agentHash = agentHash;
+        agent.agentHashes.push(agentHash);
         agent.description = description;
         agent.dependencies = dependencies;
         agent.active = true;
-        _mapTokenIdAgent[tokenId] = agent;
-        _mapHashTokenId[agentHash] = tokenId;
+        _mapHashTokenId[agentHash.hash] = tokenId;
     }
 
     /// @dev Creates agent.
@@ -83,83 +88,119 @@ contract AgentRegistry is ERC721Enumerable, Ownable {
     /// @param developer Developer of the agent.
     /// @param agentHash IPFS hash of the agent.
     /// @param description Description of the agent.
-    /// @param dependencies Set of component dependencies.
-    /// @return The minted id of the agent.
-    function createAgent(address owner, address developer, string memory agentHash, string memory description,
+    /// @param dependencies Set of component dependencies in a sorted ascending order.
+    /// @return The id of a minted agent.
+    function create(address owner, address developer, Multihash memory agentHash, string memory description,
         uint256[] memory dependencies)
         external
+        onlyManager
+        checkHash(agentHash)
+        nonReentrant
         returns (uint256)
     {
-        // Only the minter has a privilege to create a component
-        require(_minter == msg.sender, "createAgent: MINTER_ONLY");
+        // Checks for owner and developer being not zero addresses
+        require(owner != address(0) && developer != address(0), "create: ZERO_ADDRESS");
 
-        // Checks for non-empty strings and component dependency
-        require(bytes(agentHash).length > 0, "createAgent: EMPTY_HASH");
-        require(bytes(description).length > 0, "createAgent: NO_DESCRIPTION");
+        // Checks for non-empty description and component dependency
+        require(bytes(description).length > 0, "create: NO_DESCRIPTION");
 //        require(dependencies.length > 0, "Agent must have at least one component dependency");
 
-        // Check for the existent IPFS hashes
-        require(_mapHashTokenId[agentHash] == 0, "createAgent: HASH_EXISTS");
-
         // Check for dependencies validity: must be already allocated, must not repeat
-        uint256 uCounter;
-        uint256[] memory uniqueDependencies = new uint256[](dependencies.length);
-        ComponentRegistry compRegistry = ComponentRegistry(componentRegistry);
+        uint256 lastId = 0;
         for (uint256 iDep = 0; iDep < dependencies.length; iDep++) {
-            require(dependencies[iDep] > 0, "createAgent: NO_COMPONENT_ID");
-            if (_mapDependencies[dependencies[iDep]]) {
-                continue;
-            } else {
-                require(compRegistry.exists(dependencies[iDep]), "The component is not found!");
-                _mapDependencies[dependencies[iDep]] = true;
-                uniqueDependencies[uCounter] = dependencies[iDep];
-                uCounter++;
-            }
-        }
-
-        // Revert the state of mapping to filter duplicate components to its original state
-        // Allocate array with precise number of unique dependencies
-        uint256[] memory finalDependencies = new uint256[](uCounter);
-        for (uint256 iDep = 0; iDep < uCounter; iDep++) {
-            _mapDependencies[uniqueDependencies[iDep]] = false;
-            finalDependencies[iDep] = uniqueDependencies[iDep];
+            require(dependencies[iDep] > lastId && IRegistry(componentRegistry).exists(dependencies[iDep]),
+                "create: WRONG_COMPONENT_ID");
+            lastId = dependencies[iDep];
         }
 
         // Mint token and initialize the component
-        _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
+        _tokenIds++;
+        uint256 newTokenId = _tokenIds;
+        _setAgentInfo(newTokenId, developer, agentHash, description, dependencies);
         _safeMint(owner, newTokenId);
-        _setAgentInfo(newTokenId, developer, agentHash, description, finalDependencies);
 
         return newTokenId;
     }
 
-    /// @dev Check for the token / agent existence.
-    /// @param _tokenId Token Id.
-    /// @return true if the agent exists, false otherwise.
-    function exists (uint256 _tokenId) public view returns (bool) {
-        return _exists(_tokenId);
+    /// @dev Updates the agent hash.
+    /// @param owner Owner of the agent.
+    /// @param tokenId Token Id.
+    /// @param agentHash New IPFS hash of the agent.
+    function updateHash(address owner, uint256 tokenId, Multihash memory agentHash)
+        external
+        onlyManager
+        checkHash(agentHash)
+    {
+        require(ownerOf(tokenId) == owner, "update: AGENT_NOT_FOUND");
+        Agent storage agent = _mapTokenIdAgent[tokenId];
+        agent.agentHashes.push(agentHash);
     }
 
-    /// @dev Returns base URI that was set in the constructor.
+    /// @dev Check for the token / agent existence.
+    /// @param tokenId Token Id.
+    /// @return true if the agent exists, false otherwise.
+    function exists (uint256 tokenId) public view returns (bool) {
+        return _exists(tokenId);
+    }
+
+    /// @dev Gets the agent info.
+    /// @param tokenId Token Id.
+    /// @return owner Owner of the agent.
+    /// @return developer The agent developer.
+    /// @return agentHash The primary agent IPFS hash.
+    /// @return description The agent description.
+    /// @return numDependencies The number of components in the dependency list.
+    /// @return dependencies The list of component dependencies.
+    function getInfo(uint256 tokenId)
+        public
+        view
+        returns (address owner, address developer, Multihash memory agentHash, string memory description,
+            uint256 numDependencies, uint256[] memory dependencies)
+    {
+        require(_exists(tokenId), "getComponentInfo: NO_AGENT");
+        Agent storage agent = _mapTokenIdAgent[tokenId];
+        return (ownerOf(tokenId), agent.developer, agent.agentHashes[0], agent.description, agent.dependencies.length,
+            agent.dependencies);
+    }
+
+    /// @dev Gets component / agent dependencies.
+    /// @return numDependencies The number of components in the dependency list.
+    /// @return dependencies The list of component dependencies.
+    function getDependencies(uint256 tokenId)
+        public
+        view
+        returns (uint256 numDependencies, uint256[] memory dependencies)
+    {
+        require(_exists(tokenId), "getDependencies: NO_AGENT");
+        Agent storage agent = _mapTokenIdAgent[tokenId];
+        return (agent.dependencies.length, agent.dependencies);
+    }
+
+    /// @dev Gets agent hashes.
+    /// @param tokenId Token Id.
+    /// @return numHashes Number of hashes.
+    /// @return agentHashes The list of agent hashes.
+    function getHashes(uint256 tokenId) public view returns (uint256 numHashes, Multihash[] memory agentHashes) {
+        require(_exists(tokenId), "getHashes: NO_AGENT");
+        Agent storage agent = _mapTokenIdAgent[tokenId];
+        return (agent.agentHashes.length, agent.agentHashes);
+    }
+
+    /// @dev Returns agent base URI.
     /// @return base URI string.
     function _baseURI() internal view override returns (string memory) {
         return _BASEURI;
     }
 
-    /// @dev Gets the agent info.
-    /// @param _tokenId Token Id.
-    /// @return developer The agent developer.
-    /// @return agentHash The agent IPFS hash.
-    /// @return description The agent description.
-    /// @return dependencies The list of component dependencies.
-    function getAgentInfo(uint256 _tokenId)
-        public
-        view
-        returns (address developer, string memory agentHash, string memory description, uint256[] memory dependencies)
-    {
-        require(_exists(_tokenId), "getComponentInfo: NO_AGENT");
-        Agent storage agent = _mapTokenIdAgent[_tokenId];
-        return (agent.developer, agent.agentHash, agent.description, agent.dependencies);
+    /// @dev Returns agent base URI.
+    /// @return base URI string.
+    function getBaseURI() public view returns (string memory) {
+        return _baseURI();
+    }
+
+    /// @dev Sets agent base URI.
+    /// @param bURI base URI string.
+    function setBaseURI(string memory bURI) public onlyOwner {
+        _BASEURI = bURI;
     }
 }

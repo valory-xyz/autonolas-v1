@@ -37,7 +37,11 @@ jobs:
 
       # Run hardhat coverage and upload codecov report
       - name: Solidity coverage summary
-        run: ./node_modules/.bin/hardhat coverage
+        run: |
+         ./node_modules/.bin/hardhat coverage --testfiles "test/integration"
+         ./node_modules/.bin/hardhat coverage --testfiles "test/unit"
+         ./node_modules/.bin/hardhat coverage --testfiles "test/tokenomics"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

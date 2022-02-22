@@ -24,6 +24,10 @@ jobs:
       # Compile the code
       - name: Compile
         run: ./node_modules/.bin/hardhat compile
+      - name: Adjust Uniswap
+        run: ./scripts/adjust.sh
+      - name: Re-Compile 
+        run: ./node_modules/.bin/hardhat compile
 
       # Run tests and deploy script(s)
       - name: Run tests

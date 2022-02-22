@@ -1,3 +1,4 @@
+/* global describe, before, beforeEach, it */
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 const { smock } = require("@defi-wonderland/smock");
@@ -12,7 +13,7 @@ describe("Bond Depository", async () => {
     const initialDepositDAI = "1000000000000000000000000"; // initial deposit 1M DAI.
     // Increase timestamp by amount determined by `offset`
 
-    let deployer, alice, bob, carol;
+    let deployer, alice, bob;
     let erc20Factory;
     let authFactory;
     let olaFactory;
@@ -40,8 +41,6 @@ describe("Bond Depository", async () => {
     let depositInterval = 60 * 60 * 4;
     let tuneInterval = 60 * 60;
 
-    let refReward = 10;
-    let daoReward = 50;
 
     var bid = 0;
 
@@ -53,7 +52,7 @@ describe("Bond Depository", async () => {
      * This is the home for setup methods
      */
     before(async () => {
-        [deployer, alice, bob, carol] = await ethers.getSigners();
+        [deployer, alice, bob] = await ethers.getSigners();
 
         authFactory = await ethers.getContractFactory("OlympusAuthority");
         erc20Factory = await smock.mock("MockERC20");
@@ -304,6 +303,7 @@ describe("Bond Depository", async () => {
     // ok test 17-02-22
     it("adjustment should continue lowering over multiple deposits in same tune interval", async () => {
         await network.provider.send("evm_increaseTime", [tuneInterval]);
+        let controlVariable;
         [, controlVariable, , ,] = await depository.terms(bid);
         let amount = "10000000000000000000000"; // 10,000
         await depository

@@ -1,3 +1,5 @@
+/*global describe, context, before, beforeEach, it*/
+
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 

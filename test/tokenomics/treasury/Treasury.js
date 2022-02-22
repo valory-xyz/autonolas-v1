@@ -1,3 +1,5 @@
+/*global describe, context, before, beforeEach, it*/
+
 const { ethers, waffle, network } = require("hardhat");
 const { expect } = require("chai");
 //const { FakeContract, smock } = require("@defi-wonderland/smock");
@@ -119,6 +121,6 @@ describe("Treasury", async () => {
 
     it("deposit ok", async () => {
         expect(await treasury.baseSupply()).to.equal("1000000000000");
-    })
+    });
     
 });

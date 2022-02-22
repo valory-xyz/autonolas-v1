@@ -1,3 +1,5 @@
+/*global describe, context, beforeEach, it*/
+
 const { ethers } = require("hardhat");
 
 const BN = require("bn.js");

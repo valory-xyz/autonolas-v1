@@ -1,3 +1,5 @@
+/* global describe, context, before, beforeEach, it */
+
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 const { smock } = require("@defi-wonderland/smock");
@@ -38,8 +40,8 @@ describe("Bond Depository LP", async () => {
     let depositInterval = 60 * 60 * 4;
     let tuneInterval = 60 * 60;
 
-    let refReward = 10;
-    let daoReward = 50;
+    // let refReward = 10;
+    // let daoReward = 50;
 
     var bid = 0;
 
@@ -145,9 +147,9 @@ describe("Bond Depository LP", async () => {
         await router.deployed();
         // console.log("Uniswap router02 deployed to:", router.address);
 
-        var json = require('../../../artifacts/contracts/tokenomics/v2-core/contracts/UniswapV2Pair.sol/UniswapV2Pair.json')
-        const actual_bytecode1 = json["bytecode"];
-        const COMPUTED_INIT_CODE_HASH1 = ethers.utils.keccak256(actual_bytecode1);
+        // var json = require("../../../artifacts/contracts/tokenomics/v2-core/contracts/UniswapV2Pair.sol/UniswapV2Pair.json");
+        // const actual_bytecode1 = json["bytecode"];
+        // const COMPUTED_INIT_CODE_HASH1 = ethers.utils.keccak256(actual_bytecode1);
         // console.log("init hash:", COMPUTED_INIT_CODE_HASH1, "fix in UniswapV2Library :: pairFor:61098f8791ebe192da6bc073c2d9c1e67e8df84f47345262772a1bebc24e77de");
 
         const pairODAItxReceipt = await factory.createPair(ola.address, dai.address);
@@ -158,7 +160,7 @@ describe("Bond Depository LP", async () => {
         pairODAI = await ethers.getContractAt("UniswapV2Pair", pairAddress);
         // let reserves = await pairODAI.getReserves();
         // console.log("ola - DAI reserves:", reserves.toString());
-	// console.log("balance dai for deployer:",(await dai.balanceOf(deployer.address)));
+        // console.log("balance dai for deployer:",(await dai.balanceOf(deployer.address)));
 
         // Add liquidity
         const amountola = await ola.balanceOf(deployer.address);
@@ -362,6 +364,7 @@ describe("Bond Depository LP", async () => {
     // ok test 18-02-22
     it("adjustment should continue lowering over multiple deposits in same tune interval", async () => {
         await network.provider.send("evm_increaseTime", [tuneInterval]);
+        let controlVariable;
         [, controlVariable, , ,] = await depository.terms(bid);
         //let amount = "10000000000000000000000"; // 10,000
         let amount = (await pairODAI.balanceOf(bob.address))/4;

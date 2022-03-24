@@ -1,3 +1,4 @@
+/*global describe, before, beforeEach, it*/
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
@@ -52,7 +53,7 @@ describe("Treasury", async () => {
         await treasury
             .connect(deployer)
             .deposit("10000000000000000000000", dai.address, "1000000000000000000000");
-        });
+    });
 
     it("deposit ok", async () => {
         expect(await ola.totalSupply()).to.equal("1000000000000000000000");

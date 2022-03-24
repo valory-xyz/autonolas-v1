@@ -1,3 +1,4 @@
+/*global describe, before, beforeEach, it*/
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 

@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-/**
- * @dev Errors.
- */
+/// @dev Errors.
 interface IErrors {
     /// @dev Only `manager` has a privilege, but the `sender` was provided.
     /// @param sender Sender address.

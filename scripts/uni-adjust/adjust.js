@@ -1,3 +1,5 @@
+/*global process*/
+
 const hre = require("hardhat");
 
 async function main() {

@@ -2322,6 +2322,11 @@
   "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001302.tgz"
   "version" "1.0.30001302"
 
+"canonical-weth@^1.4.0":
+  "integrity" "sha512-9rkLfAFndWALLhxd5lpyTX4RkV36WmVBZ92NYtYr1kWdAUmclRp7I5KkK4wvogzDcCI++yw53TLwx/GCPcocMg=="
+  "resolved" "https://registry.npmjs.org/canonical-weth/-/canonical-weth-1.4.0.tgz"
+  "version" "1.4.0"
+
 "caseless@^0.12.0", "caseless@~0.12.0":
   "integrity" "sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw="
   "resolved" "https://registry.npmjs.org/caseless/-/caseless-0.12.0.tgz"

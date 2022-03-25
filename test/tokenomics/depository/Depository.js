@@ -60,10 +60,7 @@ describe("Bond Depository LP", async () => {
         await treasury.changeDepository(depository.address);
         await ola.changeTreasury(treasury.address);
 
-        // console.log("balance ola for deployer:",(await ola.balanceOf(deployer.address)));
-        // console.log("balance ola for alice:",(await ola.balanceOf(alice.address)));
-
-        const wethFactory = await ethers.getContractFactory("contracts/external/canonical-weth/contracts/WETH9.sol:WETH9");
+        const wethFactory = await ethers.getContractFactory("WETH9");
         const weth = await wethFactory.deploy();
         // Deploy Uniswap factory
         const Factory = await ethers.getContractFactory("UniswapV2Factory");
@@ -77,12 +74,10 @@ describe("Bond Depository LP", async () => {
         await router.deployed();
         // console.log("Uniswap router02 deployed to:", router.address);
 
-        /*
-        var json = require("../../../artifacts/contracts/external/uniswapv2/v2-core/contracts/UniswapV2Pair.sol/UniswapV2Pair.json");
-        const actual_bytecode1 = json["bytecode"];
-        const COMPUTED_INIT_CODE_HASH1 = ethers.utils.keccak256(actual_bytecode1);
-        console.log("init hash:", COMPUTED_INIT_CODE_HASH1, "in UniswapV2Library :: hash:0xe9d807835bf1c75fb519759197ec594400ca78aa1d4b77743b1de676f24f8103");
-        */
+//        var json = require("../../../artifacts/@uniswap/v2-core/contracts/UniswapV2Pair.sol/UniswapV2Pair.json");
+//        const actual_bytecode1 = json["bytecode"];
+//        const COMPUTED_INIT_CODE_HASH1 = ethers.utils.keccak256(actual_bytecode1);
+//        console.log("init hash:", COMPUTED_INIT_CODE_HASH1, "in UniswapV2Library :: hash:0xe9d807835bf1c75fb519759197ec594400ca78aa1d4b77743b1de676f24f8103");
            
         //const pairODAItxReceipt = await factory.createPair(ola.address, dai.address);
         await factory.createPair(ola.address, dai.address);
@@ -104,7 +99,7 @@ describe("Bond Depository LP", async () => {
         const toAddress = deployer.address;
         await ola.approve(router.address, LARGE_APPROVAL);
         await dai.approve(router.address, LARGE_APPROVAL);
-        
+
         await router.connect(deployer).addLiquidity(
             dai.address,
             ola.address,
@@ -115,10 +110,10 @@ describe("Bond Depository LP", async () => {
             toAddress,
             deadline
         );
-        
+
         // console.log("deployer LP balance:",await pairODAI.balanceOf(deployer.address));
         // console.log("LP total supply:",await pairODAI.totalSupply());
-        await pairODAI.connect(deployer).transfer(bob.address,"35355339059326876"); 
+        await pairODAI.connect(deployer).transfer(bob.address,"35355339059326876");
         // console.log("balance LP for bob:",(await pairODAI.balanceOf(bob.address)));
 
         await ola.connect(alice).approve(depository.address, LARGE_APPROVAL);

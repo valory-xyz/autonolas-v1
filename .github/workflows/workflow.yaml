@@ -22,8 +22,11 @@ jobs:
         run: ./node_modules/.bin/solhint contracts/*.sol contracts/interfaces/*.sol contracts/governance/*.sol
 
       # Compile the code
-      - name: Compile
-        run: ./node_modules/.bin/hardhat compile
+      - name: Compile, adjust uniswap library hash and recompile again
+        run: |
+          ./node_modules/.bin/hardhat compile
+          ./scripts/uni-adjust/adjust.sh
+          ./node_modules/.bin/hardhat compile
 
       # Run tests and deploy script(s)
       - name: Run tests

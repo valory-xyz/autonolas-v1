@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
-import "../external/libraries/IERC20.sol";
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IOLA is IERC20 {
     function mint(address account_, uint256 amount_) external;

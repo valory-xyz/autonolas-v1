@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: ****************************** Uniswap is included here
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./external/libraries/SafeERC20.sol";
-import "./external/libraries/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./external/uniswapv2/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "./interfaces/ITreasury.sol";
 
@@ -287,6 +287,8 @@ contract BondDepository is Ownable {
     }
 
     /// @dev Calculates the amount of OLA tokens based on LP (see the doc for explanation of price computation).
+    /// @param token Token address.
+    /// @param amount Token amount.
     /// @return resAmount Resulting amount of OLA tokens.
     function _calculatePayoutFromLP(address token, uint256 amount) internal view
         returns (uint256 resAmount)

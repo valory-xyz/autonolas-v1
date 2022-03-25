@@ -3,11 +3,12 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./interfaces/IErrors.sol";
 import "./interfaces/IOLA.sol";
 
 /// @title Treasury - Smart contract for managing OLA Treasury
 /// @author AL
-contract Treasury is Ownable {
+contract Treasury is IErrors, Ownable {
     using SafeERC20 for IERC20;
     
     event Deposit(address token, uint256 tokenAmount, uint256 olaMintAmount);
@@ -42,14 +43,10 @@ contract Treasury is Ownable {
     // Token address => token info
     mapping(address => TokenInfo) public mapTokens;
 
-    // TODO clean up when porting, change with reverts
-    string internal notAccess = "Treasury: not access";
-    string internal notAccepted = "Treasury: not accepted";
-    string internal notEmpty = "Treasury: balance != 0";
-
     constructor(address olaToken, address initManager) {
-        // TODO change for revert when porting
-        require(olaToken != address(0), "Zero address: OLA");
+        if (olaToken == address(0)) {
+            revert ZeroAddress();
+        }
 
         ola = IOLA(olaToken);
         manager = initManager;
@@ -58,15 +55,17 @@ contract Treasury is Ownable {
 
     // Only the manager has a privilege to manipulate a treasury
     modifier onlyManager() {
-        // TODO change for revert when porting
-        require(msg.sender == manager, notAccess);
+        if (manager != msg.sender) {
+            revert ManagerOnly(msg.sender, manager);
+        }
         _;
     }
 
     // Only the depository has a privilege to control some actions of a treasury
     modifier onlyDepository() {
-        // TODO change for revert when porting
-        require(msg.sender == depository, notAccess);
+        if (depository != msg.sender) {
+            revert ManagerOnly(msg.sender, manager);
+        }
         _;
     }
 
@@ -89,9 +88,10 @@ contract Treasury is Ownable {
     /// @param token Token address.
     /// @param olaMintAmount Amount of OLA token issued.
     function deposit(uint256 tokenAmount, address token, uint256 olaMintAmount) external onlyDepository {
-        // Only reserves can be used for redemptions
-        // TODO change for revert when porting
-        require(mapTokens[token].state == TokenState.Enabled, notAccepted);
+        // Check if the token is authorized by the registry
+        if (mapTokens[token].state != TokenState.Enabled) {
+            revert UnauthorizedToken(token);
+        }
 
         // Transfer tokens from depository to treasury and add to the token treasury reserves
         IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
@@ -108,8 +108,9 @@ contract Treasury is Ownable {
     /// @param token Token address.
     function withdraw(uint256 tokenAmount, address token) external onlyManager {
         // Only approved token reserves can be used for redemptions
-        // TODO change for revert when porting
-        require(mapTokens[token].state == TokenState.Enabled, notAccepted);
+        if (mapTokens[token].state != TokenState.Enabled) {
+            revert UnauthorizedToken(token);
+        }
 
         // Transfer tokens from reserves to the manager
         IERC20(token).safeTransfer(msg.sender, tokenAmount);
@@ -136,8 +137,10 @@ contract Treasury is Ownable {
     function disableToken(address token) external onlyManager {
         TokenState state = mapTokens[token].state;
         if (state != TokenState.Disabled) {
-            // TODO change for revert when porting
-            require(mapTokens[token].reserves == 0, notEmpty);
+            // The reserves of a token must be zero in order to disable it
+            if (mapTokens[token].reserves > 0) {
+                revert NonZeroValue();
+            }
             mapTokens[token].state = TokenState.Disabled;
             emit DisableToken(token);
         }

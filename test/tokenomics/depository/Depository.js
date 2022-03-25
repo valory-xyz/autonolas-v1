@@ -195,7 +195,7 @@ describe("Bond Depository LP", async () => {
         let amount = (await pairODAI.balanceOf(deployer.address)); 
         await expect(
             depository.connect(deployer).deposit(pairODAI.address, bid, amount, deployer.address)
-        ).to.be.revertedWith("Depository: max size exceeded");
+        ).to.be.revertedWith("ProductSupplyLow");
     });
     // ok test 11-03-22
     it("should not redeem before vested", async () => {

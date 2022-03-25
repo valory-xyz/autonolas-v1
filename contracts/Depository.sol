@@ -5,11 +5,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import "./interfaces/IErrors.sol";
 import "./interfaces/ITreasury.sol";
 
 /// @title Bond Depository - Smart contract for OLA Bond Depository
 /// @author AL
-contract BondDepository is Ownable {
+contract BondDepository is IErrors, Ownable {
     using SafeERC20 for IERC20;
 
     event CreateBond(uint256 productId, uint256 amountOLA, uint256 tokenAmount);
@@ -55,11 +56,8 @@ contract BondDepository is Ownable {
     mapping(address => Bond[]) public mapUserBonds;
     // Map of token address => bond products they are present
     mapping(address => Product[]) public mapTokenProducts;
-    
-    // TODO remove when porting
-    string internal notAccess = "Bonding: Unauthorized access";
 
-    // TODO later fix government / authority
+    // TODO later fix government / manager
     constructor(address initManager, IERC20 iOLA, ITreasury iTreasury) {
         manager = initManager;
         ola = iOLA;
@@ -68,8 +66,9 @@ contract BondDepository is Ownable {
 
     // Only the manager has a privilege to manipulate a treasury
     modifier onlyManager() {
-        // TODO change for revert when porting
-        require(msg.sender == manager, notAccess);
+        if (manager != msg.sender) {
+            revert ManagerOnly(msg.sender, manager);
+        }
         _;
     }
 
@@ -92,19 +91,25 @@ contract BondDepository is Ownable {
         returns (uint256 payout, uint256 expiry, uint256 numBonds)
     {
         Product storage product = mapTokenProducts[token][productId];
-        // TODO Change for revert
-        require(address(product.token) == token, "Incorrect token");
-        // Terms memory term = terms[productId];
+        // Check for the correctly provided token in the product
+        if (token != address(product.token)) {
+            revert WrongTokenAddress(token, address(product.token));
+        }
+
+        // Check for the product expiry
         uint256 currentTime = uint256(block.timestamp);
-        // Markets end at a defined timestamp
-        // TODO Change to revert when porting
-        require(currentTime <= product.expiry, "Depository: product concluded");
+        if (currentTime > product.expiry) {
+            revert ProductExpired(token, productId, product.expiry, currentTime);
+        }
 
         // Calculate the payout in OLA tokens based on the LP pair with the discount factor (DF) calculation
         payout = _calculatePayoutFromLP(token, tokenAmount);
 
-        // TODO Change to revert when porting
-        require(payout <= product.supply, "Depository: max size exceeded");
+        // Check for the sufficient supply
+        if (payout > product.supply) {
+            revert ProductSupplyLow(token, productId, payout, product.supply);
+        }
+
         // Decrease the supply for the amount of payout, increase number of purchased tokens and sold OLA tokens
         product.supply -= payout;
         product.purchased += tokenAmount;
@@ -256,11 +261,13 @@ contract BondDepository is Ownable {
     function _calculateDF(uint256 amount) internal pure returns (uint256 amountDF) {
         uint256 UCF = 50; // 50% just stub
         uint256 USF = 60; // 60% just stub
-        uint256 sum = UCF + USF; // stub = 110 > 100
+        uint256 sum = UCF + USF; // 50 + 60 = 110
         amountDF = (amount / 100) * sum; // 110/100, fixed later
 
-        // TODO Change for revert when porting
-        require(amountDF > amount, "Mistake in calcDF");
+        // The discounted amount cannot be smaller than the actual one
+        if (amountDF < amount) {
+            revert AmountLowerThan(amountDF, amount);
+        }
     }
 
     // UniswapV2 https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol
@@ -276,7 +283,6 @@ contract BondDepository is Ownable {
     function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) internal pure
         returns (uint256 amountOut)
     {
-        // TODO Change to revert when porting
         require(amountIn > 0, "UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "UniswapV2Library: INSUFFICIENT_LIQUIDITY");
 
@@ -305,7 +311,6 @@ contract BondDepository is Ownable {
         uint256 amount0 = (amount * balance0) / totalSupply;
         uint256 amount1 = (amount * balance1) / totalSupply;
 
-        // TODO Change for revert when porting
         require(balance0 > amount0, "UniswapV2: INSUFFICIENT_LIQUIDITY token0");
         require(balance1 > amount1, "UniswapV2: INSUFFICIENT_LIQUIDITY token1");
 

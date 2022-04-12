@@ -2,6 +2,8 @@
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 
+// //source of idea https://github.com/Uniswap/solidity-lib/blob/master/test/FixedPoint.spec.ts
+
 const Q112 = ethers.BigNumber.from(2).pow(112);
 
 function multiplyExpanded(self, other) {

@@ -2,6 +2,8 @@
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 
+// source of idea https://github.com/Uniswap/solidity-lib/blob/master/test/FullMath.spec.ts
+
 describe("FullMath", () => {
     let fmFactory;
     let fm;

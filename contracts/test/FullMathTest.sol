@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 // Uniswapv2
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "@uniswap/lib/contracts/libraries/FullMath.sol";
-import "hardhat/console.sol";
 
 /// @title Test #3 test FixedPoint library
 /// @author AL

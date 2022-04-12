@@ -2,6 +2,7 @@
 const { ethers, network } = require("hardhat");
 const { expect } = require("chai");
 
+// original reference from https://github.com/Uniswap/solidity-lib/blob/master/test/BitMath.spec.ts
 
 describe("BitMathTest", () => {
     let bitMathFactory;

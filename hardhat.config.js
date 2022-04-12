@@ -9,9 +9,9 @@ require("hardhat-contract-sizer");
  * @type import('hardhat/config').HardhatUserConfig
  */
 const accounts = {
-  mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
-  accountsBalance: "100000000000000000000000000",
-}
+    mnemonic: "test test test test test test test test test test test junk",
+    accountsBalance: "100000000000000000000000000",
+};
 
 module.exports = {
     networks: {
@@ -19,7 +19,7 @@ module.exports = {
             url: "http://localhost:8545",
         },
         hardhat: {
-	    allowUnlimitedContractSize: true,
+            allowUnlimitedContractSize: true,
             accounts
         },
     },

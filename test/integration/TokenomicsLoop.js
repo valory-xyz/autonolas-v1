@@ -46,15 +46,15 @@ describe("Tokenomics integration", async () => {
     const maxThreshold = 1;
     const name = "service name";
     const description = "service description";
-    const thousandETHBalance = ethers.utils.parseEther("1000");
-    const regServiceRevenue = thousandETHBalance;
+    const milETHBalance = ethers.utils.parseEther("1000000");
+    const regServiceRevenue = milETHBalance;
     const agentId = 1;
     const agentParams = [1, regBond];
     const serviceId = 1;
     const payload = "0x";
     const magicDenominator = 5192296858534816;
     const E18 = 10**18;
-    const delta = 1.0 / 10**13;
+    const delta = 1.0 / 10**10;
 
     let signers;
 

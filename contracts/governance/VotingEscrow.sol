@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./ERC20VotesCustom.sol";
+import "./ERC20VotesNonTransferable.sol";
 import "../interfaces/IDispenser.sol";
 
 /**
@@ -61,7 +61,7 @@ struct LockedBalance {
 }
 
 /// @notice This token supports the ERC20 interface specifications except for transfers.
-contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
+contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesNonTransferable {
     using SafeERC20 for IERC20;
 
     enum DepositType {
@@ -108,6 +108,9 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
     mapping(address => uint256) public userPointEpoch;
 
     // Aragon's view methods for compatibility
+    // TOFIX: we don't use Aragon. Do we need this?
+    // In any case, we need a way to update the controller via governance
+    // who is owner here anyway?
     address public controller;
     bool public transfersEnabled;
 
@@ -141,6 +144,15 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
         }
         dispenser = _dispenser;
     }
+
+    // TOFIX: add method only callable by governance which is called
+    // "seed" which does the following:
+    // accepts sender adddress and 3 lists of addresses and amounts and lock times, 
+    // then first, safeTransferFrom the sum of amounts from the sender address
+    // to this contract; second, for each index uses the _createLock method with _target being the relevant
+    // address from the list, same for value and unlock time, _from will be the sender
+    // This will allow us to lock in all investors and team during the airdrop; also can be used by 
+    // governance at a later point.
 
     /// @dev Changes dispenser address.
     /// @param newDispenser Address of a new dispenser.
@@ -338,12 +350,14 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
     /// @param unlockTime New time when to unlock the tokens, or 0 if unchanged
     /// @param lockedBalance Previous locked amount / timestamp
     /// @param depositType The type of deposit
+    /// @param _from Address where the token comes from
     function _depositFor(
         address _addr,
         uint256 _value,
         uint256 unlockTime,
         LockedBalance memory lockedBalance,
-        DepositType depositType
+        DepositType depositType,
+        address _from
     ) internal {
         LockedBalance memory _locked = lockedBalance;
         uint256 supplyBefore = supply;
@@ -364,9 +378,8 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
         // _locked.end > block.timestamp (always)
         _checkpoint(_addr, oldLocked, _locked);
 
-        address from = msg.sender;
         if (_value != 0) {
-            IERC20(token).safeTransferFrom(from, address(this), _value);
+            IERC20(token).safeTransferFrom(_from, address(this), _value);
         }
 
         emit Deposit(_addr, _value, _locked.end, depositType, block.timestamp);
@@ -395,7 +408,7 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
         if (_locked.end <= block.timestamp) {
             revert LockExpired(msg.sender, _locked.end, block.timestamp);
         }
-        _depositFor(_addr, _value, 0, _locked, DepositType.DEPOSIT_FOR_TYPE);
+        _depositFor(_addr, _value, 0, _locked, DepositType.DEPOSIT_FOR_TYPE, msg.sender;);
     }
 
     /// @dev Deposit `_value` tokens for `msg.sender` and lock until `_unlock_time`
@@ -403,28 +416,32 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
     /// @param _unlock_time Epoch time when tokens unlock, rounded down to whole weeks
     function createLock(uint256 _value, uint256 _unlock_time) external nonReentrant {
         assertNotContract(msg.sender);
+        _createLock(msg.sender, _value, _unlock_time, msg.sender)
+    }
+
+    function _createLock(address _target, uint256 _value, uint256 _unlock_time, address _from) private {
         uint256 unlockTime = (_unlock_time / WEEK) * WEEK; // Locktime is rounded down to weeks
-        LockedBalance memory _locked = locked[msg.sender];
+        LockedBalance memory _locked = locked[_target];
 
         if (_value == 0) {
             revert ZeroValue();
         }
         if (_locked.amount != 0) {
-            revert LockedValueNotZero(msg.sender, _locked.amount);
+            revert LockedValueNotZero(_target, _locked.amount);
         }
         if (unlockTime <= block.timestamp) {
-            revert UnlockTimeIncorrect(msg.sender, block.timestamp, unlockTime);
+            revert UnlockTimeIncorrect(_target, block.timestamp, unlockTime);
         }
         if (unlockTime > block.timestamp + MAXTIME) {
-            revert MaxUnlockTimeReached(msg.sender, block.timestamp + MAXTIME, unlockTime);
+            revert MaxUnlockTimeReached(_target, block.timestamp + MAXTIME, unlockTime);
         }
 
-        _depositFor(msg.sender, _value, unlockTime, _locked, DepositType.CREATE_LOCK_TYPE);
+        _depositFor(_target, _value, unlockTime, _locked, DepositType.CREATE_LOCK_TYPE, _from);
 
         // Add to the map for subsequent cleaning during the withdraw
         uint256 id = _accounts.length;
-        _mapAccountIds[msg.sender] = id;
-        _accounts.push(msg.sender);
+        _mapAccountIds[_target] = id;
+        _accounts.push(_target);
     }
 
     /// @dev Deposit `_value` additional tokens for `msg.sender` without modifying the unlock time
@@ -444,7 +461,7 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
             revert LockExpired(msg.sender, _locked.end, block.timestamp);
         }
 
-        _depositFor(msg.sender, _value, 0, _locked, DepositType.INCREASE_LOCK_AMOUNT);
+        _depositFor(msg.sender, _value, 0, _locked, DepositType.INCREASE_LOCK_AMOUNT, msg.sender);
     }
 
     /// @dev Extend the unlock time for `msg.sender` to `_unlock_time`
@@ -468,7 +485,7 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
             revert MaxUnlockTimeReached(msg.sender, block.timestamp + MAXTIME, unlockTime);
         }
 
-        _depositFor(msg.sender, 0, unlockTime, _locked, DepositType.INCREASE_UNLOCK_TIME);
+        _depositFor(msg.sender, 0, unlockTime, _locked, DepositType.INCREASE_UNLOCK_TIME, msg.sender);
     }
 
     /// @dev Withdraw all tokens for `msg.sender`
@@ -490,6 +507,9 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
         _checkpoint(msg.sender, _locked, LockedBalance(0,0));
 
         // Return value from staking
+        // TOFIX: let's not do this. It has bad tax implications if we couple these.
+        // Also allows us to simplify the design as then we don't need the dispenser on this
+        // contract
         value += IDispenser(dispenser).withdrawStakingRewards(msg.sender);
 
         // Clean up the account information
@@ -553,6 +573,8 @@ contract VotingEscrow is Ownable, ReentrancyGuard, ERC20VotesCustom {
     function balanceOf(address account) public view override returns (uint256 balance) {
         balance = uint256(int256(locked[account].amount));
     }
+
+    // TODO: add balanceOfAtT & getLockAccountsAtT
 
     /// @dev Gets the voting power.
     /// @param account Account address.

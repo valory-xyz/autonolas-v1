@@ -103,7 +103,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         emit TokenomicsUpdated(newTokenomics);
     }
 
-    /// @dev Allows approved address to deposit an asset for OLA.
+    /// @dev Allows approved address (the Depository) to deposit an asset for OLA.
     /// @param tokenAmount Token amount to get OLA for.
     /// @param token Token address.
     /// @param olaMintAmount Amount of OLA token issued.
@@ -117,6 +117,11 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
         mapTokens[token].reserves += tokenAmount;
         // Mint specified number of OLA tokens corresponding to tokens bonding deposit
+        // TOFIX; here we need to call the inflation module to check if we are allowed to mint!
+        // The inflation module can be implemented in the tokenomics contract (so no separate contract.)
+        // Note, OLA contract itself will enforce the secondary mint checks on max supply
+        // We separate these two so that governance can control how exactly inflation works in first 10 years
+        // whilst also guaranteeing a hard upper bound enshrined in OLA contract
         IOLA(ola).mint(msg.sender, olaMintAmount);
 
         emit DepositFromDepository(token, tokenAmount, olaMintAmount);
@@ -144,6 +149,10 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             revert WrongAmount(msg.value, totalAmount);
         }
 
+        // we let anyone call this method depositETHFromServiceBatch; but we only track for whitelisted 
+        // services. the whitelist can be maintained by governance;
+        // the whitelist can be implemented on the Tokenomics contract
+        // same for depositETHFromService
         ITokenomics(tokenomics).trackServicesETHRevenue(serviceIds, amounts);
 
         emit DepositFromServices(ETH_TOKEN_ADDRESS, amounts, serviceIds);
@@ -234,6 +243,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             // TODO or allocate OLA tokens differently as by means suggested (breaking up LPs etc)
             if (amount > balance) {
                 balance = amount - balance;
+                // TOFIX; here we need to call the inflation module to check if we are allowed to mint!
                 IOLA(ola).mint(address(this), balance);
             }
 
@@ -248,6 +258,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     /// @param amount OLA amount.
     function _sendFundsToTreasury(uint256 amount) internal {
         if (amount > 0) {
+            // TOFIX; here we need to call the inflation module to check if we are allowed to mint!
             IOLA(ola).mint(address(this), amount);
             emit TransferToProtocol(amount);
         }

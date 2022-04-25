@@ -114,6 +114,7 @@ contract Dispenser is IErrors, IStructs, Ownable, Pausable, ReentrancyGuard {
     /// @dev Distributes rewards between stakers.
     function _distributeStakerRewards(uint256 stakerRewards) internal {
         VotingEscrow veContract = VotingEscrow(ve);
+        // TOFIX: use the new getLockAccountsAtT where T is the **beginning** of the epoch e for which the rewards are
         address[] memory accounts = veContract.getLockAccounts();
 
         // Get the overall amount of rewards for stakers
@@ -121,6 +122,7 @@ contract Dispenser is IErrors, IStructs, Ownable, Pausable, ReentrancyGuard {
 
         // Iterate over staker addresses and distribute
         uint256 numAccounts = accounts.length;
+        // TOFIX: use the new getLockAccountsAtT where T is the **beginning** of the epoch e for which the rewards are collected
         uint256 supply = veContract.totalSupply();
         if (supply > 0) {
             for (uint256 i = 0; i < numAccounts; ++i) {
@@ -164,6 +166,8 @@ contract Dispenser is IErrors, IStructs, Ownable, Pausable, ReentrancyGuard {
     /// @dev Withdraws rewards for stakers.
     /// @param account Account address.
     /// @return balance Reward balance.
+    // TOFIX: let's remove the constraint. stakers should come here to withdraw
+    // otherwise they will end up being forced to withdraw their rewards when unlocking (the former has tax implications but the latter does not)
     function withdrawStakingRewards(address account) external onlyVotingEscrow returns (uint256 balance) {
         balance = mapStakerRewards[account];
         if (balance > 0) {

@@ -38,6 +38,12 @@ contract OLA is IErrors, Context, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     /// @param account Account address.
     /// @param amount OLA token amount.
     function mint(address account, uint256 amount) public onlyManager {
+        // TOFIX: we need to add inflation constraints
+        // i.e. max mint amount in first 10 years from contract deployment 
+        // has to be 1 bn token (the actual inflation schedule is implemented by governance, here we just constrain max amount)
+        // after, we restrict max mint amount to be 2% of total supply
+        // I suggest you follow closely the approach of uni here: https://etherscan.io/address/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984#code
+
         super._mint(account, amount);
     }
 

@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+// TOFIX -> no longer used interface
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IErrors.sol";
 import "./interfaces/ITreasury.sol";
@@ -201,7 +202,7 @@ contract Depository is IErrors, Ownable {
         matured = !bond.redeemed && bond.maturity <= block.timestamp && bond.payout != 0;
     }
 
-    // TODO For now only Uniswapv2 is supported
+    // TODO For now only Uniswapv2 is supported <- since this now happens in Tokenomics, comment can be removed here!
     /// @dev Creates a new bond product.
     /// @param token Uniswapv2 LP token to be deposited for pairs like OLA-DAI, OLA-ETH, etc.
     /// @param supply Supply in OLA tokens.

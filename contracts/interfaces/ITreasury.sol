@@ -36,4 +36,12 @@ interface ITreasury {
 
     /// @dev Starts a new epoch.
     function allocateRewards() external returns (bool);
+
+
+    /// @dev Set a pool ETH-OLA
+    /// @param pair Pool address.
+    function setEthOlaPool(address pair) external;
+
+    /// @dev Get ETH-OLA pool address
+    function getEthOlaPool() external view returns (address pool);
 }

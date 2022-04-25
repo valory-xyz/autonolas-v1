@@ -52,6 +52,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // Total service revenue per epoch: sum(r(s))
     uint256 public totalServiceRevenueETH;
 
+    // ETH-OLA price in pool
+    FixedPoint.uq112x112 private priceAverage = FixedPoint.fraction(1, 1);
+    uint256 private priceCumulative;
+
     // Staking parameters with multiplying by 100
     // treasuryFraction + componentFraction + agentFraction + stakerFraction = 100%
     uint256 public treasuryFraction = 0;
@@ -509,11 +513,63 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
 
         _df = _calculateDFv1(_dcm);
+
+        address EthOlaPool = ITreasury(treasury).getEthOlaPool();
+        if (EthOlaPool != address(0)) {
+            // ETH-OLA price in pool
+            uint256 _priceCumulativeLast = priceCumulative;
+            // uint32 for compatible with UniswapV2
+            uint32 ts = getLastTS(epoch);
+            uint32 timeElapsed = block.timestamp > ts ? uint32(block.timestamp - ts) : 1;
+            ( FixedPoint.uq112x112 memory _priceAverage, uint256 _priceCumulative ) = _currentCumulativePrices(EthOlaPool, _priceCumulativeLast, timeElapsed);
+            priceCumulative = _priceCumulative;
+            priceAverage = _priceAverage;
+        }
+
         PointEcomonics memory newPoint = PointEcomonics(_ucf, _usf, _df, rewards[1], rewards[2],
             rewards[3], rewards[4], block.timestamp, block.number, true);
         mapEpochEconomics[epoch] = newPoint;
 
         _clearEpochData();
+    }
+
+    /// @dev produces the average price (OLA/non-OLA). ola_amount_out = non-ola_amount_in * p [ola/non-ola]
+    /// @param pair LPToken/Pool address.
+    /// @param priceCumulativeLast pre price cumulative
+    /// @param timeElapsed time for calc price
+    /// @return __priceAverage average price for time
+    /// @return __priceCumulative cumulative price non-ola-token
+    function _currentCumulativePrices(address pair, uint256 priceCumulativeLast, uint32 timeElapsed) internal view returns (FixedPoint.uq112x112 memory __priceAverage, uint256 __priceCumulative) {
+        ( uint256 price0Cumulative, uint256 price1Cumulative ) = _currentCumulativePrices(pair);
+        // if token0 is OLA then token1 is notOLA
+        // price0 = tk1/tk0, price1 = tk0/tk1 
+        // for calc tk1_amount_out = tk0_amount_in * p0, tk0_amount_out = tk1_amount_in * p1,  
+        __priceCumulative = (IUniswapV2Pair(pair).token0() == address(ola)) ? price1Cumulative : price0Cumulative;
+        __priceAverage = (priceCumulative > priceCumulativeLast) ? 
+            FixedPoint.uq112x112(uint224((priceCumulative - priceCumulativeLast) / timeElapsed)) :
+            FixedPoint.uq112x112(uint224((priceCumulativeLast - priceCumulative) / timeElapsed));
+    }
+
+    /// @dev produces the cumulative price
+    /// @param pair LPToken/Pool address.
+    /// @return price0Cumulative cumulative price token0
+    /// @return price1Cumulative cumulative price token1
+    function _currentCumulativePrices(address pair) internal view returns (uint256 price0Cumulative, uint256 price1Cumulative) {
+        uint32 blockTimestamp =  uint32(block.timestamp);
+        price0Cumulative = IUniswapV2Pair(pair).price0CumulativeLast();
+        price1Cumulative = IUniswapV2Pair(pair).price1CumulativeLast();
+
+        // if time has elapsed since the last update on the pair, mock the accumulated price values
+        (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast) = IUniswapV2Pair(pair).getReserves();
+        if (blockTimestamp > blockTimestampLast) {
+            // subtraction overflow is desired
+            uint32 timeElapsed = blockTimestamp - blockTimestampLast;
+            // addition overflow is desired
+            // counterfactual
+            price0Cumulative += uint(FixedPoint.fraction(reserve1, reserve0)._x) * timeElapsed;
+            // counterfactual
+            price1Cumulative += uint(FixedPoint.fraction(reserve0, reserve1)._x) * timeElapsed;
+        }
     }
 
     // @dev Calculates the amount of OLA tokens based on LP (see the doc for explanation of price computation). Any can do it
@@ -543,6 +599,21 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             resAmount = _calculatePayoutFromLP(token, tokenAmount, INITIAL_DF);
         }
     }
+
+    /// @dev Get last ts in points
+    /// @param epoch epoch number
+    function getLastTS(uint256 epoch) internal view returns (uint32 ts) {
+        uint256 epochC = epoch + 1;
+        PointEcomonics memory _PE; 
+        for (uint256 i = epochC; i > 0; i--) {
+            _PE = mapEpochEconomics[i-1];
+            if(_PE.exists) {
+                ts = uint32(_PE.ts);
+                break;
+            }
+        }
+    }
+
 
     /// @dev Calculates the amount of OLA tokens based on LP (see the doc for explanation of price computation).
     /// @param token Token address.
@@ -651,9 +722,14 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param token Token address to be exchanged for OLA.
     /// @param tokenAmount Token amount.
     /// @return amountOLA Amount of OLA tokens.
-    function _getExchangeAmountOLA(address token, uint256 tokenAmount) private pure returns (uint256 amountOLA) {
-        // TODO Exchange rate is a stub for now
-        amountOLA = tokenAmount;
+    function _getExchangeAmountOLA(address token, uint256 tokenAmount) private view returns (uint256 amountOLA) {
+        // TODO: Exchange rate is a stub for now
+        // TODO: Done
+        if(token == ETH_TOKEN_ADDRESS) {
+            amountOLA = priceAverage._x > 0 ? priceAverage.mul(tokenAmount).decode144() : tokenAmount;
+        } else {
+            amountOLA = tokenAmount;
+        }
     }
 
     function getProfitableComponents() external view

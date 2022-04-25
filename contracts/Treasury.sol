@@ -28,6 +28,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     event DispenserUpdated(address dispenser);
     event TransferToDispenser(uint256 amount);
     event TransferToProtocol(uint256 amount);
+    event EthPool(address pair);
 
     enum TokenState {
         NonExistent,
@@ -54,6 +55,9 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     address[] public tokenRegistry;
     // Token address => token info
     mapping(address => TokenInfo) public mapTokens;
+    // Pair ETH/OLA pool
+    address public EthOlaPool; 
+
 
     // https://developer.kyber.network/docs/DappsGuide#contract-example
     address public constant ETH_TOKEN_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE); // well-know representation ETH as address
@@ -188,7 +192,22 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         emit Withdrawal(token, tokenAmount);
     }
 
-    /// @dev Enables a token to be exchanged for OLA.
+    /// @dev Set a pool ETH-OLA
+    /// @param pair Pool address.
+    function setEthOlaPool(address pair) external onlyOwner {
+        TokenState state = mapTokens[pair].state;
+        if (state != TokenState.Enabled) {
+            if (state == TokenState.NonExistent) {
+                tokenRegistry.push(pair);
+            }
+            mapTokens[pair].state = TokenState.Enabled;
+            EthOlaPool = pair;
+            emit EnableToken(pair);
+            emit EthPool(pair);
+        }
+    }
+
+    /// @dev Enables a token to be exchanged for OLA. Don't use for ETH-OLA pool
     /// @param token Token address.
     function enableToken(address token) external onlyOwner {
         TokenState state = mapTokens[token].state;
@@ -221,6 +240,11 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     function isEnabled(address token) public view returns (bool enabled) {
         enabled = (mapTokens[token].state == TokenState.Enabled);
     }
+
+    /// @dev Get ETH-OLA pool address
+    function getEthOlaPool() public view returns (address pool) {
+        pool = EthOlaPool;
+    } 
 
     /// @dev Sends OLA funds to dispenser.
     /// @param amount Amount of OLA.

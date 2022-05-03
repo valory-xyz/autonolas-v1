@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./interfaces/IErrors.sol";
-import "./interfaces/IStructs.sol";
-import "./interfaces/ITokenomics.sol";
-import "./interfaces/ITreasury.sol";
-import "./interfaces/IVotingEscrow.sol";
+import "../interfaces/IErrors.sol";
+import "../interfaces/IStructs.sol";
+import "../interfaces/ITokenomics.sol";
+import "../interfaces/ITreasury.sol";
+import "../interfaces/IVotingEscrow.sol";
 
 /// @title Dispenser - Smart contract for rewards
 /// @author AL

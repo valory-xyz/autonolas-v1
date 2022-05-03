@@ -3,10 +3,10 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "./interfaces/IErrors.sol";
-import "./interfaces/IStructs.sol";
-import "./interfaces/IService.sol";
-import "./interfaces/ITreasury.sol";
+import "../interfaces/IErrors.sol";
+import "../interfaces/IStructs.sol";
+import "../interfaces/IService.sol";
+import "../interfaces/ITreasury.sol";
 
 /// @title Service Manager - Periphery smart contract for managing services
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>

@@ -4,11 +4,11 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "./interfaces/IService.sol";
-import "./interfaces/ITreasury.sol";
-import "./interfaces/IErrors.sol";
-import "./interfaces/IStructs.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import "../interfaces/IService.sol";
+import "../interfaces/ITreasury.sol";
+import "../interfaces/IErrors.sol";
+import "../interfaces/IStructs.sol";
 
 
 /// @title Tokenomics - Smart contract for store/interface for key tokenomics params

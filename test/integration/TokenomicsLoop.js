@@ -112,7 +112,7 @@ describe("Tokenomics integration", async () => {
         ola = await olaFactory.deploy(0, deployer.address);
         // Correct treasury address is missing here, it will be defined just one line below
         tokenomics = await tokenomicsFactory.deploy(ola.address, deployer.address, deployer.address, deployer.address,
-            epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
+            deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, deployer.address);
         // Change to the correct treasury address
@@ -123,11 +123,11 @@ describe("Tokenomics integration", async () => {
         await treasury.changeDepository(depository.address);
         await tokenomics.changeDepository(depository.address);
 
-        ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA", "0.1", deployer.address);
-        dispenser = await dispenserFactory.deploy(ola.address, ve.address, treasury.address, tokenomics.address);
-        await ve.changeDispenser(dispenser.address);
+        ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA", "0.1");
+        dispenser = await dispenserFactory.deploy(ola.address, treasury.address, tokenomics.address);
         await treasury.changeDispenser(dispenser.address);
         await tokenomics.changeDispenser(dispenser.address);
+        await tokenomics.changeVotingEscrow(ve.address);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
@@ -188,8 +188,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Checking the values with delta rounding error
             const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -232,8 +231,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Checking the values with delta rounding error
             const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -292,8 +290,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Checking the values with delta rounding error
             const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -348,8 +345,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Checking the values with delta rounding error
             const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -408,8 +404,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Checking the values with delta rounding error
             const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -473,8 +468,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Calculation of values: ucfc = 1.0 since all 4 components are in both services
             // ucfa[1] = 1, ucfa[2] = 2/3, ucfa[3] = 1
@@ -544,8 +538,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            const epoch = await tokenomics.getCurrentEpoch();
-            const point = await tokenomics.getPoint(epoch);
+            const point = await tokenomics.getLastPoint();
 
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
@@ -739,18 +732,23 @@ describe("Tokenomics integration", async () => {
 
             // Whitelist a service owner
             await tokenomics.changeServiceOwnerWhiteList([serviceOwner], [true]);
+
+            // Allocate empty rewards during the first epoch
+            await treasury.allocateRewards();
+            ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
+            const currentBlock = await ethers.provider.getBlock("latest");
+            // Mine blocks until the next epoch
+            for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
+                await ethers.provider.send("evm_mine");
+            }
+
             // Send deposits from a service
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
                 {value: tripleRegServiceRevenue});
 
-            let currentBlock = await ethers.provider.getBlock("latest");
-            let currentEpoch = Math.ceil(currentBlock.number / epochLen);
-            // Move to the beginning of the epoch block
-            for (let i = currentBlock.number; i < currentEpoch * epochLen; i++) {
-                await ethers.provider.send("evm_mine");
-            }
-            // Calculate current epoch parameters
+            // Allocate rewards for the epoch
             await treasury.allocateRewards();
+            //console.log("Current epoch", await tokenomics.getCurrentEpoch());
 
             // Get owners rewards
             await dispenser.connect(componentOwners[0]).withdrawOwnerRewards();
@@ -780,16 +778,10 @@ describe("Tokenomics integration", async () => {
                 (Number(balanceAgentOwner1) + Number(balanceAgentOwner2));
             expect(diffAgentReward / E18).to.lessThan(delta);
 
-            // Withdraw skating by the deployer (considered rewards for 1 epoch) and a staker
-            ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
-            currentBlock = await ethers.provider.getBlock("latest");
-            // Mine blocks until the two next epochs
-            for (let i = currentBlock.number; i < 2 * epochLen + currentBlock.number; i++) {
-                await ethers.provider.send("evm_mine");
-            }
+            // Withdraw locking and skating by the deployer (considered rewards for 1 epoch) and a staker
             await ve.withdraw();
-            await dispenser.connect(deployer).withdrawStakingRewards();
             await ve.connect(staker).withdraw();
+            await dispenser.connect(deployer).withdrawStakingRewards();
             await dispenser.connect(staker).withdrawStakingRewards();
 
             // Staker balance must increase on the stakerFraction amount of the received service revenue
@@ -881,12 +873,6 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist a service owner
-            await tokenomics.changeServiceOwnerWhiteList([owner], [true]);
-            // Send deposits services
-            await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
-                {value: tripleRegServiceRevenue});
-
             // Stake OLA with 2 stakers: deployer and staker
             await ola.transfer(staker.address, twoHundredETHBalance);
             await ola.approve(ve.address, hundredETHBalance);
@@ -904,6 +890,21 @@ describe("Tokenomics integration", async () => {
             const balanceStaker = await ve.balanceOf(staker.address);
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
+            // Whitelist a service owner
+            await tokenomics.changeServiceOwnerWhiteList([owner], [true]);
+
+            // Allocate empty rewards during the first epoch
+            await treasury.allocateRewards();
+            let currentBlock = await ethers.provider.getBlock("latest");
+            // Mine blocks until the next epoch
+            for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
+                await ethers.provider.send("evm_mine");
+            }
+
+            // Send deposits services
+            await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
+                {value: tripleRegServiceRevenue});
+
             // Enable LP token of OLA-DAI pair
             await treasury.enableToken(pairODAI.address);
 
@@ -912,18 +913,11 @@ describe("Tokenomics integration", async () => {
             const productId = 0;
             expect(await depository.isActive(pairODAI.address, productId)).to.equal(true);
 
-            let currentBlock = await ethers.provider.getBlock("latest");
-            let currentEpoch = Math.ceil(currentBlock.number / epochLen);
-            // Move to the beginning of the epoch block
-            for (let i = currentBlock.number; i < currentEpoch * epochLen; i++) {
-                await ethers.provider.send("evm_mine");
-            }
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            let epoch = await tokenomics.getCurrentEpoch();
-            let point = await tokenomics.getPoint(epoch);
+            let point = await tokenomics.getLastPoint();
 
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
@@ -1024,8 +1018,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get the information from tokenomics point
-            epoch = await tokenomics.getCurrentEpoch();
-            point = await tokenomics.getPoint(epoch);
+            point = await tokenomics.getLastPoint();
 
             // Checking the values of tokenomics parameters with delta rounding error
             ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
@@ -1072,13 +1065,11 @@ describe("Tokenomics integration", async () => {
             // Withdraw skating by the deployer (considered rewards for 1 epoch) and a staker
             ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
             currentBlock = await ethers.provider.getBlock("latest");
-            // Mine blocks until the next epoch
-            for (let i = currentBlock.number; i < 2 * epochLen + currentBlock.number; i++) {
-                await ethers.provider.send("evm_mine");
-            }
+            // Mine one block to update the time
+            await ethers.provider.send("evm_mine");
             await ve.withdraw();
-            await dispenser.connect(deployer).withdrawStakingRewards();
             await ve.connect(staker).withdraw();
+            await dispenser.connect(deployer).withdrawStakingRewards();
             await dispenser.connect(staker).withdrawStakingRewards();
 
             // Staker balance must increase on the stakerFraction amount of the received service revenue plus the previous epoch rewards

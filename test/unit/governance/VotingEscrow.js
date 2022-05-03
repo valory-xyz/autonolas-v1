@@ -6,7 +6,6 @@ const { ethers } = require("hardhat");
 describe("VotingEscrow", function () {
     let token;
     let ve;
-    let dispenser;
     let signers;
     const initialMint = "1000000000000000000000000"; // 1000000
     const oneWeek = 7 * 86400;
@@ -24,14 +23,8 @@ describe("VotingEscrow", function () {
         await token.mint(signers[0].address, initialMint);
 
         const VE = await ethers.getContractFactory("VotingEscrow");
-        ve = await VE.deploy(token.address, "name", "symbol", "0.1", signers[0].address);
+        ve = await VE.deploy(token.address, "name", "symbol", "0.1");
         await ve.deployed();
-
-        // Tokenomics and Treasury contract addresses are irrelevant for these tests
-        const Dispenser = await ethers.getContractFactory("Dispenser");
-        dispenser = await Dispenser.deploy(token.address, ve.address, AddressZero, AddressZero);
-        await dispenser.deployed();
-        await ve.changeDispenser(dispenser.address);
     });
 
     context("Locks", async function () {

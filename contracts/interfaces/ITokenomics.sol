@@ -5,15 +5,12 @@ import "./IStructs.sol";
 
 /// @dev Interface for tokenomics management.
 interface ITokenomics is IStructs {
-    /// @dev Converts the block number into epoch number.
-    /// @param blockNumber Block number.
-    /// @return epochNumber Epoch number
-    function getEpoch(uint256 blockNumber) external view returns (uint256 epochNumber);
-    function getCurrentEpoch() external view returns (uint256 epochNumber);
+    /// @dev Gets the current epoch number.
+    /// @return Current epoch number.
+    function getCurrentEpoch() external view returns (uint256);
 
     function epochLen() external view returns (uint256);
     function getDF(uint256 epoch) external view returns (uint256 df);
-    function getEpochLen() external view returns (uint256);
     function getPoint(uint256 epoch) external view returns (PointEcomonics memory _PE);
     function getLastPoint() external view returns (PointEcomonics memory _PE);
     function calculatePayoutFromLP(address token, uint256 tokenAmount, uint _epoch) external returns (uint256 resAmount);
@@ -32,4 +29,17 @@ interface ITokenomics is IStructs {
     /// @param account Account address.
     /// @return reward Reward amount.
     function accountOwnerRewards(address account) external returns (uint256 reward);
+
+    /// @dev Calculates staking rewards.
+    /// @param account Account address.
+    /// @param startEpochNumber Epoch number at which the reward starts being calculated.
+    /// @return reward Reward amount up to the last possible epoch.
+    /// @return endEpochNumber Epoch number where the reward calculation will start the next time.
+    function calculateStakingRewards(address account, uint256 startEpochNumber) external view
+        returns (uint256 reward, uint256 endEpochNumber);
+
+    /// @dev Checks for the OLA minting ability WRT the inflation schedule.
+    /// @param amount Amount of requested OLA tokens to mint.
+    /// @return True if the mint is allowed.
+    function isAllowedMint(uint256 amount) external returns (bool);
 }

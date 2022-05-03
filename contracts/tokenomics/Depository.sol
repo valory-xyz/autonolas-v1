@@ -99,7 +99,7 @@ contract Depository is IErrors, Ownable {
         }
 
         // Calculate the payout in OLA tokens based on the LP pair with the discount factor (DF) calculation
-        uint256 epoch = block.number / ITokenomics(tokenomics).epochLen();
+        uint256 epoch = ITokenomics(tokenomics).getCurrentEpoch();
         // df uint with defined decimals
         payout = ITokenomics(tokenomics).calculatePayoutFromLP(token, tokenAmount, epoch);
         

@@ -116,10 +116,13 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         // Transfer tokens from depository to treasury and add to the token treasury reserves
         IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
         mapTokens[token].reserves += tokenAmount;
-        // Mint specified number of OLA tokens corresponding to tokens bonding deposit
-        IOLA(ola).mint(msg.sender, olaMintAmount);
-
-        emit DepositFromDepository(token, tokenAmount, olaMintAmount);
+        // Mint specified number of OLA tokens corresponding to tokens bonding deposit if the amount is possible to mint
+        if (ITokenomics(tokenomics).isAllowedMint(olaMintAmount)) {
+            IOLA(ola).mint(msg.sender, olaMintAmount);
+            emit DepositFromDepository(token, tokenAmount, olaMintAmount);
+        } else {
+            revert WrongAmount(olaMintAmount, olaMintAmount);
+        }
     }
 
     /// @dev Deposits ETH from protocol-owned services in batch.
@@ -209,17 +212,23 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
 
     /// @dev Sends OLA funds to dispenser.
     /// @param amount Amount of OLA.
-    function _sendFundsToDispenser(uint256 amount) internal {
+    /// @return True if the funds were sent correctly.
+    function _sendFundsToDispenser(uint256 amount) internal returns (bool){
         if (amount > 0) {
             // Check current OLA balance
             uint256 balance = IOLA(ola).balanceOf(address(this));
 
             // If the balance is insufficient, mint the difference
-            // TODO Check if minting is not causing the inflation go beyond the limits, and refuse if that's the case
             // TODO or allocate OLA tokens differently as by means suggested (breaking up LPs etc)
             if (amount > balance) {
                 balance = amount - balance;
-                IOLA(ola).mint(address(this), balance);
+                // Check if we are not going beyond the inflation schedule
+                if (ITokenomics(tokenomics).isAllowedMint(balance)) {
+                    IOLA(ola).mint(address(this), balance);
+                } else {
+                    // TODO Understand what to do if we can't mint more tokens
+                    return false;
+                }
             }
 
             // Transfer funds to the dispenser
@@ -227,37 +236,41 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
 
             emit TransferToDispenser(amount);
         }
+        return true;
     }
 
     /// @dev Sends (mints) funds to itself
     /// @param amount OLA amount.
-    function _sendFundsToTreasury(uint256 amount) internal {
+    /// @return True if the funds were allocated correctly.
+    function _sendFundsToTreasury(uint256 amount) internal returns (bool) {
         if (amount > 0) {
-            IOLA(ola).mint(address(this), amount);
-            emit TransferToProtocol(amount);
+            if (ITokenomics(tokenomics).isAllowedMint(amount)) {
+                IOLA(ola).mint(address(this), amount);
+                emit TransferToProtocol(amount);
+            } else {
+                return false;
+            }
         }
+        return true;
     }
 
     /// @dev Starts a new epoch.
     function allocateRewards() external onlyOwner returns (bool) {
-        // Gets the latest economical point of epoch
-        PointEcomonics memory point = ITokenomics(tokenomics).getLastPoint();
-        // If the point exists, it was already started and there is no need to continue
-        if (point.exists) {
-            return false;
-        }
-
         // Process the epoch data
         ITokenomics(tokenomics).checkpoint();
-        point = ITokenomics(tokenomics).getLastPoint();
+        PointEcomonics memory point = ITokenomics(tokenomics).getLastPoint();
 
         // Request overall OLA reward funds from treasury for the last epoch, for treasury itself and other rewards
-        _sendFundsToTreasury(point.treasuryRewards);
+        if (!_sendFundsToTreasury(point.treasuryRewards)) {
+            return false;
+        }
 
         if (!IDispenser(dispenser).isPaused()) {
             // Send funds to dispenser
             uint256 rewards = point.stakerRewards + point.componentRewards + point.agentRewards;
-            _sendFundsToDispenser(rewards);
+            if (!_sendFundsToDispenser(rewards)) {
+                return false;
+            }
         }
         return true;
     }

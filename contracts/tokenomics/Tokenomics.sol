@@ -5,11 +5,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import "../interfaces/IOLA.sol";
 import "../interfaces/IService.sol";
 import "../interfaces/ITreasury.sol";
 import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
-
+import "../interfaces/IVotingEscrow.sol";
 
 /// @title Tokenomics - Smart contract for store/interface for key tokenomics params
 /// @author AL
@@ -20,6 +21,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     event TreasuryUpdated(address treasury);
     event DepositoryUpdated(address depository);
     event DispenserUpdated(address dispenser);
+    event VotingEscrowUpdated(address ve);
+    event EpochLengthUpdated(uint256 epochLength);
 
     // OLA token address
     address public immutable ola;
@@ -29,20 +32,21 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     address public depository;
     // Dispenser contract address
     address public dispenser;
+    // Voting Escrow address
+    address public ve;
 
     bytes4  private constant FUNC_SELECTOR = bytes4(keccak256("kLast()")); // is pair or pure ERC20?
-    uint256 public immutable epochLen; // epoch len in blk
+    // Epoch length in block numbers
+    uint256 public epochLen;
+    // Global epoch counter
+    uint256 public epochCounter = 1;
     // source: https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27 
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
-    uint256 public constant INITIAL_DF = (110 * 10**18) / 100; // 10% with 18 decimals
-    uint256 public maxBond = 2000000 * 10**18; // 2M OLA with 18 decimals
-    // Epsilon subject to rounding error
-    uint256 public constant E13 = 10**13;
-    // Maximum precision number to be considered
-    uint256 public constant E18 = 10**18;
-    // Default max DF of 200% rounded with epsilon of E13 (100% is a factor of 2)
-    uint256 public maxDF = 3 * E18 + E13;
+    uint256 public constant INITIAL_DF = (110 * 1e18) / 100; // 10% with 18 decimals
+    uint256 public maxBond = 2000000 * 1e18; // 2M OLA with 18 decimals
+    // Default max DF of 200% rounded with epsilon of 1e13 (100% is a factor of 2)
+    uint256 public maxDF = 3 * 1e18 + 1e13;
 
     // 1.0 by default
     FixedPoint.uq112x112 public alpha = FixedPoint.fraction(1, 1);
@@ -76,15 +80,13 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     address public immutable agentRegistry;
     // Service Registry
     address payable public immutable serviceRegistry;
-    
-    // Mapping of epoch => point
-    mapping(uint256 => PointEcomonics) public mapEpochEconomics;
-    // Set of profitable components in current epoch
-    address[] private _profitableComponentOwners;
-    // Set of profitable agents in current epoch
-    address[] private _profitableAgentOwners;
+
+    // Inflation caps for the first ten years
+    uint256[] public inflationCaps;
     // Set of protocol-owned services in current epoch
     uint256[] private _protocolServiceIds;
+    // Mapping of epoch => point
+    mapping(uint256 => PointEcomonics) public mapEpochEconomics;
     // Map of service Ids and their amounts in current epoch
     mapping(uint256 => uint256) private _mapServiceAmounts;
     mapping(uint256 => uint256) private _mapServiceIndexes;
@@ -97,17 +99,30 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     address public constant ETH_TOKEN_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
 
     // TODO later fix government / manager
-    constructor(address _ola, address _treasury, address _depository, address _dispenser, uint256 _epochLen,
+    constructor(address _ola, address _treasury, address _depository, address _dispenser, address _ve, uint256 _epochLen,
         address _componentRegistry, address _agentRegistry, address payable _serviceRegistry)
     {
         ola = _ola;
         treasury = _treasury;
         depository = _depository;
         dispenser = _dispenser;
+        ve = _ve;
         epochLen = _epochLen;
         componentRegistry = _componentRegistry;
         agentRegistry = _agentRegistry;
         serviceRegistry = _serviceRegistry;
+
+        inflationCaps = new uint[](10);
+        inflationCaps[0] = 750_000_000e18;
+        inflationCaps[1] = 875_000_000e18;
+        inflationCaps[2] = 937_500_000e18;
+        inflationCaps[3] = 968_500_000e18;
+        inflationCaps[4] = 984_500_000e18;
+        inflationCaps[5] = 992_500_000e18;
+        inflationCaps[6] = 996_500_000e18;
+        inflationCaps[7] = 998_500_000e18;
+        inflationCaps[8] = 999_500_000e18;
+        inflationCaps[9] = 1_000_000_000e18;
     }
 
     // Only the manager has a privilege to manipulate a tokenomics
@@ -152,15 +167,23 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         emit DispenserUpdated(newDispenser);
     }
 
-    /// @dev Converts the block number into epoch number.
-    /// @param blockNumber Block number.
-    /// @return epochNumber Epoch number
-    function getEpoch(uint256 blockNumber) external view returns (uint256 epochNumber) {
-        epochNumber = blockNumber / epochLen;
+    /// @dev Changes voting escrow address.
+    function changeVotingEscrow(address newVE) external onlyOwner {
+        ve = newVE;
+        emit VotingEscrowUpdated(newVE);
     }
 
-    function getCurrentEpoch() public view returns (uint256 epochNumber) {
-        epochNumber = block.number / epochLen;
+    /// @dev Changes epoch length.
+    /// @param newEpochLen New epoch length.
+    function changeEpochLength(uint256 newEpochLen) external onlyOwner {
+        epochLen = newEpochLen;
+        emit EpochLengthUpdated(newEpochLen);
+    }
+
+    /// @dev Gets the current epoch number.
+    /// @return Current epoch number.
+    function getCurrentEpoch() external view returns (uint256) {
+        return epochCounter;
     }
 
     /// @dev Changes tokenomics parameters.
@@ -183,7 +206,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         alpha = FixedPoint.fraction(_alphaNumerator, _alphaDenominator);
         beta = _beta;
         gamma = FixedPoint.fraction(_gammaNumerator, _gammaDenominator);
-        maxDF = _maxDF + E13;
+        maxDF = _maxDF + 1e13;
         // take into account the change during the epoch
         if(_maxBond > maxBond) {
             uint256 delta = _maxBond - maxBond;
@@ -231,10 +254,34 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
     }
 
+    /// @dev Checks for the OLA minting ability WRT the inflation schedule.
+    /// @param amount Amount of requested OLA tokens to mint.
+    /// @return True if the mint is allowed.
+    function isAllowedMint(uint256 amount) public returns (bool) {
+        // OLA token time launch
+        uint256 timeLaunch = IOLA(ola).timeLaunch();
+        // One year of time
+        uint256 oneYear = 1 days * 365;
+        // Current year
+        uint256 numYear = (block.timestamp - timeLaunch) / oneYear;
+        // OLA token supply to-date
+        uint256 supply = IERC20(ola).totalSupply();
+        // For the first 10 years we check the inflation cap that is pre-defined
+        if (numYear < 10) {
+            if (supply + amount <= inflationCaps[numYear]){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return IOLA(ola).inflationControl(amount);
+        }
+    }
+
     /// @dev take into account the bonding program in this epoch. 
     /// @dev programs exceeding the limit in the epoch are not allowed
     function allowedNewBond(uint256 amount) external onlyDepository returns (bool)  {
-        if(_bondLeft >= amount) {
+        if(_bondLeft >= amount && isAllowedMint(amount)) {
             _bondLeft -= amount;
             return true;
         }
@@ -302,9 +349,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         uint256 numProfitableComponents;
         uint256 numServices = _protocolServiceIds.length;
 
-        // Clear the previous epoch profitable set of components
-        delete _profitableComponentOwners;
-
         // Set of component revenues UCFa-s (eq. 3). Agent Id-s start from "1", so the index can be equal to the set size
         uint256[] memory ucfcsRev = new uint256[](numComponents + 1);
         // Set of component revenues UCFa-s divided by the cardinality of component Ids in each service (eq. 10)
@@ -344,7 +388,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             if (ucfcsRev[componentId] > 0) {
                 // Add address of a profitable component owner
                 address owner = IERC721Enumerable(componentRegistry).ownerOf(componentId);
-                _profitableComponentOwners.push(owner);
                 // Increase a profitable component number
                 ++numProfitableComponents;
                 // Calculate component rewards
@@ -370,9 +413,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     {
         uint256 numProfitableAgents;
         uint256 numServices = _protocolServiceIds.length;
-
-        // Clear the previous epoch profitable set of agents
-        delete _profitableAgentOwners;
 
         // Set of agent revenues UCFa-s (eq. 3). Agent Id-s start from "1", so the index can be equal to the set size
         uint256[] memory ucfasRev = new uint256[](numAgents + 1);
@@ -412,7 +452,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             if (ucfasRev[agentId] > 0) {
                 // Add address of a profitable component owner
                 address owner = IERC721Enumerable(agentRegistry).ownerOf(agentId);
-                _profitableAgentOwners.push(owner);
                 // Increase a profitable agent number
                 ++numProfitableAgents;
                 // Calculate agent rewards
@@ -489,20 +528,20 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         _bondPerEpoch = 0;
     }
 
-    /// @notice Record global data to checkpoint, any can do it
-    /// @dev Checked point exist or not 
+    /// @dev Record global data to the checkpoint
     function checkpoint() external onlyTreasury {
-        uint256 epoch = getCurrentEpoch();
-        PointEcomonics memory lastPoint = mapEpochEconomics[epoch];
-        // if not exist
-        if(!lastPoint.exists) {
-            _checkpoint(epoch);
+        PointEcomonics memory lastPoint = mapEpochEconomics[epochCounter - 1];
+        // New point can be calculated only if we passed number of blocks equal to the epoch length
+        if (block.number > lastPoint.blk) {
+            uint256 diffNumBlocks = block.number - lastPoint.blk;
+            if (diffNumBlocks >= epochLen) {
+                _checkpoint();
+            }
         }
     }
 
     /// @dev Record global data to new checkpoint
-    /// @param epoch number of epoch
-    function _checkpoint(uint256 epoch) internal {
+    function _checkpoint() internal {
         FixedPoint.uq112x112 memory _ucf;
         FixedPoint.uq112x112 memory _usf;
         FixedPoint.uq112x112 memory _dcm;
@@ -555,7 +594,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         _df = _calculateDFv1(_dcm);
         PointEcomonics memory newPoint = PointEcomonics(_ucf, _usf, _df, rewards[1], rewards[2],
             rewards[3], rewards[4], donationBalanceETH, block.timestamp, block.number, true);
-        mapEpochEconomics[epoch] = newPoint;
+        mapEpochEconomics[epochCounter] = newPoint;
+        epochCounter++;
 
         _clearEpochData();
     }
@@ -628,7 +668,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
 
         // Get the resulting amount in OLA tokens
-        resAmount = (amountOLA * df) / E18; // df with decimals 18
+        resAmount = (amountOLA * df) / 1e18; // df with decimals 18
 
         // The discounted amount cannot be smaller than the actual one
         if (resAmount < amountOLA) {
@@ -667,8 +707,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     /// @dev Get last epoch Point.
     function getLastPoint() external view returns (PointEcomonics memory _PE) {
-        uint256 epoch = getCurrentEpoch();
-        _PE = mapEpochEconomics[epoch];
+        _PE = mapEpochEconomics[epochCounter - 1];
     }
 
     // decode a uq112x112 into a uint with 18 decimals of precision (cycle into the past), INITIAL_DF if not exist
@@ -686,6 +725,40 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
         if (df == 0) {
             df = INITIAL_DF;
+        }
+    }
+
+    /// @dev Calculates staking rewards.
+    /// @param account Account address.
+    /// @param startEpochNumber Epoch number at which the reward starts being calculated.
+    /// @return reward Reward amount up to the last possible epoch.
+    /// @return endEpochNumber Epoch number where the reward calculation will start the next time.
+    function calculateStakingRewards(address account, uint256 startEpochNumber) external view
+        returns (uint256 reward, uint256 endEpochNumber)
+    {
+        // There is no reward in the first epoch yet
+        if (startEpochNumber < 2) {
+            startEpochNumber = 2;
+        }
+
+        for (endEpochNumber = startEpochNumber; endEpochNumber < epochCounter; ++endEpochNumber) {
+            // Epoch point where the current epoch info is recorded
+            PointEcomonics memory pe = mapEpochEconomics[endEpochNumber];
+            // Last block number of a previous epoch
+            uint256 iBlock = mapEpochEconomics[endEpochNumber - 1].blk - 1;
+            // Get account's balance at the end of epoch
+            (uint256 balance, ) = IVotingEscrow(ve).balanceOfAt(account, iBlock);
+
+            // If there was no locking / staking, we skip the reward computation
+            if (balance > 0) {
+                // Get the total supply at the last block of the epoch
+                (uint256 supply, ) = IVotingEscrow(ve).totalSupplyAt(iBlock);
+
+                // Add to the reward depending on the staker reward
+                if (supply > 0) {
+                    reward += balance * pe.stakerRewards / supply;
+                }
+            }
         }
     }
 

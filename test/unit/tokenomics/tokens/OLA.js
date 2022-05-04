@@ -79,10 +79,12 @@ describe("OLA", () => {
 
     context("Mint schedule", () => {
         it("Should fail when mint more than a supplyCap within the first ten years", async () => {
-            const supplyCap = await ola.supplyCap();
+            const supplyCap = await ola.tenYearSupplyCap();
             let amount = supplyCap;
             // Mint more than the supply cap is not possible
-            await expect(ola.connect(treasury).mint(deployer.address, amount)).to.be.revertedWith("WrongAmount");
+            let totalSupply = await ola.totalSupply();
+            await ola.connect(treasury).mint(deployer.address, amount);
+            expect(await ola.totalSupply()).to.equal(totalSupply);
 
             // Move 9 years in time
             const blockNumber = await ethers.provider.getBlockNumber();
@@ -94,15 +96,17 @@ describe("OLA", () => {
             await ola.connect(treasury).mint(deployer.address, amount);
 
             // Check the total supply that must be equal to the supply cap
-            const totalSupply = await ola.totalSupply();
+            totalSupply = await ola.totalSupply();
             expect(totalSupply).to.equal(supplyCap);
         });
 
         it("Mint and burn after ten years", async () => {
-            const supplyCap = await ola.supplyCap();
+            const supplyCap = await ola.tenYearSupplyCap();
             let amount = supplyCap;
             // Mint more than the supply cap is not possible
-            await expect(ola.connect(treasury).mint(deployer.address, amount)).to.be.revertedWith("WrongAmount");
+            let totalSupply = await ola.totalSupply();
+            await ola.connect(treasury).mint(deployer.address, amount);
+            expect(await ola.totalSupply()).to.equal(totalSupply);           
 
             // Move 10 years in time
             let blockNumber = await ethers.provider.getBlockNumber();
@@ -118,13 +122,14 @@ describe("OLA", () => {
             // New total supply is 1 * 1.02 = 1.02 billion. We can safely mint 9 million
             amount = "519" + "0".repeat(24);
             await ola.connect(treasury).mint(deployer.address, amount);
-            const updatedTotalSupply = await ola.totalSupply();
-            expect(Number(updatedTotalSupply)).to.be.lessThan(Number(expectedSupplyCap));
-            //console.log("updated total supply", updatedTotalSupply);
+            totalSupply = await ola.totalSupply();
+            expect(Number(totalSupply)).to.be.lessThan(Number(expectedSupplyCap));
+            //console.log("updated total supply", totalSupply);
 
-            // Mint more than a new total supply must fail
+            // Mint more than a new total supply must not go through (will not change the supply)
             amount = "2" + "0".repeat(24);
-            await expect(ola.connect(treasury).mint(deployer.address, amount)).to.be.revertedWith("WrongAmount");
+            await ola.connect(treasury).mint(deployer.address, amount);
+            expect(await ola.totalSupply()).to.equal(totalSupply);
 
             // Move 3 more years in time, in addition to what we have already surpassed 10 years
             // So it will be the beginning of a year 4 after first 10 years
@@ -142,9 +147,11 @@ describe("OLA", () => {
             amount = "6" + "0".repeat(25);
             await ola.connect(treasury).mint(deployer.address, amount);
 
-            // Mint 5 more million must fail
+            // Mint 5 more million must not change the total supply due to the overflow
+            totalSupply = await ola.totalSupply();
             amount = "5" + "0".repeat(24);
-            await expect(ola.connect(treasury).mint(deployer.address, amount)).to.be.revertedWith("WrongAmount");
+            await ola.connect(treasury).mint(deployer.address, amount);
+            expect(await ola.totalSupply()).to.equal(totalSupply);
 
             // Burn the amount such that the total supply drops below 1 billion
             amount = "1" + "0".repeat(26);

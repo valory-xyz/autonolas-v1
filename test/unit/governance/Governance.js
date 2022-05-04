@@ -8,7 +8,6 @@ describe("Governance unit", function () {
     let gnosisSafeProxyFactory;
     let token;
     let ve;
-    let dispenser;
     let signers;
     const oneWeek = 7 * 86400;
     const oneETHBalance = ethers.utils.parseEther("1");
@@ -39,13 +38,8 @@ describe("Governance unit", function () {
 
         // Dispenser address is irrelevant in these tests, so its contract is passed as a zero address
         const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-        ve = await VotingEscrow.deploy(token.address, "Governance OLA", "veOLA", "0.1", AddressZero);
+        ve = await VotingEscrow.deploy(token.address, "Governance OLA", "veOLA", "0.1");
         await ve.deployed();
-
-        const Dispenser = await ethers.getContractFactory("Dispenser");
-        dispenser = await Dispenser.deploy(token.address, ve.address, AddressZero, AddressZero);
-        await dispenser.deployed();
-        ve.changeDispenser(dispenser.address);
 
         signers = await ethers.getSigners();
 

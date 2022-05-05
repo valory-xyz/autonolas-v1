@@ -187,15 +187,10 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.5)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
 
         it("Calculate tokenomics factors. One service is deployed", async () => {
@@ -230,15 +225,10 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.5)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
 
         it("Calculate tokenomics factors. Two services with one agent for each, 3 agents in total", async () => {
@@ -289,15 +279,10 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.166666666666666)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
 
         it("Calculate tokenomics factors. Two services with different set of agents are deployed", async () => {
@@ -344,15 +329,10 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.375)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with two agents and two components, one service is not profitable", async () => {
@@ -403,15 +383,10 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 0.666666666666666)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with three agents and four components", async () => {
@@ -467,9 +442,6 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Calculation of values: ucfc = 1.0 since all 4 components are in both services
             // ucfa[1] = 1, ucfa[2] = 2/3, ucfa[3] = 1
             // |As(1)| = 3, |As(2)| = 2
@@ -479,11 +451,9 @@ describe("Tokenomics integration", async () => {
             // (ucfc + ucfa) / 2 = 0.972(2)
 
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.97222222222222)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with three agents and four components, one component is not utilized", async () => {
@@ -537,9 +507,6 @@ describe("Tokenomics integration", async () => {
             // Calculate current epoch parameters
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            const point = await tokenomics.getLastPoint();
-
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
             // |Cs(1)| = 2, |Cs(2)| = 3
@@ -558,11 +525,9 @@ describe("Tokenomics integration", async () => {
             // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
 
             // Checking the values with delta rounding error
-            const ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
-
-            const usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
         });
     });
 
@@ -916,9 +881,6 @@ describe("Tokenomics integration", async () => {
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            let point = await tokenomics.getLastPoint();
-
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
             // |Cs(1)| = 2, |Cs(2)| = 3
@@ -937,11 +899,9 @@ describe("Tokenomics integration", async () => {
             // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
 
             // Checking the values with delta rounding error
-            let ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            let lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            let ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
-
-            let usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
 
             // Get owners rewards
             // We have 4 components
@@ -1017,15 +977,10 @@ describe("Tokenomics integration", async () => {
             // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
             await treasury.allocateRewards();
 
-            // Get the information from tokenomics point
-            point = await tokenomics.getLastPoint();
-
             // Checking the values of tokenomics parameters with delta rounding error
-            ucf = Number(point.ucf / magicDenominator) * 1.0 / E18;
+            lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.70833333333333)).to.lessThan(delta);
-
-            usf = Number(point.usf / magicDenominator) * 1.0 / E18;
-            expect(Math.abs(usf - 1.0)).to.lessThan(delta);
 
             // Get owners rewards
             // We have 4 components

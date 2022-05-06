@@ -23,19 +23,34 @@ interface IStructs {
         uint8 size;
     }
 
+    // TODO Pack these numbers into a single uint256
+    // Structure for component / agent tokenomics-related statistics
+    struct PointUnits {
+        // Total absolute number of components / agents
+        uint256 numUnits;
+        // Number of components / agents that were part of profitable services
+        uint256 numProfitableUnits;
+        // Allocated rewards for components / agents
+        uint256 unitRewards;
+        // Cumulative UCFc-s / UCFa-s
+        uint256 ucfuSum;
+        // Coefficient weight of units for the final UCF formula, set by the government
+        uint256 ucfWeight;
+    }
+
     // Structure for tokenomics
     struct PointEcomonics {
-        FixedPoint.uq112x112 ucf;
-        FixedPoint.uq112x112 usf;
+        PointUnits ucfc;
+        PointUnits ucfa;
         FixedPoint.uq112x112 df; // x > 1.0
+        uint256 numServices;
         uint256 treasuryRewards;
         uint256 stakerRewards;
-        uint256 componentRewards;
-        uint256 agentRewards;
         uint256 totalDonationETH;
-        uint256 ts; // timestamp
-        uint256 blk; // block
-        bool exists; // ready or not
+        // Timestamp
+        uint256 ts;
+        // Block number
+        uint256 blockNumber;
     }
 
     // Structure for voting escrow points

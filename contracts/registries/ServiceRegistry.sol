@@ -71,7 +71,7 @@ contract ServiceRegistry is IErrors, IStructs, Ownable, ERC721Enumerable, Reentr
         mapping(address => AgentInstance[]) mapOperatorsAgentInstances;
         // Map of operator address => agent instance bonding / escrow balance
         // TODO Consider merging with another operator-related data structure
-        mapping (address => uint256) mapOperatorsBalances;
+        mapping(address => uint256) mapOperatorsBalances;
         // Config hash per agent
 //        mapping(uint256 => Multihash) mapAgentHash;
         // Service state

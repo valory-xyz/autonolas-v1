@@ -17,4 +17,8 @@ interface IOLA is IERC20 {
     /// @param amount Amount of OLA to mint.
     /// @return True if the amount request is within inflation boundaries.
     function inflationControl(uint256 amount) external returns (bool);
+
+    /// @dev Provides the amount of decimals.
+    /// @return Numebr of decimals.
+    function decimals() external view returns(uint8);
 }

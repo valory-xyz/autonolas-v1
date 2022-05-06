@@ -13,6 +13,9 @@ import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
 import "../interfaces/IVotingEscrow.sol";
 
+import "hardhat/console.sol";
+
+
 /// @title Tokenomics - Smart contract for store/interface for key tokenomics params
 /// @author AL
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
@@ -485,10 +488,33 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             // Calculate DF from epsilon rate and f(K,D)
             uint256 codeUnits = componentWeight * ucfc.numNewUnits + agentWeight * ucfa.numNewUnits;
             uint256 newOwners = ucfc.numNewOwners + ucfa.numNewOwners;
-            // f(K(e), D(e)) = d * k * K(e) + d * D(e)
-            uint256 fKD = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
-            FixedPoint.uq112x112 memory fp = FixedPoint.fraction(fKD, 100);
-            fKD = fp._x / MAGIC_DENOMINATOR;
+            //  f(K(e), D(e)) = d * k * K(e) + d * D(e)
+            /// fKD = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
+            //  convert amount of tokens with 18 decimals to fixed point x.x
+            //  decimals ola is 18
+            FixedPoint.uq112x112 memory fp1 = FixedPoint.fraction(rewards[1], 1e18);
+            // for correct mul with temporary overflow
+            FixedPoint.uq112x112 memory fp2 = FixedPoint.fraction(codeUnits * devsPerCapital,1);
+            // fp1 == codeUnits * devsPerCapital * rewards[1]
+            fp1 = fp1.muluq(fp2);
+            // fp2 = codeUnits * newOwners
+            fp2 = FixedPoint.fraction(codeUnits * newOwners,1);
+            // fp = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
+            FixedPoint.uq112x112 memory fp = _add(fp1,fp2);
+            FixedPoint.uq112x112 memory fp3 = FixedPoint.fraction(1,100);
+            // fp = fp/100
+            fp = fp.muluq(fp3); 
+            uint256 fKD = fp._x / MAGIC_DENOMINATOR;
+            if(fKD > 1e18) {
+                console.log("fKD > 1");
+            } else if (fKD > 1e17) {
+                console.log("fKD > 0.1");
+            } else if (fKD > 1e16) {
+                console.log("fKD > 0.01");
+            } else {
+                console.log("fKD < 0.01");
+            }
+            console.log("fKD with 18 decimals fKD/1e16",fKD/1e16);
             if (fKD > epsilonRate) {
                 fKD = epsilonRate;
             }

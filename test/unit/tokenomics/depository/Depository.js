@@ -308,8 +308,10 @@ describe("Depository LP", async () => {
         //console.log("denominator",denominator);
         //console.log("delta amountOut:",amountOut);
         //console.log("sutotal amountOLA:",amountOLA);
-        const payout = await tokenomics.calculatePayoutFromLP(pairODAI.address, amount, 0);
-        const df = await tokenomics.getDF(0);
+        const payout = await tokenomics.calculatePayoutFromLP(pairODAI.address, amount);
+
+        // Gets DF
+        const df = await tokenomics.getDF();
 
         // Payouts with direct calculation and via DF must be equal
         expect(amountOLA.mul(df).div(E18)).to.equal(payout);

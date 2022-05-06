@@ -221,8 +221,8 @@ describe("Depository LP", async () => {
             .deposit(pairODAI.address, bid, bamount, bob.address);
         expect(Array(await depository.getPendingBonds(bob.address)).length).to.equal(1);
         const res = await depository.getBondStatus(bob.address,0);
-        // 2500 * 1.1 = 2750 * e18 =  2.75 * e21
-        expect(Number(res.payout)).to.equal(2.75e+21);
+        // 2500 * 1.5 = 3750 * e18 =  3.75 * e21
+        expect(Number(res.payout)).to.equal(3.75e+21);
     });
 
     it("should not allow a deposit with insufficient allowance", async () => {
@@ -308,8 +308,10 @@ describe("Depository LP", async () => {
         //console.log("denominator",denominator);
         //console.log("delta amountOut:",amountOut);
         //console.log("sutotal amountOLA:",amountOLA);
-        const payout = await tokenomics.calculatePayoutFromLP(pairODAI.address, amount, 0);
-        const df = await tokenomics.getDF(0);
+        const payout = await tokenomics.calculatePayoutFromLP(pairODAI.address, amount);
+
+        // Gets DF
+        const df = await tokenomics.getDF();
 
         // Payouts with direct calculation and via DF must be equal
         expect(amountOLA.mul(df).div(E18)).to.equal(payout);

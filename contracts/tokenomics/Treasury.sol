@@ -210,6 +210,25 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         enabled = (mapTokens[token].state == TokenState.Enabled);
     }
 
+    /// @dev Check if the token is UniswapV2Pair.
+    /// @param token Address of a token.
+    function checkPair(address token) public returns (bool) {
+        bool success;
+        bytes memory data = abi.encodeWithSelector(bytes4(keccak256("kLast()")));
+        assembly {
+            success := call(
+            5000,           // 5k gas
+            token,         // destination address
+            0,              // no ether
+            add(data, 32),  // input buffer (starts after the first 32 bytes in the `data` array)
+            mload(data),    // input length (loaded from the first 32 bytes in the `data` array)
+            0,              // output buffer
+            0               // output length
+            )
+        }
+        return success;
+    }
+
     /// @dev Sends OLA funds to dispenser.
     /// @param amount Amount of OLA.
     /// @return True if the funds were sent correctly.

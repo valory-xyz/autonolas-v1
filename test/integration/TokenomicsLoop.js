@@ -898,10 +898,21 @@ describe("Tokenomics integration", async () => {
             // Total UCF
             // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
 
-            // Checking the values with delta rounding error
+            // Checking the values with delta rounding error of UCF, DF
             let lastEpoch = await tokenomics.getCurrentEpoch() - 1;
             let ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
+
+            // f(K(e), D(e)) = d * k * K(e) + d * D(e)
+            // Default treasury reward is 0, so K(e) = 0
+            // New components = 3, new agents = 3
+            // d = 3 + 3 = 6
+            // New agent and component owners = 6
+            // D(e) = 6
+            // f(K, D) = 6 * 6
+            // df = (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
+            const df = Number(await tokenomics.getDF()) * 1.0 / E18;
+            expect(Math.abs(df - 1.36)).to.lessThan(delta);
 
             // Get owners rewards
             // We have 4 components
@@ -946,9 +957,9 @@ describe("Tokenomics integration", async () => {
             // Bond third of current LP token amount
             const amountToBond = new ethers.BigNumber.from(await pairODAI.balanceOf(deployer.address)).div(3);
             await pairODAI.approve(depository.address, amountToBond);
-            let [expectedPayout,,] = await depository.callStatic.deposit(pairODAI.address, productId, amountToBond,
-                deployer.address);
-            // console.log("[expectedPayout, expiry, index]:",[expectedPayout, expiry, index]);
+            let [expectedPayout,,] = await depository.callStatic.deposit(pairODAI.address, productId,
+                amountToBond, deployer.address);
+            //console.log("[expectedPayout, expiry, index]:",[expectedPayout, expiry, index]);
             await depository.deposit(pairODAI.address, productId, amountToBond, deployer.address);
 
             await ethers.provider.send("evm_increaseTime", [vesting + 60]);

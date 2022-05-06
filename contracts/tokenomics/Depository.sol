@@ -35,7 +35,7 @@ contract Depository is IErrors, Ownable {
 
     struct Product {
         // Token to accept as a payment
-        IERC20 token;
+        address token;
         // Supply remaining in OLA tokens
         uint256 supply;
         // Vesting time in sec
@@ -99,9 +99,7 @@ contract Depository is IErrors, Ownable {
         }
 
         // Calculate the payout in OLA tokens based on the LP pair with the discount factor (DF) calculation
-        uint256 epoch = ITokenomics(tokenomics).getCurrentEpoch();
-        // df uint with defined decimals
-        payout = ITokenomics(tokenomics).calculatePayoutFromLP(token, tokenAmount, epoch);
+        payout = ITokenomics(tokenomics).calculatePayoutFromLP(token, tokenAmount);
         
         // Check for the sufficient supply
         if (payout > product.supply) {
@@ -124,13 +122,13 @@ contract Depository is IErrors, Ownable {
         ITokenomics(tokenomics).usedBond(payout);
 
         // Uniswap allowance implementation does not revert with the accurate message, check before SafeMath is engaged
-        if (product.token.allowance(msg.sender, address(this)) < tokenAmount) {
-            revert InsufficientAllowance(product.token.allowance((msg.sender), address(this)), tokenAmount);
+        if (IERC20(product.token).allowance(msg.sender, address(this)) < tokenAmount) {
+            revert InsufficientAllowance(IERC20(product.token).allowance((msg.sender), address(this)), tokenAmount);
         }
         // Transfer tokens to the depository
-        product.token.safeTransferFrom(msg.sender, address(this), tokenAmount);
+        IERC20(product.token).safeTransferFrom(msg.sender, address(this), tokenAmount);
         // Approve treasury for the specified token amount
-        product.token.approve(treasury, tokenAmount);
+        IERC20(product.token).approve(treasury, tokenAmount);
         // Deposit that token amount to mint OLA tokens in exchange
         ITreasury(treasury).depositTokenForOLA(tokenAmount, address(product.token), payout);
     }
@@ -205,17 +203,21 @@ contract Depository is IErrors, Ownable {
     /// @param supply Supply in OLA tokens.
     /// @param vesting Vesting period (in seconds).
     /// @return productId New bond product Id.
-    function create(IERC20 token, uint256 supply, uint256 vesting) external onlyOwner returns (uint256 productId) {
-        // Create a new product.
-        if(!ITokenomics(tokenomics).allowedNewBond(supply)) {
-            // fixed later to correct revert
-            revert AmountLowerThan(ITokenomics(tokenomics).getBondLeft(), supply);
+    function create(address token, uint256 supply, uint256 vesting) external onlyOwner returns (uint256 productId) {
+        // Check if the LP token is enabled and that it is the LP token
+        if (!ITreasury(treasury).isEnabled(token) || !ITreasury(treasury).checkPair(token)) {
+            revert UnauthorizedToken(token);
         }
-        productId = mapTokenProducts[address(token)].length;
+        // Check if the bond amount is beyond the limits
+        if(!ITokenomics(tokenomics).allowedNewBond(supply)) {
+            revert AmountLowerThan(ITokenomics(tokenomics).effectiveBond(), supply);
+        }
+        // Create a new product
+        productId = mapTokenProducts[token].length;
         Product memory product = Product(token, supply, vesting, uint256(block.timestamp + vesting), 0, 0);
-        mapTokenProducts[address(token)].push(product);
+        mapTokenProducts[token].push(product);
 
-        emit CreateProduct(address(token), productId, supply);
+        emit CreateProduct(token, productId, supply);
     }
 
     /// @dev Cloe a bonding product.

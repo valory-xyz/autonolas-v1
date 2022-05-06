@@ -32,6 +32,10 @@ interface ITreasury {
     /// @return enabled True is token is enabled.
     function isEnabled(address token) external view returns (bool enabled);
 
+    /// @dev Check if the token is UniswapV2Pair.
+    /// @param token Address of a token.
+    function checkPair(address token) external returns (bool);
+
     /// @dev Requests OLA funds from treasury.
     function requestFunds(uint256 amount) external;
 

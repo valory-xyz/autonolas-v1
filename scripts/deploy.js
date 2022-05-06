@@ -18,6 +18,7 @@ async function main() {
     // Safe related
     const safeThreshold = 7;
     const nonce =  0;
+    const payload = "0x";
 
     // Governance related
     const minDelay = 1;
@@ -26,10 +27,11 @@ async function main() {
     const initialProposalThreshold = 0; // voting power
     const quorum = 1; // quorum factor
 
-    const [deployer] = await ethers.getSigners();
+    const signers = await ethers.getSigners();
+    const deployer = signers[0];
+    const agentInstances = [signers[1].address, signers[2].address, signers[3].address, signers[4].address];
     console.log("Deploying contracts with the account:", deployer.address);
     console.log("Account balance:", (await deployer.getBalance()).toString());
-    const signers = await ethers.getSigners();
 
     // Deploying component registry
     const ComponentRegistry = await ethers.getContractFactory("ComponentRegistry");
@@ -66,8 +68,8 @@ async function main() {
     const componentBalance = await componentRegistry.balanceOf(testAddress);
     const agentBalance = await agentRegistry.balanceOf(testAddress);
     console.log("Owner of minted components and agents:", testAddress);
-    console.log("Number of components:", componentBalance);
-    console.log("Number of agents:", agentBalance);
+    console.log("Number of initial components:", Number(componentBalance));
+    console.log("Number of initial agents:", Number(agentBalance));
 
     // Gnosis Safe deployment
     const GnosisSafeL2 = await ethers.getContractFactory("GnosisSafeL2");
@@ -78,13 +80,19 @@ async function main() {
     const gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
     await gnosisSafeProxyFactory.deployed();
 
+    const GnosisSafeMultisig = await ethers.getContractFactory("GnosisSafeMultisig");
+    const gnosisSafeMultisig = await GnosisSafeMultisig.deploy(gnosisSafeL2.address, gnosisSafeProxyFactory.address);
+    await gnosisSafeMultisig.deployed();
+
     // Creating and updating a service
     const name = "service name";
     const description = "service description";
     const regBond = 1000;
-    const agentIds = [1, 2];
-    const agentParams = [[3, regBond], [4, regBond]];
-    const maxThreshold = agentParams[0][0] + agentParams[1][0];
+    const regDeposit = 1000;
+    const agentIds = [1];
+    const agentParams = [[4, regBond]];
+    const maxThreshold = agentParams[0][0];
+    const serviceId = 1;
 
     const ServiceRegistry = await ethers.getContractFactory("ServiceRegistry");
     const serviceRegistry = await ServiceRegistry.deploy("service registry", "SERVICE", agentRegistry.address);
@@ -99,12 +107,42 @@ async function main() {
     console.log("ServiceManager deployed to:", serviceManager.address);
 
     // Create a service
-    await serviceRegistry.changeManager(serviceManager.address);
-    await serviceManager.serviceCreate(testAddress, name, description, configHash, agentIds, agentParams,
+    await serviceRegistry.changeManager(deployer.address);
+    await serviceRegistry.createService(testAddress, name, description, configHash, agentIds, agentParams,
         maxThreshold);
+    console.log("Service is created");
 
-    // Deploy safe multisig
-    const safeSigners = signers.slice(1, 10).map(
+    // Register agents
+    await serviceRegistry.activateRegistration(testAddress, serviceId, {value: regDeposit});
+    // Owner / deployer is the operator of agent instances as well
+    await serviceRegistry.registerAgents(deployer.address, serviceId, agentInstances, [1, 1, 1, 1], {value: 4*regBond});
+
+    // Whitelist gnosis multisig implementation
+    await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
+    // Deploy the service
+    const safe = await serviceRegistry.deploy(testAddress, serviceId, gnosisSafeMultisig.address, payload);
+    const result = await safe.wait();
+    const multisig = result.events[0].address;
+    console.log("Service multisig deployed to:", multisig);
+    console.log("Number of agent instances:", agentInstances.length);
+
+    // Verify the deployment of the created Safe: checking threshold and owners
+    const proxyContract = await ethers.getContractAt("GnosisSafeL2", multisig);
+    if (await proxyContract.getThreshold() != maxThreshold) {
+        throw new Error("incorrect threshold");
+    }
+    for (const aInstance of agentInstances) {
+        const isOwner = await proxyContract.isOwner(aInstance);
+        if (!isOwner) {
+            throw new Error("incorrect agent instance");
+        }
+    }
+
+    // Give service manager rights to the corresponding contract
+    await serviceRegistry.changeManager(serviceManager.address);
+
+    // Deploy safe multisig for the governance
+    const safeSigners = signers.slice(11, 20).map(
         function (currentElement) {
             return currentElement.address;
         }

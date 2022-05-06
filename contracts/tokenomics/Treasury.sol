@@ -121,7 +121,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             IOLA(ola).mint(msg.sender, olaMintAmount);
             emit DepositFromDepository(token, tokenAmount, olaMintAmount);
         } else {
-            revert WrongAmount(olaMintAmount, olaMintAmount);
+            revert MintRejectedByInflationPolicy(olaMintAmount);
         }
     }
 
@@ -266,8 +266,8 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         }
 
         if (!IDispenser(dispenser).isPaused()) {
-            // Send funds to dispenser
-            uint256 rewards = point.stakerRewards + point.componentRewards + point.agentRewards;
+            // Send cumulative funds of staker, component, agent rewards to dispenser
+            uint256 rewards = point.stakerRewards + point.ucfc.unitRewards + point.ucfa.unitRewards;
             if (!_sendFundsToDispenser(rewards)) {
                 return false;
             }

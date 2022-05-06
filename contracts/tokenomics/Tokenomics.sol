@@ -36,7 +36,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // Voting Escrow address
     address public ve;
 
-    bytes4  private constant FUNC_SELECTOR = bytes4(keccak256("kLast()")); // is pair or pure ERC20?
     // Epoch length in block numbers
     uint256 public epochLen;
     // Global epoch counter
@@ -44,19 +43,21 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // source: https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27 
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
-    uint256 public maxBond = 2_000_000 * 1e18; // 2M OLA with 18 decimals
+    // TODO Verify OLA max bond by default
+    // ~300k of OLA tokens per week (the max cap is 20 million during 1st year)
+    uint256 public maxBond = 300_000 * 1e18;
     // TODO Decide which rate has to be put by default
     // Default epsilon rate that contributes to the interest rate: 50%
     uint256 public epsilonRate = 5 * 1e17;
 
     // UCFc / UCFa weights for the UCF contribution
-    uint256 ucfcWeight = 1;
-    uint256 ucfaWeight = 1;
+    uint256 public ucfcWeight = 1;
+    uint256 public ucfaWeight = 1;
     // Component / agent weights for new valuable code
-    uint256 componentWeight = 1;
-    uint256 agentWeight = 1;
+    uint256 public componentWeight = 1;
+    uint256 public agentWeight = 1;
     // Number of valuable devs can be paid per units of capital per epoch
-    uint256 devsPerCapital = 1;
+    uint256 public devsPerCapital = 1;
 
     // Total service revenue per epoch: sum(r(s))
     uint256 public epochServiceRevenueETH;
@@ -70,11 +71,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256 public componentFraction = 33;
     uint256 public agentFraction = 17;
 
-    //Discount Factor v2
-    //Bond(t)
-    uint256 private _bondPerEpoch;
-    // MaxBond(e) - sum(BondingProgram)
-    uint256 private _bondLeft = maxBond;
+    // Bond per epoch
+    uint256 public bondPerEpoch;
+    // MaxBond(e) - sum(BondingProgram) over all epochs: accumulates leftovers from previous epochs
+    uint256 public effectiveBond = maxBond;
 
     // Component Registry
     address public immutable componentRegistry;
@@ -218,14 +218,14 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         // take into account the change during the epoch
         if(_maxBond > maxBond) {
             uint256 delta = _maxBond - maxBond;
-            _bondLeft += delta; 
+            effectiveBond += delta; 
         }
         if(_maxBond < maxBond) {
             uint256 delta = maxBond - _maxBond;
-            if(delta < _bondLeft) {
-                _bondLeft -= delta;
+            if(delta < effectiveBond) {
+                effectiveBond -= delta;
             } else {
-                _bondLeft = 0;
+                effectiveBond = 0;
             }
         }
         maxBond = _maxBond;
@@ -289,8 +289,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @dev take into account the bonding program in this epoch. 
     /// @dev programs exceeding the limit in the epoch are not allowed
     function allowedNewBond(uint256 amount) external onlyDepository returns (bool)  {
-        if(_bondLeft >= amount && isAllowedMint(amount)) {
-            _bondLeft -= amount;
+        if(effectiveBond >= amount && isAllowedMint(amount)) {
+            effectiveBond -= amount;
             return true;
         }
         return false;
@@ -298,7 +298,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     /// @dev take into account materialization OLA per Depository.deposit() for currents program
     function usedBond(uint256 payout) external onlyDepository {
-        _bondPerEpoch += payout;
+        bondPerEpoch += payout;
     }
 
     /// @dev Tracks the deposit token amount during the epoch.
@@ -331,28 +331,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         donationBalanceETH += donationETH;
     }
 
-    /// @dev Detect UniswapV2Pair
-    /// @param _token Address of a _token. Possible LP or ERC20
-    function callDetectPair(address _token) public returns (bool) {
-        bool success;
-        bytes memory data = abi.encodeWithSelector(FUNC_SELECTOR);
-        assembly {
-            success := call(
-                5000,           // 5k gas
-                _token,         // destination address
-                0,              // no ether
-                add(data, 32),  // input buffer (starts after the first 32 bytes in the `data` array)
-                mload(data),    // input length (loaded from the first 32 bytes in the `data` array)
-                0,              // output buffer
-                0               // output length
-            )
-        }
-        return success;
-    }
-
     /// @dev Calculates tokenomics for components / agents of protocol-owned services.
     /// @param registry Address of a component / agent registry contract.
     /// @param unitRewards Component / agent allocated rewards.
+    /// @return ucfu Calculated UCFc / UCFa.
     function _calculateUnitTokenomics(address registry, uint256 unitRewards) private
         returns (PointUnits memory ucfu)
     {
@@ -439,38 +421,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         ucfu.unitRewards = unitRewards;
     }
 
-    /// @dev Sums two fixed points.
-    function _add(FixedPoint.uq112x112 memory x, FixedPoint.uq112x112 memory y) private pure
-        returns (FixedPoint.uq112x112 memory r)
-    {
-        uint224 z = x._x + y._x;
-        if(x._x > 0 && y._x > 0) assert(z > x._x && z > y._x);
-        return FixedPoint.uq112x112(uint224(z));
-    }
-
-    /// @dev Pow of a fixed point.
-    function _pow(FixedPoint.uq112x112 memory a, uint b) internal pure returns (FixedPoint.uq112x112 memory c) {
-        if(b == 0) {
-            return FixedPoint.fraction(1, 1);
-        }
-
-        if(b == 1) {
-            return a;
-        }
-
-        c = FixedPoint.fraction(1, 1);
-        while(b > 0) {
-            // b % 2
-            if((b & 1) == 1) {
-                c = c.muluq(a);
-            }
-            a = a.muluq(a);
-            // b = b / 2;
-            b >>= 1;
-        }
-        return c;
-    }
-
     /// @dev Clears necessary data structures for the next epoch.
     function _clearEpochData() internal {
         uint256 numServices = protocolServiceIds.length;
@@ -479,9 +429,12 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
         delete protocolServiceIds;
         epochServiceRevenueETH = 0;
-        // clean bonding data
-        _bondLeft = maxBond;
-        _bondPerEpoch = 0;
+        // Effective bond accumulates leftovers from previous epochs
+        if (maxBond > bondPerEpoch) {
+            effectiveBond += maxBond - bondPerEpoch;
+        }
+        // Bond per epoch starts from zero every epoch
+        bondPerEpoch = 0;
     }
 
     /// @dev Record global data to the checkpoint
@@ -551,30 +504,18 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         _clearEpochData();
     }
 
-    // @dev Calculates the amount of OLA tokens based on LP (see the doc for explanation of price computation). Any can do it
+    /// @dev Calculates the amount of OLA tokens based on LP (see the doc for explanation of price computation). Any can do it
     /// @param token Token address.
     /// @param tokenAmount Token amount.
-    /// @param epoch epoch number
-    /// @return resAmount Resulting amount of OLA tokens.
-    function calculatePayoutFromLP(address token, uint256 tokenAmount, uint256 epoch) external view
-        returns (uint256 resAmount)
+    /// @return amountOLA Resulting amount of OLA tokens.
+    function calculatePayoutFromLP(address token, uint256 tokenAmount) external view returns (uint256 amountOLA)
     {
-        uint256 df;
-        PointEcomonics memory _PE;
-        // avoid start checkpoint from calculatePayoutFromLP
-        for (uint256 i = epoch + 1; i > 0; i--) {
-            _PE = mapEpochEconomics[i - 1];
-            // if current point undefined, so calculatePayoutFromLP called before mined tx(checkpoint)
-            if(_PE.blockNumber > 0) {
-                df = _PE.df;
-                break;
-            }
-        }
-        if(df > 0) {
-            resAmount = _calculatePayoutFromLP(token, tokenAmount, df);
+        PointEcomonics memory pe = mapEpochEconomics[epochCounter - 1];
+        if(pe.df > 0) {
+            amountOLA = _calculatePayoutFromLP(token, tokenAmount, pe.df);
         } else {
             // if df is undefined
-            resAmount = _calculatePayoutFromLP(token, tokenAmount, 1e18 + epsilonRate);
+            amountOLA = _calculatePayoutFromLP(token, tokenAmount, 1e18 + epsilonRate);
         }
     }
 
@@ -646,28 +587,24 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     /// @dev get Point by epoch
     /// @param epoch number of a epoch
-    /// @return _PE raw point
-    function getPoint(uint256 epoch) public view returns (PointEcomonics memory _PE) {
-        _PE = mapEpochEconomics[epoch];
+    /// @return pe raw point
+    function getPoint(uint256 epoch) public view returns (PointEcomonics memory pe) {
+        pe = mapEpochEconomics[epoch];
     }
 
     /// @dev Get last epoch Point.
-    function getLastPoint() external view returns (PointEcomonics memory _PE) {
-        _PE = mapEpochEconomics[epochCounter - 1];
+    function getLastPoint() external view returns (PointEcomonics memory pe) {
+        pe = mapEpochEconomics[epochCounter - 1];
     }
 
-    // decode a uq112x112 into a uint with 18 decimals of precision (cycle into the past), INITIAL_DF if not exist
-    function getDF(uint256 epoch) public view returns (uint256 df) {
-        PointEcomonics memory _PE;
-        for (uint256 i = epoch + 1; i > 0; i--) {
-            _PE = mapEpochEconomics[i - 1];
-            // if current point undefined, so getDF called before mined tx(checkpoint)
-            if(_PE.blockNumber > 0) {
-                df = _PE.df;
-                break;
-            }
-        }
-        if (df == 0) {
+    /// @dev Gets discount factor.
+    /// @return df Discount factor.
+    function getDF() external view returns (uint256 df)
+    {
+        PointEcomonics memory pe = mapEpochEconomics[epochCounter - 1];
+        if(pe.df > 0) {
+            df = pe.df;
+        } else {
             df = 1e18 + epsilonRate;
         }
     }
@@ -706,6 +643,18 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
     }
 
+
+    /// @dev Sums two fixed points.
+    function _add(FixedPoint.uq112x112 memory x, FixedPoint.uq112x112 memory y) private pure
+    returns (FixedPoint.uq112x112 memory r)
+    {
+        uint224 z = x._x + y._x;
+        if(x._x > 0 && y._x > 0) assert(z > x._x && z > y._x);
+        return FixedPoint.uq112x112(uint224(z));
+    }
+
+    /// @dev Calculated UCF of a specified epoch.
+    /// @param epoch Epoch number.
     function getUCF(uint256 epoch) external view returns (FixedPoint.uq112x112 memory ucf) {
         PointEcomonics memory pe = mapEpochEconomics[epoch];
 
@@ -749,14 +698,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     function _getExchangeAmountOLA(address token, uint256 tokenAmount) private pure returns (uint256 amountOLA) {
         // TODO Exchange rate is a stub for now
         amountOLA = tokenAmount;
-    }
-
-    function getBondLeft() external view returns (uint256 bondLeft) {
-        bondLeft = _bondLeft;
-    }
-
-    function getBondCurrentEpoch() external view returns (uint256 bondPerEpoch) {
-        bondPerEpoch = _bondPerEpoch;
     }
 
     /// @dev Gets the component / agent owner reward.

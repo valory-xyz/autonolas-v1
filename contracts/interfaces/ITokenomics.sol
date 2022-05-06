@@ -9,11 +9,15 @@ interface ITokenomics is IStructs {
     /// @return Current epoch number.
     function getCurrentEpoch() external view returns (uint256);
 
+    /// @dev Gets effective bond (bond left).
+    /// @return Effective bond.
+    function effectiveBond() external pure returns (uint256);
+
     function epochLen() external view returns (uint256);
     function getDF(uint256 epoch) external view returns (uint256 df);
     function getPoint(uint256 epoch) external view returns (PointEcomonics memory _PE);
     function getLastPoint() external view returns (PointEcomonics memory _PE);
-    function calculatePayoutFromLP(address token, uint256 tokenAmount, uint _epoch) external returns (uint256 resAmount);
+    function calculatePayoutFromLP(address token, uint256 tokenAmount) external returns (uint256 amountOLA);
     function trackServicesETHRevenue(uint256[] memory serviceIds, uint256[] memory amounts) external
         returns (uint256 revenueETH, uint256 donationETH);
     function checkpoint() external;
@@ -22,8 +26,6 @@ interface ITokenomics is IStructs {
     function getProfitableAgents() external view returns (address[] memory profitableAgents, uint256[] memory ucfcs);
     function usedBond(uint256 payout) external;
     function allowedNewBond(uint256 amount) external returns(bool);
-    function getBondLeft() external view returns (uint256 bondLeft);
-    function getBondCurrentEpoch() external view returns (uint256 bondPerEpoch);
 
     /// @dev Gets the component / agent owner reward and zeros the record of it being written off.
     /// @param account Account address.

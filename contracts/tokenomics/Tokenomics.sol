@@ -13,9 +13,6 @@ import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
 import "../interfaces/IVotingEscrow.sol";
 
-import "hardhat/console.sol";
-
-
 /// @title Tokenomics - Smart contract for store/interface for key tokenomics params
 /// @author AL
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
@@ -61,6 +58,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256 public agentWeight = 1;
     // Number of valuable devs can be paid per units of capital per epoch
     uint256 public devsPerCapital = 1;
+    // 10^(OLA decimals) that represent a whole unit in OLA token
+    uint256 public immutable decimalsUnit;
 
     // Total service revenue per epoch: sum(r(s))
     uint256 public epochServiceRevenueETH;
@@ -120,6 +119,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         componentRegistry = _componentRegistry;
         agentRegistry = _agentRegistry;
         serviceRegistry = _serviceRegistry;
+        decimalsUnit = 10 ** IOLA(_ola).decimals();
 
         inflationCaps = new uint[](10);
         inflationCaps[0] = 520_000_000e18;
@@ -489,35 +489,29 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             uint256 codeUnits = componentWeight * ucfc.numNewUnits + agentWeight * ucfa.numNewUnits;
             uint256 newOwners = ucfc.numNewOwners + ucfa.numNewOwners;
             //  f(K(e), D(e)) = d * k * K(e) + d * D(e)
-            /// fKD = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
-            //  convert amount of tokens with 18 decimals to fixed point x.x
-            //  decimals ola is 18
-            FixedPoint.uq112x112 memory fp1 = FixedPoint.fraction(rewards[1], 1e18);
-            // for correct mul with temporary overflow
-            FixedPoint.uq112x112 memory fp2 = FixedPoint.fraction(codeUnits * devsPerCapital,1);
+            // fKD = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
+            //  Convert amount of tokens with OLA decimals (18 by default) to fixed point x.x
+            FixedPoint.uq112x112 memory fp1 = FixedPoint.fraction(rewards[1], decimalsUnit);
+            // For consistency multiplication with fp1
+            FixedPoint.uq112x112 memory fp2 = FixedPoint.fraction(codeUnits * devsPerCapital, 1);
             // fp1 == codeUnits * devsPerCapital * rewards[1]
             fp1 = fp1.muluq(fp2);
             // fp2 = codeUnits * newOwners
-            fp2 = FixedPoint.fraction(codeUnits * newOwners,1);
+            fp2 = FixedPoint.fraction(codeUnits * newOwners, 1);
             // fp = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
-            FixedPoint.uq112x112 memory fp = _add(fp1,fp2);
-            FixedPoint.uq112x112 memory fp3 = FixedPoint.fraction(1,100);
-            // fp = fp/100
-            fp = fp.muluq(fp3); 
+            FixedPoint.uq112x112 memory fp = _add(fp1, fp2);
+            // 1/100 rational number
+            FixedPoint.uq112x112 memory fp3 = FixedPoint.fraction(1, 100);
+            // fp = fp/100 - calculate the final value in fixed point
+            fp = fp.muluq(fp3);
+            // fKD in the state that is comparable with epsilon rate
             uint256 fKD = fp._x / MAGIC_DENOMINATOR;
-            if(fKD > 1e18) {
-                console.log("fKD > 1");
-            } else if (fKD > 1e17) {
-                console.log("fKD > 0.1");
-            } else if (fKD > 1e16) {
-                console.log("fKD > 0.01");
-            } else {
-                console.log("fKD < 0.01");
-            }
-            console.log("fKD with 18 decimals fKD/1e16",fKD/1e16);
+
+            // Compare with epsilon rate and choose the smallest one
             if (fKD > epsilonRate) {
                 fKD = epsilonRate;
             }
+            // 1 + fKD in the system where 1e18 is equal to a whole unit (18 decimals)
             df = 1e18 + fKD;
         }
 

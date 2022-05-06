@@ -221,8 +221,8 @@ describe("Depository LP", async () => {
             .deposit(pairODAI.address, bid, bamount, bob.address);
         expect(Array(await depository.getPendingBonds(bob.address)).length).to.equal(1);
         const res = await depository.getBondStatus(bob.address,0);
-        // 2500 * 1.1 = 2750 * e18 =  2.75 * e21
-        expect(Number(res.payout)).to.equal(2.75e+21);
+        // 2500 * 1.5 = 3750 * e18 =  3.75 * e21
+        expect(Number(res.payout)).to.equal(3.75e+21);
     });
 
     it("should not allow a deposit with insufficient allowance", async () => {

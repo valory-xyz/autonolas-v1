@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@uniswap/lib/contracts/libraries/FixedPoint.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "../interfaces/IOLA.sol";
 import "../interfaces/IService.sol";
@@ -43,14 +44,19 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // source: https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27 
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
-    uint256 public constant INITIAL_DF = (110 * 1e18) / 100; // 10% with 18 decimals
     uint256 public maxBond = 2_000_000 * 1e18; // 2M OLA with 18 decimals
-    // Default epsilon of 200% rounded with epsilon of 1e13 (100% is a factor of 2)
-    uint256 public epsilon = 3 * 1e18 + 1e13;
+    // TODO Decide which rate has to be put by default
+    // Default epsilon rate that contributes to the interest rate: 50%
+    uint256 public epsilonRate = 5 * 1e17;
 
     // UCFc / UCFa weights for the UCF contribution
     uint256 ucfcWeight = 1;
     uint256 ucfaWeight = 1;
+    // Component / agent weights for new valuable code
+    uint256 componentWeight = 1;
+    uint256 agentWeight = 1;
+    // Number of valuable devs can be paid per units of capital per epoch
+    uint256 devsPerCapital = 1;
 
     // Total service revenue per epoch: sum(r(s))
     uint256 public epochServiceRevenueETH;
@@ -83,6 +89,12 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256[] public protocolServiceIds;
     // Mapping of epoch => point
     mapping(uint256 => PointEcomonics) public mapEpochEconomics;
+    // Map of component Ids that contribute to protocol owned services
+    mapping(uint256 => bool) public mapComponents;
+    // Map of agent Ids that contribute to protocol owned services
+    mapping(uint256 => bool) public mapAgents;
+    // Mapping of owner of component / agent addresses that create them
+    mapping(address => bool) public mapOwners;
     // Map of service Ids and their amounts in current epoch
     mapping(uint256 => uint256) public mapServiceAmounts;
     // Mapping of owner of component / agent address => reward amount
@@ -183,14 +195,26 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @dev Changes tokenomics parameters.
     /// @param _ucfcWeight UCFc weighs for the UCF contribution.
     /// @param _ucfaWeight UCFa weight for the UCF contribution.
+    /// @param _componentWeight Component weight for new valuable code.
+    /// @param _agentWeight Agent weight for new valuable code.
+    /// @param _devsPerCapital Number of valuable devs can be paid per units of capital per epoch.
+    /// @param _epsilonRate Epsilon rate that contributes to the interest rate value.
     /// @param _maxBond MaxBond OLA, 18 decimals
     function changeTokenomicsParameters(
         uint256 _ucfcWeight,
         uint256 _ucfaWeight,
+        uint256 _componentWeight,
+        uint256 _agentWeight,
+        uint256 _devsPerCapital,
+        uint256 _epsilonRate,
         uint256 _maxBond
     ) external onlyOwner {
         ucfcWeight = _ucfcWeight;
         ucfaWeight = _ucfaWeight;
+        componentWeight = _componentWeight;
+        agentWeight = _agentWeight;
+        devsPerCapital = _devsPerCapital;
+        epsilonRate = _epsilonRate;
         // take into account the change during the epoch
         if(_maxBond > maxBond) {
             uint256 delta = _maxBond - maxBond;
@@ -382,14 +406,28 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         // Calculate component / agent related values
         for (uint256 i = 0; i < ucfu.numUnits; ++i) {
             // Get the agent Id from the index list
-            uint256 agentId = IERC721Enumerable(registry).tokenByIndex(i);
-            if (ucfuRevs[agentId] > 0) {
+            uint256 unitId = IERC721Enumerable(registry).tokenByIndex(i);
+            if (ucfuRevs[unitId] > 0) {
                 // Add address of a profitable component owner
-                address owner = IERC721Enumerable(registry).ownerOf(agentId);
+                address owner = IERC721Enumerable(registry).ownerOf(unitId);
                 // Increase a profitable agent number
                 ++ucfu.numProfitableUnits;
                 // Calculate agent rewards
-                mapOwnerRewards[owner] += unitRewards * ucfuRevs[agentId] / sumProfits;
+                mapOwnerRewards[owner] += unitRewards * ucfuRevs[unitId] / sumProfits;
+
+                // Check if the component / agent is used for the first time
+                if (registry == componentRegistry && !mapComponents[unitId]) {
+                    ucfu.numNewUnits++;
+                    mapComponents[unitId] = true;
+                } else if (registry == agentRegistry && !mapAgents[unitId]){
+                    ucfu.numNewUnits++;
+                    mapAgents[unitId] = true;
+                }
+                // Check if the owner has introduced component / agent for the first time 
+                if (!mapOwners[owner]) {
+                    mapOwners[owner] = true;
+                    ucfu.numNewOwners++;
+                }
             }
         }
 
@@ -399,12 +437,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
         // Record unit rewards
         ucfu.unitRewards = unitRewards;
-    }
-
-    /// @dev calc df by WD Math formula UCF, USF, DF v2
-    /// @param dcm direct contribution measure DCM(t) by first version
-    function _calculateDF(FixedPoint.uq112x112 memory dcm) internal view returns (FixedPoint.uq112x112 memory df) {
-        df = FixedPoint.fraction(1, 1);
     }
 
     /// @dev Sums two fixed points.
@@ -466,12 +498,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     /// @dev Record global data to new checkpoint
     function _checkpoint() internal {
-        FixedPoint.uq112x112 memory _ucf;
-        FixedPoint.uq112x112 memory _usf;
-        FixedPoint.uq112x112 memory _dcm;
-        // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
-        FixedPoint.uq112x112 memory _df;
-
         // Get total amount of OLA as profits for rewards, and all the rewards categories
         // 0: total rewards, 1: treasuryRewards, 2: staterRewards, 3: componentRewards, 4: agentRewards
         uint256[] memory rewards = new uint256[](5);
@@ -481,7 +507,9 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         rewards[3] = rewards[0] * componentFraction / 100;
         rewards[4] = rewards[0] * agentFraction / 100;
 
-        // Calculate UCFc, UCFa and rewards allocated from them
+        // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
+        uint256 df;
+        // Calculate UCFc, UCFa, rewards allocated from them and DF
         PointUnits memory ucfc;
         PointUnits memory ucfa;
         if (rewards[0] > 0) {
@@ -494,18 +522,29 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 ucfc = _calculateUnitTokenomics(componentRegistry, rewards[3]);
             }
             ucfc.ucfWeight = ucfcWeight;
+            ucfc.unitWeight = componentWeight;
 
             // Calculate total UCFa
             ucfa = _calculateUnitTokenomics(agentRegistry, rewards[4]);
             ucfa.ucfWeight = ucfaWeight;
+            ucfa.unitWeight = agentWeight;
+
+            // Calculate DF from epsilon rate and f(K,D)
+            uint256 codeUnits = componentWeight * ucfc.numNewUnits + agentWeight * ucfa.numNewUnits;
+            uint256 newOwners = ucfc.numNewOwners + ucfa.numNewOwners;
+            // f(K(e), D(e)) = d * k * K(e) + d * D(e)
+            uint256 fKD = codeUnits * devsPerCapital * rewards[1] + codeUnits * newOwners;
+            FixedPoint.uq112x112 memory fp = FixedPoint.fraction(fKD, 100);
+            fKD = fp._x / MAGIC_DENOMINATOR;
+            if (fKD > epsilonRate) {
+                fKD = epsilonRate;
+            }
+            df = 1e18 + fKD;
         }
 
-        // DF calculation
-        _df = _calculateDF(_dcm);
-
         uint256 numServices = protocolServiceIds.length;
-        PointEcomonics memory newPoint = PointEcomonics(ucfc, ucfa, _df, numServices, rewards[1], rewards[2],
-            donationBalanceETH, block.timestamp, block.number);
+        PointEcomonics memory newPoint = PointEcomonics(ucfc, ucfa, df, numServices, rewards[1], rewards[2],
+            donationBalanceETH, devsPerCapital, block.timestamp, block.number);
         mapEpochEconomics[epochCounter] = newPoint;
         epochCounter++;
 
@@ -527,15 +566,15 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             _PE = mapEpochEconomics[i - 1];
             // if current point undefined, so calculatePayoutFromLP called before mined tx(checkpoint)
             if(_PE.blockNumber > 0) {
-                df = uint256(_PE.df._x / MAGIC_DENOMINATOR);
+                df = _PE.df;
                 break;
             }
         }
         if(df > 0) {
             resAmount = _calculatePayoutFromLP(token, tokenAmount, df);
         } else {
-            // if df undefined in points
-            resAmount = _calculatePayoutFromLP(token, tokenAmount, INITIAL_DF);
+            // if df is undefined
+            resAmount = _calculatePayoutFromLP(token, tokenAmount, 1e18 + epsilonRate);
         }
     }
 
@@ -573,11 +612,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         uint256 reserveOut = (token0 == ola) ? balance0 : balance1;
         
         amountOLA = amountOLA + getAmountOut(amountPairForOLA, reserveIn, reserveOut);
-
-        // The resulting DF amount cannot be bigger than the maximum possible one
-        if (df > epsilon) {
-            revert AmountLowerThan(epsilon, df);
-        }
 
         // Get the resulting amount in OLA tokens
         resAmount = (amountOLA * df) / 1e18; // df with decimals 18
@@ -629,14 +663,12 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             _PE = mapEpochEconomics[i - 1];
             // if current point undefined, so getDF called before mined tx(checkpoint)
             if(_PE.blockNumber > 0) {
-                // https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27
-                // a/b is encoded as (a << 112) / b or (a * 2^112) / b
-                df = uint256(_PE.df._x / MAGIC_DENOMINATOR);
+                df = _PE.df;
                 break;
             }
         }
         if (df == 0) {
-            df = INITIAL_DF;
+            df = 1e18 + epsilonRate;
         }
     }
 

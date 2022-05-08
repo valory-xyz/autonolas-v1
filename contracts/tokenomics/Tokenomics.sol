@@ -68,7 +68,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     // Staking parameters with multiplying by 100
     // treasuryFraction + componentFraction + agentFraction + stakerFraction = 100%
-    uint256 public treasuryFraction = 0;
     uint256 public stakerFraction = 50;
     uint256 public componentFraction = 33;
     uint256 public agentFraction = 17;
@@ -219,6 +218,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         devsPerCapital = _devsPerCapital;
         epsilonRate = _epsilonRate;
         // take into account the change during the epoch
+        // TODO: why is the below happening here? there is no guarantee that
+        // changeTokenomicsParameters is called every epoch
         if(_maxBond > maxBond) {
             uint256 delta = _maxBond - maxBond;
             effectiveBond += delta; 
@@ -237,18 +238,17 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @dev Sets staking parameters in fractions of distributed rewards.
     /// @param _stakerFraction Fraction for stakers.
     /// @param _componentFraction Fraction for component owners.
+    /// @param _agentFraction Fraction for component owners.
     function changeRewardFraction(
-        uint256 _treasuryFraction,
         uint256 _stakerFraction,
         uint256 _componentFraction,
         uint256 _agentFraction
     ) external onlyOwner {
         // Check that the sum of fractions is 100%
-        if (_treasuryFraction + _stakerFraction + _componentFraction + _agentFraction != 100) {
-            revert WrongAmount(_treasuryFraction + _stakerFraction + _componentFraction + _agentFraction, 100);
+        if (_stakerFraction + _componentFraction + _agentFraction <= 100) {
+            revert WrongAmount(_stakerFraction + _componentFraction + _agentFraction, 100);
         }
 
-        treasuryFraction = _treasuryFraction;
         stakerFraction = _stakerFraction;
         componentFraction = _componentFraction;
         agentFraction = _agentFraction;
@@ -269,23 +269,27 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param amount Amount of requested OLA tokens to mint.
     /// @return True if the mint is allowed.
     function isAllowedMint(uint256 amount) public returns (bool) {
+        uint256 remainder = _getInflationRemainderForYear()
+        // For the first 10 years we check the inflation cap that is pre-defined
+        if (amount > remainder) {
+            return false;
+        }
+        return true;
+    }
+
+    function _getInflationRemainderForYear() public returns (uint256 remainder) {
         // OLA token time launch
         uint256 timeLaunch = IOLA(ola).timeLaunch();
         // One year of time
         uint256 oneYear = 1 days * 365;
         // Current year
         uint256 numYear = (block.timestamp - timeLaunch) / oneYear;
-        // OLA token supply to-date
-        uint256 supply = IERC20(ola).totalSupply();
-        // For the first 10 years we check the inflation cap that is pre-defined
         if (numYear < 10) {
-            if (supply + amount <= inflationCaps[numYear]){
-                return true;
-            } else {
-                return false;
-            }
+            // OLA token supply to-date
+            uint256 supply = IERC20(ola).totalSupply();
+            remainder = inflationCaps[numYear] - supply;
         } else {
-            return IOLA(ola).inflationControl(amount);
+            remainder = IERC20(ola).inflationRemainder();
         }
     }
 
@@ -365,9 +369,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             // Add to UCFa part for each agent Id
             for (uint256 j = 0; j < numServiceUnits; ++j) {
                 // Convert revenue to OLA
-                uint256 amountOLA = _getExchangeAmountOLA(ETH_TOKEN_ADDRESS, mapServiceAmounts[serviceId]);
-                ucfuRevs[unitIds[j]] += amountOLA;
-                sumProfits += amountOLA;
+                ucfuRevs[unitIds[j]] += mapServiceAmounts[serviceId];
+                sumProfits += mapServiceAmounts[serviceId];
             }
         }
 
@@ -398,7 +401,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 // Increase a profitable agent number
                 ++ucfu.numProfitableUnits;
                 // Calculate agent rewards
-                mapOwnerRewards[owner] += unitRewards * ucfuRevs[unitId] / sumProfits;
+                uint256 share = ucfuRevs[unitId] / sumProfits  // How exact will this be? will it be 0 for everyone if we have large profits?
+                mapOwnerRewards[owner] += unitRewards * share;
+                uint256 amountOLA = _getTopUpAmountOLA(share, registry == componentRegistry)
+                mapOwnerTopUps[owner] += amountOLA
 
                 // Check if the component / agent is used for the first time
                 if (registry == componentRegistry && !mapComponents[unitId]) {
@@ -457,11 +463,11 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         // Get total amount of OLA as profits for rewards, and all the rewards categories
         // 0: total rewards, 1: treasuryRewards, 2: staterRewards, 3: componentRewards, 4: agentRewards
         uint256[] memory rewards = new uint256[](5);
-        rewards[0] = _getExchangeAmountOLA(ETH_TOKEN_ADDRESS, epochServiceRevenueETH);
-        rewards[1] = rewards[0] * treasuryFraction / 100;
+        rewards[0] = epochServiceRevenueETH;
         rewards[2] = rewards[0] * stakerFraction / 100;
         rewards[3] = rewards[0] * componentFraction / 100;
         rewards[4] = rewards[0] * agentFraction / 100;
+        rewards[1] = rewards[0] - rewards[2] - rewards[3] - rewards[4]
 
         // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
         uint256 df;
@@ -470,13 +476,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         PointUnits memory ucfa;
         if (rewards[0] > 0) {
             // Calculate total UCFc
-            uint256 numComponents = IERC721Enumerable(componentRegistry).totalSupply();
-            // TODO If there are no components, all their part of rewards go to treasury
-            if (numComponents == 0) {
-                rewards[1] += rewards[3];
-            } else {
-                ucfc = _calculateUnitTokenomics(componentRegistry, rewards[3]);
-            }
+            ucfc = _calculateUnitTokenomics(componentRegistry, rewards[3]);
             ucfc.ucfWeight = ucfcWeight;
             ucfc.unitWeight = componentWeight;
 
@@ -712,26 +712,41 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     }
 
     /// @dev Gets exchange rate for OLA.
-    /// @param token Token address to be exchanged for OLA.
-    /// @param tokenAmount Token amount.
+    /// @param share Share of overall topus
+    /// @param isComponents True if dealing with components, false for agents
     /// @return amountOLA Amount of OLA tokens.
-    function _getExchangeAmountOLA(address token, uint256 tokenAmount) private pure returns (uint256 amountOLA) {
-        // TODO Exchange rate is a stub for now
-        amountOLA = tokenAmount;
+    function _getTopUpAmountOLA(uint256 share, bool isComponents) private pure returns (uint256 amountOLA) {
+        if (isComponents) {
+            amountOLA = share * componentWeight / (componentWeight + agentWeight) * _getTotalTopUp();
+        } else {
+            amountOLA = share * agentWeight / (componentWeight + agentWeight) * _getTotalTopUp();
+        }
+    }
+
+    function _getTotalTopUp() private pure returns (uint256 totalTopUp) {
+        uint256 remainder = _getInflationRemainderForYear()
+        // TODO: finish below. we need to calculate the shareYearRemaining using epoch length somehow (can be naive estimate)
+        // and we need shareTopUps which is a governance defined share (the other share goes to staking and bonding!)
+        totalTopUp = remainder * shareTopUps * shareYearRemaining
     }
 
     /// @dev Gets the component / agent owner reward.
     /// @param account Account address.
     /// @return reward Reward amount.
-    function getOwnerRewards(address account) external view returns (uint256 reward) {
+    /// @return topUp TopUp amount.
+    function getOwnerRewards(address account) external view returns (uint256 reward, uint256 topUp) {
         reward = mapOwnerRewards[account];
+        topUp = mapOwnerTopUps[account];
     }
 
     /// @dev Gets the component / agent owner reward and zeros the record of it being written off.
     /// @param account Account address.
     /// @return reward Reward amount.
-    function accountOwnerRewards(address account) external onlyDispenser returns (uint256 reward) {
+    /// @return topUp TopUp amount.
+    function accountOwnerRewards(address account) external onlyDispenser returns (uint256 reward, uint256 topUp) {
         reward = mapOwnerRewards[account];
+        topUp = mapOwnerTopUps[account];
         mapOwnerRewards[account] = 0;
+        mapOwnerTopUps[account] = 0;
     }
 }    

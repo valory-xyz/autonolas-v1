@@ -28,6 +28,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     event DispenserUpdated(address dispenser);
     event TransferToDispenser(uint256 amount);
     event TransferToProtocol(uint256 amount);
+    event ReceivedETH(address sender, uint amount);
 
     enum TokenState {
         NonExistent,
@@ -52,8 +53,12 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     address public tokenomics;
     // Set of registered tokens
     address[] public tokenRegistry;
-    // Token address => token info
+    // Token address => token info related to bonding
     mapping(address => TokenInfo) public mapTokens;
+    // ETH received from services
+    uint256 public ETHFromServices;
+    // ETH owned by treasury
+    uint256 public ETHOwned
 
     // https://developer.kyber.network/docs/DappsGuide#contract-example
     address public constant ETH_TOKEN_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE); // well-know representation ETH as address
@@ -63,7 +68,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             revert ZeroAddress();
         }
         ola = _ola;
-        mapTokens[ETH_TOKEN_ADDRESS].state = TokenState.Enabled;
+        ETHOwned = msg.value;
         depository = _depository;
         dispenser = _dispenser;
         tokenomics = _tokenomics;
@@ -73,13 +78,6 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     modifier onlyDepository() {
         if (depository != msg.sender) {
             revert ManagerOnly(msg.sender, depository);
-        }
-        _;
-    }
-
-    modifier onlyDispenser() {
-        if (dispenser != msg.sender) {
-            revert ManagerOnly(msg.sender, dispenser);
         }
         _;
     }
@@ -98,6 +96,8 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         emit DispenserUpdated(newDispenser);
     }
 
+    /// @dev Changes tokenomics address.
+    /// @param newTokenomics Address of a new tokenomics.
     function changeTokenomics(address newTokenomics) external onlyOwner {
         tokenomics = newTokenomics;
         emit TokenomicsUpdated(newTokenomics);
@@ -113,16 +113,18 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             revert UnauthorizedToken(token);
         }
 
-        // Transfer tokens from depository to treasury and add to the token treasury reserves
-        IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
         mapTokens[token].reserves += tokenAmount;
         // Mint specified number of OLA tokens corresponding to tokens bonding deposit if the amount is possible to mint
+        // TODO: we need a specific isAllowedBondingMint and use it here
         if (ITokenomics(tokenomics).isAllowedMint(olaMintAmount)) {
             IOLA(ola).mint(msg.sender, olaMintAmount);
-            emit DepositFromDepository(token, tokenAmount, olaMintAmount);
         } else {
             revert MintRejectedByInflationPolicy(olaMintAmount);
         }
+        // Transfer tokens from depository to treasury and add to the token treasury reserves
+        IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
+    
+        emit DepositFromDepository(token, tokenAmount, olaMintAmount);
     }
 
     /// @dev Deposits ETH from protocol-owned services in batch.
@@ -149,6 +151,8 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
 
         (uint256 revenueETH, uint256 donationETH) = ITokenomics(tokenomics).trackServicesETHRevenue(serviceIds, amounts);
 
+        ETHFromServices += totalAmount;
+
         emit DepositFromServices(ETH_TOKEN_ADDRESS, amounts, serviceIds, revenueETH, donationETH);
     }
 
@@ -156,13 +160,19 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     /// @param to Address to transfer funds to.
     /// @param tokenAmount Token amount to get reserves from.
     /// @param token Token address.
-    function withdraw(address to, uint256 tokenAmount, address token) external onlyOwner {
-        // Only approved token reserves can be used for redemptions
-        if (mapTokens[token].state != TokenState.Enabled) {
-            revert UnauthorizedToken(token);
-        }
+    /// @param bonding Flag to indiciate if bonding or services map is used.
+    function withdraw(address to, uint256 tokenAmount, address token, bool bonding) external onlyOwner {
+        if (bonding) {
+            // Only approved token reserves can be used for redemptions
+            if (mapTokens[token].state != TokenState.Enabled) {
+                revert UnauthorizedToken(token);
+            }
 
-        // Transfer tokens from reserves to the manager
+            // Transfer tokens from reserves to the manager
+            mapTokens[token].reserves -= tokenAmount;
+        } else {
+            ETHOwned -= tokenAmount;
+        }
         if (token == ETH_TOKEN_ADDRESS) {
             (bool success, ) = to.call{value: tokenAmount}("");
             if (!success) {
@@ -171,7 +181,6 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         } else {
             IERC20(token).safeTransfer(to, tokenAmount);
         }
-        mapTokens[token].reserves -= tokenAmount;
 
         emit Withdrawal(token, tokenAmount);
     }
@@ -203,7 +212,7 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         }
     }
 
-    /// @dev Gets information about token being enabled.
+    /// @dev Gets information about token being enabled for bonding.
     /// @param token Token address.
     /// @return enabled True is token is enabled.
     function isEnabled(address token) public view returns (bool enabled) {
@@ -232,21 +241,18 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     /// @dev Sends OLA funds to dispenser.
     /// @param amount Amount of OLA.
     /// @return True if the funds were sent correctly.
-    function _sendFundsToDispenser(uint256 amount) internal returns (bool){
-        if (amount > 0) {
+    function _sendFundsToDispenser(uint256 amountETH, uint256 amountOLA) internal {
+        if (amountOLA > 0) {
             // Check current OLA balance
             uint256 balance = IOLA(ola).balanceOf(address(this));
 
             // If the balance is insufficient, mint the difference
-            // TODO or allocate OLA tokens differently as by means suggested (breaking up LPs etc)
             if (amount > balance) {
                 balance = amount - balance;
                 // Check if we are not going beyond the inflation schedule
                 if (ITokenomics(tokenomics).isAllowedMint(balance)) {
                     IOLA(ola).mint(address(this), balance);
-                } else {
-                    // TODO Understand what to do if we can't mint more tokens
-                    return false;
+                    olaSuccess = true;
                 }
             }
 
@@ -255,42 +261,39 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
 
             emit TransferToDispenser(amount);
         }
-        return true;
+        if (amountETH > 0) {
+            ETHFromServices -= amountETH;
+            (bool success, ) = dispenser.call{value: amountETH}("");
+            if (!success) {
+                revert TransferFailed(ETH_TOKEN_ADDRESS, address(this), dispenser, amountETH);
+            }
+        }
     }
 
     /// @dev Sends (mints) funds to itself
     /// @param amount OLA amount.
-    /// @return True if the funds were allocated correctly.
-    function _sendFundsToTreasury(uint256 amount) internal returns (bool) {
-        if (amount > 0) {
-            if (ITokenomics(tokenomics).isAllowedMint(amount)) {
-                IOLA(ola).mint(address(this), amount);
-                emit TransferToProtocol(amount);
-            } else {
-                return false;
-            }
-        }
-        return true;
+    function _sendFundsToTreasury(uint256 amount) internal {
+        ETHFromServices -= amount;
+        ETHOwned += amount;
     }
 
     /// @dev Starts a new epoch.
-    function allocateRewards() external onlyOwner returns (bool) {
+    function allocateRewards() external onlyOwner {
         // Process the epoch data
         ITokenomics(tokenomics).checkpoint();
         PointEcomonics memory point = ITokenomics(tokenomics).getLastPoint();
 
-        // Request overall OLA reward funds from treasury for the last epoch, for treasury itself and other rewards
-        if (!_sendFundsToTreasury(point.treasuryRewards)) {
-            return false;
-        }
+        // Collect treasury's own reward share
+        _sendFundsToTreasury(point.treasuryRewards)
 
-        if (!IDispenser(dispenser).isPaused()) {
-            // Send cumulative funds of staker, component, agent rewards to dispenser
-            uint256 rewards = point.stakerRewards + point.ucfc.unitRewards + point.ucfa.unitRewards;
-            if (!_sendFundsToDispenser(rewards)) {
-                return false;
-            }
-        }
-        return true;
+        // TODO: avoid needing to know internals of Tokenomcis here, i.e. have a generic getter so we can replace tokenomics contract without this breaking
+        // Send cumulative funds of staker, component, agent rewards to dispenser
+        uint256 rewards = point.stakerRewards + point.ucfc.unitRewards + point.ucfa.unitRewards;
+        _sendFundsToDispenser(rewards))
+    }
+
+    receive() external payable {
+        ETHOwned += msg.value;
+        emit ReceivedETH(msg.sender, msg.value);
     }
 }

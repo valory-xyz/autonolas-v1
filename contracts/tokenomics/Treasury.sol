@@ -77,13 +77,6 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         _;
     }
 
-    modifier onlyDispenser() {
-        if (dispenser != msg.sender) {
-            revert ManagerOnly(msg.sender, dispenser);
-        }
-        _;
-    }
-
     /// @dev Changes the depository address.
     /// @param newDepository Address of a new depository.
     function changeDepository(address newDepository) external onlyOwner {
@@ -113,16 +106,17 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             revert UnauthorizedToken(token);
         }
 
-        // Transfer tokens from depository to treasury and add to the token treasury reserves
-        IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
-        mapTokens[token].reserves += tokenAmount;
         // Mint specified number of OLA tokens corresponding to tokens bonding deposit if the amount is possible to mint
         if (ITokenomics(tokenomics).isAllowedMint(olaMintAmount)) {
             IOLA(ola).mint(msg.sender, olaMintAmount);
-            emit DepositFromDepository(token, tokenAmount, olaMintAmount);
         } else {
             revert MintRejectedByInflationPolicy(olaMintAmount);
         }
+
+        // Transfer tokens from depository to treasury and add to the token treasury reserves
+        mapTokens[token].reserves += tokenAmount;
+        emit DepositFromDepository(token, tokenAmount, olaMintAmount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
     }
 
     /// @dev Deposits ETH from protocol-owned services in batch.
@@ -284,12 +278,10 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
             return false;
         }
 
-        if (!IDispenser(dispenser).isPaused()) {
-            // Send cumulative funds of staker, component, agent rewards to dispenser
-            uint256 rewards = point.stakerRewards + point.ucfc.unitRewards + point.ucfa.unitRewards;
-            if (!_sendFundsToDispenser(rewards)) {
-                return false;
-            }
+        // Send cumulative funds of staker, component, agent rewards to dispenser
+        uint256 rewards = point.stakerRewards + point.ucfc.unitRewards + point.ucfa.unitRewards;
+        if (!_sendFundsToDispenser(rewards)) {
+            return false;
         }
         return true;
     }

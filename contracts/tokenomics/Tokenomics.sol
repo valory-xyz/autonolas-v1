@@ -47,7 +47,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // ~300k of OLA tokens per week (the max cap is 20 million during 1st year)
     uint256 public maxBond = 300_000 * 1e18;
     // TODO Decide which rate has to be put by default
-    // Default epsilon rate that contributes to the interest rate: 50%
+    // Default epsilon rate that contributes to the interest rate: 50% or 0.5
     uint256 public epsilonRate = 5 * 1e17;
 
     // UCFc / UCFa weights for the UCF contribution
@@ -67,8 +67,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256 public donationBalanceETH;
 
     // Staking parameters with multiplying by 100
-    // treasuryFraction + componentFraction + agentFraction + stakerFraction = 100%
-    uint256 public treasuryFraction = 0;
+    // treasuryFraction (implicit, zero by default) + componentFraction + agentFraction + stakerFraction = 100%
     uint256 public stakerFraction = 50;
     uint256 public componentFraction = 33;
     uint256 public agentFraction = 17;
@@ -238,17 +237,15 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param _stakerFraction Fraction for stakers.
     /// @param _componentFraction Fraction for component owners.
     function changeRewardFraction(
-        uint256 _treasuryFraction,
         uint256 _stakerFraction,
         uint256 _componentFraction,
         uint256 _agentFraction
     ) external onlyOwner {
         // Check that the sum of fractions is 100%
-        if (_treasuryFraction + _stakerFraction + _componentFraction + _agentFraction != 100) {
-            revert WrongAmount(_treasuryFraction + _stakerFraction + _componentFraction + _agentFraction, 100);
+        if (_stakerFraction + _componentFraction + _agentFraction > 100) {
+            revert WrongAmount(_stakerFraction + _componentFraction + _agentFraction, 100);
         }
 
-        treasuryFraction = _treasuryFraction;
         stakerFraction = _stakerFraction;
         componentFraction = _componentFraction;
         agentFraction = _agentFraction;
@@ -363,11 +360,11 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 (numServiceUnits, unitIds) = IService(serviceRegistry).getAgentIdsOfServiceId(serviceId);
             }
             // Add to UCFa part for each agent Id
+            uint256 amount = mapServiceAmounts[serviceId];
             for (uint256 j = 0; j < numServiceUnits; ++j) {
-                // Convert revenue to OLA
-                uint256 amountOLA = _getExchangeAmountOLA(ETH_TOKEN_ADDRESS, mapServiceAmounts[serviceId]);
-                ucfuRevs[unitIds[j]] += amountOLA;
-                sumProfits += amountOLA;
+                // Sum the amounts for the corresponding components / agents
+                ucfuRevs[unitIds[j]] += amount;
+                sumProfits += amount;
             }
         }
 
@@ -398,7 +395,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 // Increase a profitable agent number
                 ++ucfu.numProfitableUnits;
                 // Calculate agent rewards
-                mapOwnerRewards[owner] += unitRewards * ucfuRevs[unitId] / sumProfits;
+                mapOwnerRewards[owner] += (unitRewards * ucfuRevs[unitId]) / sumProfits;
 
                 // Check if the component / agent is used for the first time
                 if (registry == componentRegistry && !mapComponents[unitId]) {
@@ -457,11 +454,11 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         // Get total amount of OLA as profits for rewards, and all the rewards categories
         // 0: total rewards, 1: treasuryRewards, 2: staterRewards, 3: componentRewards, 4: agentRewards
         uint256[] memory rewards = new uint256[](5);
-        rewards[0] = _getExchangeAmountOLA(ETH_TOKEN_ADDRESS, epochServiceRevenueETH);
-        rewards[1] = rewards[0] * treasuryFraction / 100;
+        rewards[0] = epochServiceRevenueETH;
         rewards[2] = rewards[0] * stakerFraction / 100;
         rewards[3] = rewards[0] * componentFraction / 100;
         rewards[4] = rewards[0] * agentFraction / 100;
+        rewards[1] = rewards[0] - rewards[2] - rewards[3] - rewards[4];
 
         // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
         uint256 df;
@@ -605,30 +602,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         amountOut = numerator / denominator;
     }
 
-    /// @dev get Point by epoch
-    /// @param epoch number of a epoch
-    /// @return pe raw point
-    function getPoint(uint256 epoch) public view returns (PointEcomonics memory pe) {
-        pe = mapEpochEconomics[epoch];
-    }
-
-    /// @dev Get last epoch Point.
-    function getLastPoint() external view returns (PointEcomonics memory pe) {
-        pe = mapEpochEconomics[epochCounter - 1];
-    }
-
-    /// @dev Gets discount factor.
-    /// @return df Discount factor.
-    function getDF() external view returns (uint256 df)
-    {
-        PointEcomonics memory pe = mapEpochEconomics[epochCounter - 1];
-        if(pe.df > 0) {
-            df = pe.df;
-        } else {
-            df = 1e18 + epsilonRate;
-        }
-    }
-
     /// @dev Calculates staking rewards.
     /// @param account Account address.
     /// @param startEpochNumber Epoch number at which the reward starts being calculated.
@@ -663,6 +636,30 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
     }
 
+    /// @dev get Point by epoch
+    /// @param epoch number of a epoch
+    /// @return pe raw point
+    function getPoint(uint256 epoch) public view returns (PointEcomonics memory pe) {
+        pe = mapEpochEconomics[epoch];
+    }
+
+    /// @dev Get last epoch Point.
+    function getLastPoint() external view returns (PointEcomonics memory pe) {
+        pe = mapEpochEconomics[epochCounter - 1];
+    }
+
+    /// @dev Gets discount factor.
+    /// @param epoch Epoch number.
+    /// @return df Discount factor.
+    function getDF(uint256 epoch) external view returns (uint256 df)
+    {
+        PointEcomonics memory pe = mapEpochEconomics[epoch];
+        if (pe.df > 0) {
+            df = pe.df;
+        } else {
+            df = 1e18 + epsilonRate;
+        }
+    }
 
     /// @dev Sums two fixed points.
     function _add(FixedPoint.uq112x112 memory x, FixedPoint.uq112x112 memory y) private pure
@@ -675,6 +672,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
 
     /// @dev Calculated UCF of a specified epoch.
     /// @param epoch Epoch number.
+    /// @return ucf UCF value.
     function getUCF(uint256 epoch) external view returns (FixedPoint.uq112x112 memory ucf) {
         PointEcomonics memory pe = mapEpochEconomics[epoch];
 

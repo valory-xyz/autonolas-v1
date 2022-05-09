@@ -17,35 +17,18 @@ import "../interfaces/ITreasury.sol";
 contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    event TreasuryUpdated(address treasury);
     event TokenomicsUpdated(address tokenomics);
 
     // OLA token address
     address public immutable ola;
-    // Treasury address
-    address public treasury;
     // Tokenomics address
     address public tokenomics;
     // Mapping account => last taken reward block for staking
     mapping(address => uint256) public mapLastRewardEpochs;
 
-    constructor(address _ola, address _treasury, address _tokenomics) {
+    constructor(address _ola, address _tokenomics) {
         ola = _ola;
-        treasury = _treasury;
         tokenomics = _tokenomics;
-    }
-
-    // Only treasury has a privilege to manipulate a dispenser
-    modifier onlyTreasury() {
-        if (treasury != msg.sender) {
-            revert ManagerOnly(msg.sender, treasury);
-        }
-        _;
-    }
-
-    function changeTreasury(address newTreasury) external onlyOwner {
-        treasury = newTreasury;
-        emit TreasuryUpdated(newTreasury);
     }
 
     function changeTokenomics(address newTokenomics) external onlyOwner {
@@ -54,7 +37,7 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     }
 
     /// @dev Withdraws rewards for owners of components / agents.
-    function withdrawOwnerRewards() external nonReentrant {
+    function withdrawOwnerRewards() external nonReentrant whenNotPaused {
         uint256 reward = ITokenomics(tokenomics).accountOwnerRewards(msg.sender);
         if (reward > 0) {
             IERC20(ola).safeTransfer(msg.sender, reward);
@@ -63,7 +46,7 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
 
     /// @dev Withdraws rewards for a staker.
     /// @return reward Reward amount.
-    function withdrawStakingRewards() external nonReentrant returns (uint256 reward) {
+    function withdrawStakingRewards() external nonReentrant whenNotPaused returns (uint256 reward) {
         // Starting epoch number where the last time reward was not yet given
         uint256 startEpochNumber = mapLastRewardEpochs[msg.sender];
         uint256 endEpochNumber;
@@ -75,11 +58,5 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
         if (reward > 0) {
             IERC20(ola).safeTransfer(msg.sender, reward);
         }
-    }
-
-    /// @dev Gets the paused state.
-    /// @return True, if paused.
-    function isPaused() external view returns (bool) {
-        return paused();
     }
 }

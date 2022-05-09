@@ -209,7 +209,7 @@ contract Depository is IErrors, Ownable {
             revert UnauthorizedToken(token);
         }
         // Check if the bond amount is beyond the limits
-        if(!ITokenomics(tokenomics).allowedNewBond(supply)) {
+        if (!ITokenomics(tokenomics).allowedNewBond(supply)) {
             revert AmountLowerThan(ITokenomics(tokenomics).effectiveBond(), supply);
         }
         // Create a new product
@@ -220,7 +220,7 @@ contract Depository is IErrors, Ownable {
         emit CreateProduct(token, productId, supply);
     }
 
-    /// @dev Cloe a bonding product.
+    /// @dev Close a bonding product.
     /// @param token Specified token.
     /// @param productId Product Id.
     function close(address token, uint256 productId) external onlyOwner {

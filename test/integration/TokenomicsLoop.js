@@ -124,7 +124,7 @@ describe("Tokenomics integration", async () => {
         await tokenomics.changeDepository(depository.address);
 
         ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA", "0.1");
-        dispenser = await dispenserFactory.deploy(ola.address, treasury.address, tokenomics.address);
+        dispenser = await dispenserFactory.deploy(ola.address, tokenomics.address);
         await treasury.changeDispenser(dispenser.address);
         await tokenomics.changeDispenser(dispenser.address);
         await tokenomics.changeVotingEscrow(ve.address);
@@ -911,7 +911,7 @@ describe("Tokenomics integration", async () => {
             // D(e) = 6
             // f(K, D) = 6 * 6
             // df = (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
-            const df = Number(await tokenomics.getDF()) * 1.0 / E18;
+            const df = Number(await tokenomics.getDF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(df - 1.36)).to.lessThan(delta);
 
             // Get owners rewards

@@ -533,7 +533,7 @@ describe("Tokenomics integration", async () => {
 
 
     context("Dispenser", async function () {
-        it("Dispenser for an agent owner", async () => {
+        it.only("Dispenser for an agent owner", async () => {
             const mechManager = signers[3];
             const serviceManager = signers[4];
             const owner = signers[5];
@@ -567,13 +567,16 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get owner rewards
+            const balanceBeforeReward = await ethers.provider.getBalance(ownerAddress);
+            console.log(balanceBeforeReward);
             await dispenser.connect(owner).withdrawOwnerRewards();
-            const balance = await ola.balanceOf(ownerAddress);
+            const balanceAfterReward = await ethers.provider.getBalance(ownerAddress);
+            console.log(balanceAfterReward);
 
             // Check the received reward
             const agentFraction = await tokenomics.agentFraction();
             const expectedReward = regServiceRevenue * agentFraction / 100;
-            expect(Number(balance)).to.equal(expectedReward);
+            expect(Number(balanceAfterReward) - Number(balanceBeforeReward)).to.equal(expectedReward);
         });
 
         it("Dispenser for several agent owners", async () => {

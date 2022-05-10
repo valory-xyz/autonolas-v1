@@ -161,9 +161,11 @@ interface IErrors {
     /// @param actual Actual supply left.
     error ProductSupplyLow(address tokenAddress, uint256 productId, uint256 requested, uint256 actual);
 
-    /// @dev Minting is rejected due to the requested amount bigger than the current inflation policy cap.
-    /// @param amount Amount of tokens to mint.
-    error MintRejectedByInflationPolicy(uint256 amount);
+    /// @dev Deposit for a product failed.
+    /// @param tokenAmount Token amount to deposit for the bond product.
+    /// @param token Token address.
+    /// @param payout The amount of OLA tokens to be issued.
+    error DepositFailed(uint256 tokenAmount, address token, uint256 payout);
 
     /// @dev Incorrect amount received / provided.
     /// @param provided Provided amount is lower.

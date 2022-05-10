@@ -567,6 +567,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Get owner rewards
+            console.log("ownerAddress",ownerAddress);
             const balanceBeforeReward = await ethers.provider.getBalance(ownerAddress);
             console.log(balanceBeforeReward);
             await dispenser.connect(owner).withdrawOwnerRewards();

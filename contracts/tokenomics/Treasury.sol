@@ -260,6 +260,9 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
     function _sendFundsToDispenser(uint256 amountETH, uint256 amountOLA) internal returns (bool success){
         success = true;
         if (amountETH > 0) {
+            console.log("ETHFromServices",ETHFromServices);
+            console.log("amountETH",amountETH);
+            console.log("treasury balance before sending ++", address(this).balance);
             ETHFromServices -= amountETH;
             (success, ) = dispenser.call{value: amountETH}("");
             if (success) {
@@ -295,8 +298,10 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         uint256 topUps = point.ownerTopUps + point.stakerTopUps;
         console.log("treasury balance before sending", address(this).balance / 1e18);
         if (!_sendFundsToDispenser(rewards, topUps)) {
+            console.log("Fail. treasury balance after sending", address(this).balance / 1e18);
             return false;
         }
+        console.log("OK. treasury balance after sending", address(this).balance / 1e18);
         return true;
     }
 

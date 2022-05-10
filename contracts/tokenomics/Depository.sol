@@ -130,7 +130,10 @@ contract Depository is IErrors, Ownable {
         // Approve treasury for the specified token amount
         IERC20(product.token).approve(treasury, tokenAmount);
         // Deposit that token amount to mint OLA tokens in exchange
-        ITreasury(treasury).depositTokenForOLA(tokenAmount, address(product.token), payout);
+        bool success = ITreasury(treasury).depositTokenForOLA(tokenAmount, address(product.token), payout);
+        if (!success) {
+            revert DepositFailed(tokenAmount, address(product.token), payout);
+        }
     }
 
     /// @dev Redeem bonds for the user.

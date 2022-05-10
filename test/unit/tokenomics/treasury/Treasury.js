@@ -82,14 +82,14 @@ describe("Treasury", async () => {
             .depositTokenForOLA("10000000000000000000000", dai.address, "1000000000000000000000");
     });
 
-    it("deposit ok", async () => {
+    it("Deposit", async () => {
         expect(await ola.totalSupply()).to.equal("1000000000000000000000");
     });
 
-    it("withdraw ok", async () => {
+    it("Withdraw", async () => {
         await treasury
             .connect(deployer)
-            .withdraw(deployer.address, "10000000000000000000000", dai.address);
+            .withdraw(deployer.address, "10000000000000000000000", dai.address, true);
         expect(await dai.balanceOf(deployer.address)).to.equal("10000000000000000000000000"); // back to initialMint
     });
         

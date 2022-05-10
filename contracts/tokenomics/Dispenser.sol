@@ -20,6 +20,7 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
 
     event TokenomicsUpdated(address tokenomics);
     event TransferETHFailed(address account, uint256 amount);
+    event ReceivedETH(address sender, uint amount);
 
     // OLA token address
     address public immutable ola;
@@ -74,5 +75,10 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
         if (reward > 0) {
             IERC20(ola).safeTransfer(msg.sender, reward);
         }
+    }
+
+    /// @dev TODO Fix modifier
+    receive() external payable {
+        emit ReceivedETH(msg.sender, msg.value);
     }
 }

@@ -9,9 +9,9 @@ import "../interfaces/IErrors.sol";
 
 /// @title OLA - Smart contract for the main OLA token
 /// @author AL
+/// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
 contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     event MinterUpdated(address minter);
-    event MintRejectedByInflationPolicy(address account, uint256 amount);
 
     // One year interval
     uint256 public constant oneYear = 1 days * 365;
@@ -21,8 +21,6 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     uint256 public constant maxMintCapFraction = 2;
     // Initial timestamp of the token deployment
     uint256 public timeLaunch;
-    // Inflation caps for the first ten years
-    uint256[] public inflationCaps;
 
     // Minter address
     address public minter;
@@ -33,19 +31,6 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
         if (_supply > 0) {
             super._mint(msg.sender, _supply);
         }
-
-        // Set up inflation schedule for ten years
-        inflationCaps = new uint[](10);
-        inflationCaps[0] = 520_000_000e18;
-        inflationCaps[1] = 590_000_000e18;
-        inflationCaps[2] = 660_000_000e18;
-        inflationCaps[3] = 730_000_000e18;
-        inflationCaps[4] = 790_000_000e18;
-        inflationCaps[5] = 840_000_000e18;
-        inflationCaps[6] = 890_000_000e18;
-        inflationCaps[7] = 930_000_000e18;
-        inflationCaps[8] = 970_000_000e18;
-        inflationCaps[9] = tenYearSupplyCap;
     }
 
     modifier onlyManager() {
@@ -68,8 +53,6 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     function mint(address account, uint256 amount) public onlyManager {
         if (inflationControl(amount)) {
             super._mint(account, amount);
-        } else {
-            emit MintRejectedByInflationPolicy(account, amount);
         }
     }
 
@@ -93,7 +76,7 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
         uint256 numYears = (block.timestamp - timeLaunch) / oneYear;
         if (numYears < 10) {
             // Check for the requested mint overflow
-            remainder = inflationCaps[numYears] - totalSupply;
+            remainder = tenYearSupplyCap - totalSupply;
         } else {
             // Number of years after ten years have passed (including ongoing ones)
             numYears -= 9;

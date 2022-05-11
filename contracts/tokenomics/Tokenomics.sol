@@ -45,8 +45,9 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // source: https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27 
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
-    // Max bond per epoch
-    uint256 public maxBond;
+    // TODO Verify OLA max bond by default
+    // ~300k of OLA tokens per epoch (the max cap is 20 million during 1st year)
+    uint256 public maxBond = 300_000 * 1e18;
     // TODO Decide which rate has to be put by default
     // Default epsilon rate that contributes to the interest rate: 50% or 0.5
     uint256 public epsilonRate = 5 * 1e17;
@@ -80,7 +81,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // Bond per epoch
     uint256 public bondPerEpoch;
     // MaxBond(e) - sum(BondingProgram) over all epochs: accumulates leftovers from previous epochs
-    uint256 public effectiveBond;
+    uint256 public effectiveBond = maxBond;
 
     // Component Registry
     address public immutable componentRegistry;
@@ -89,6 +90,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // Service Registry
     address payable public immutable serviceRegistry;
 
+    // Inflation caps for the first ten years
+    uint256[] public inflationCaps;
     // Set of protocol-owned services in current epoch
     uint256[] public protocolServiceIds;
     // Mapping of epoch => point
@@ -125,8 +128,17 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         serviceRegistry = _serviceRegistry;
         decimalsUnit = 10 ** IOLA(_ola).decimals();
 
-        maxBond = (IOLA(_ola).inflationRemainder() * bondFraction * epochLen * blockTimeETH) / (1 days * 365 * 100);
-        effectiveBond = maxBond;
+        inflationCaps = new uint[](10);
+        inflationCaps[0] = 520_000_000e18;
+        inflationCaps[1] = 590_000_000e18;
+        inflationCaps[2] = 660_000_000e18;
+        inflationCaps[3] = 730_000_000e18;
+        inflationCaps[4] = 790_000_000e18;
+        inflationCaps[5] = 840_000_000e18;
+        inflationCaps[6] = 890_000_000e18;
+        inflationCaps[7] = 930_000_000e18;
+        inflationCaps[8] = 970_000_000e18;
+        inflationCaps[9] = 1_000_000_000e18;
     }
 
     // Only the manager has a privilege to manipulate a tokenomics
@@ -197,6 +209,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param _agentWeight Agent weight for new valuable code.
     /// @param _devsPerCapital Number of valuable devs can be paid per units of capital per epoch.
     /// @param _epsilonRate Epsilon rate that contributes to the interest rate value.
+    /// @param _maxBond MaxBond OLA, 18 decimals.
     /// @param _blockTimeETH Time between blocks for ETH.
     function changeTokenomicsParameters(
         uint256 _ucfcWeight,
@@ -205,6 +218,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         uint256 _agentWeight,
         uint256 _devsPerCapital,
         uint256 _epsilonRate,
+        uint256 _maxBond,
         uint256 _blockTimeETH
     ) external onlyOwner {
         ucfcWeight = _ucfcWeight;
@@ -213,6 +227,20 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         agentWeight = _agentWeight;
         devsPerCapital = _devsPerCapital;
         epsilonRate = _epsilonRate;
+        // take into account the change during the epoch
+        if(_maxBond > maxBond) {
+            uint256 delta = _maxBond - maxBond;
+            effectiveBond += delta;
+        }
+        if(_maxBond < maxBond) {
+            uint256 delta = maxBond - _maxBond;
+            if(delta < effectiveBond) {
+                effectiveBond -= delta;
+            } else {
+                effectiveBond = 0;
+            }
+        }
+        maxBond = _maxBond;
         blockTimeETH = _blockTimeETH;
     }
 
@@ -261,10 +289,41 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
     }
 
+    /// @dev Checks for the OLA minting ability WRT the inflation schedule.
+    /// @param amount Amount of requested OLA tokens to mint.
+    /// @return True if the mint is allowed.
+    function isAllowedMint(uint256 amount) public returns (bool) {
+        uint256 remainder = _getInflationRemainderForYear();
+        // For the first 10 years we check the inflation cap that is pre-defined
+        if (amount > remainder) {
+            return false;
+        }
+        return true;
+    }
+
+    /// @dev Gets remainder of possible OLA allocation for the current year.
+    /// @return remainder OLA amount possible to mint.
+    function _getInflationRemainderForYear() public returns (uint256 remainder) {
+        // OLA token time launch
+        uint256 timeLaunch = IOLA(ola).timeLaunch();
+        // One year of time
+        uint256 oneYear = 1 days * 365;
+        // Current year
+        uint256 numYears = (block.timestamp - timeLaunch) / oneYear;
+        // For the first 10 years we check the inflation cap that is pre-defined
+        if (numYears < 10) {
+            // OLA token supply to-date
+            uint256 supply = IERC20(ola).totalSupply();
+            remainder = inflationCaps[numYears] - supply;
+        } else {
+            remainder = IOLA(ola).inflationRemainder();
+        }
+    }
+
     /// @dev take into account the bonding program in this epoch. 
     /// @dev programs exceeding the limit in the epoch are not allowed
     function allowedNewBond(uint256 amount) external onlyDepository returns (bool)  {
-        if(effectiveBond >= amount && IOLA(ola).inflationControl(amount)) {
+        if(effectiveBond >= amount && isAllowedMint(amount)) {
             effectiveBond -= amount;
             return true;
         }
@@ -375,9 +434,9 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 // Calculate OLA top-ups
                 uint256 amountOLA = (unitTopUps * ucfuRevs[unitId]) / sumProfits;
                 if (registry == componentRegistry) {
-                    amountOLA *=  componentWeight / (componentWeight + agentWeight);
+                    amountOLA = (amountOLA * componentWeight) / (componentWeight + agentWeight);
                 } else {
-                    amountOLA *= agentWeight / (componentWeight + agentWeight);
+                    amountOLA = (amountOLA * agentWeight)  / (componentWeight + agentWeight);
                 }
                 mapOwnerTopUps[owner] += amountOLA;
 
@@ -433,22 +492,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
     }
 
-    /// @dev Adjusts max bond every epoch.
-    function _adjustMaxBond(uint256 _maxBond) internal {
-        // take into account the change during the epoch
-        if(_maxBond > maxBond) {
-            uint256 delta = _maxBond - maxBond;
-            effectiveBond += delta;
-        }
-        if(_maxBond < maxBond) {
-            uint256 delta = maxBond - _maxBond;
-            if(delta < effectiveBond) {
-                effectiveBond -= delta;
-            } else {
-                effectiveBond = 0;
-            }
-        }
-        maxBond = _maxBond;
+    /// @dev Gets top-up value for epoch.
+    /// @return topUp Top-up value.
+    function getTopUpPerEpoch() public view returns (uint256 topUp) {
+        topUp = (IOLA(ola).inflationRemainder() * epochLen * blockTimeETH) / (1 days * 365);
     }
 
     /// @dev Record global data to new checkpoint
@@ -464,11 +511,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         rewards[1] = rewards[0] - rewards[2] - rewards[3] - rewards[4];
 
         // Top-ups and bonding possibility in OLA are recalculated based on the inflation schedule per epoch
-        uint256 totalTopUps = (IOLA(ola).inflationRemainder() * epochLen * blockTimeETH) / (1 days * 365);
+        uint256 totalTopUps = getTopUpPerEpoch();
         rewards[5] = totalTopUps * topUpOwnerFraction / 100;
         rewards[6] = totalTopUps * topUpStakerFraction / 100;
         rewards[7] = totalTopUps - rewards[5] - rewards[6];
-        _adjustMaxBond(rewards[7]);
 
         // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
         uint256 df;

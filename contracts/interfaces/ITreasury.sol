@@ -7,8 +7,7 @@ interface ITreasury {
     /// @param tokenAmount Token amount to get OLA for.
     /// @param token Token address.
     /// @param olaMintAmount Amount of OLA token issued.
-    /// @return True, if deposit is successful.
-    function depositTokenForOLA(uint256 tokenAmount, address token, uint256 olaMintAmount) external returns (bool);
+    function depositTokenForOLA(uint256 tokenAmount, address token, uint256 olaMintAmount) external;
 
     /// @dev Deposits ETH from protocol-owned service.
     /// @param serviceIds Set of service Ids.

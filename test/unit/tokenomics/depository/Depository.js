@@ -79,7 +79,7 @@ describe("Depository LP", async () => {
         // Change to the correct treasury address
         await tokenomics.changeTreasury(treasury.address);
         // Change bond fraction to 100% in these tests
-        await tokenomics.changeRewardFraction(50, 33, 17, 0, 100, 0);
+        await tokenomics.changeRewardFraction(50, 33, 17, 0, 0);
         // Change to the correct depository address
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
         await treasury.changeDepository(depository.address);

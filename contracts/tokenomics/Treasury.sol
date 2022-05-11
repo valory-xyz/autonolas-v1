@@ -84,6 +84,25 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         _;
     }
 
+    /// @dev Changes various managing contract addresses.
+    /// @param _depository Depository address.
+    /// @param _dispenser Dispenser address.
+    /// @param _tokenomics Tokenomics address.
+    function changeManagers(address _depository, address _dispenser, address _tokenomics) external onlyOwner {
+        if (_depository != address(0)) {
+            depository = _depository;
+            emit DepositoryUpdated(_depository);
+        }
+        if (_dispenser != address(0)) {
+            dispenser = _dispenser;
+            emit DispenserUpdated(_dispenser);
+        }
+        if (_tokenomics != address(0)) {
+            tokenomics = _tokenomics;
+            emit TokenomicsUpdated(_tokenomics);
+        }
+    }
+
     /// @dev Changes the depository address.
     /// @param newDepository Address of a new depository.
     function changeDepository(address newDepository) external onlyOwner {

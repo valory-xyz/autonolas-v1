@@ -64,11 +64,10 @@ describe("Treasury", async () => {
         // Dispenser address is irrelevant in these tests, so its contract is passed as a zero address
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, AddressZero);
         // Change to the correct treasury address
-        await tokenomics.changeTreasury(treasury.address);
+        await tokenomics.changeManagers(treasury.address, AddressZero, AddressZero, AddressZero);
         
         await dai.mint(deployer.address, initialMint);
         await dai.approve(treasury.address, LARGE_APPROVAL);
-        await treasury.changeDepository(deployer.address);
         await ola.changeMinter(treasury.address);
 
         // toggle DAI as reserve token (as example)

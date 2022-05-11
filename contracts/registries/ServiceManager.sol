@@ -36,10 +36,10 @@ contract ServiceManager is IErrors, IStructs, Ownable, Pausable {
     }
 
     /// @dev Changes the treasury address.
-    /// @param newTreasury Address of a new treasury.
-    function changeTreasury(address newTreasury) external onlyOwner {
-        treasury = newTreasury;
-        emit TreasuryUpdated(newTreasury);
+    /// @param _treasury Address of a new treasury.
+    function changeTreasury(address _treasury) external onlyOwner {
+        treasury = _treasury;
+        emit TreasuryUpdated(_treasury);
     }
 
     /// @dev Creates a new service.

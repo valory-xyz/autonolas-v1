@@ -208,10 +208,12 @@ contract Depository is IErrors, Ownable {
         if (!ITreasury(treasury).isEnabled(token) || !ITreasury(treasury).checkPair(token)) {
             revert UnauthorizedToken(token);
         }
+
         // Check if the bond amount is beyond the limits
         if (!ITokenomics(tokenomics).allowedNewBond(supply)) {
             revert AmountLowerThan(ITokenomics(tokenomics).effectiveBond(), supply);
         }
+
         // Create a new product
         productId = mapTokenProducts[token].length;
         Product memory product = Product(token, supply, vesting, uint256(block.timestamp + vesting), 0, 0);

@@ -46,8 +46,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
     // TODO Verify OLA max bond by default
-    // ~300k of OLA tokens per epoch (the max cap is 20 million during 1st year)
-    uint256 public maxBond = 300_000 * 1e18;
+    // ~120k of OLA tokens per epoch (the max cap is 20 million during 1st year, and the bonding fraction is 40%)
+    uint256 public maxBond = 120_000 * 1e18;
     // TODO Decide which rate has to be put by default
     // Default epsilon rate that contributes to the interest rate: 50% or 0.5
     uint256 public epsilonRate = 5 * 1e17;
@@ -75,7 +75,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256 public agentFraction = 17;
     // Top-up of OLA and bonding parameters with multiplying by 100
     uint256 public topUpOwnerFraction = 40;
-    uint256 public bondFraction = 40;
     uint256 public topUpStakerFraction = 20;
 
     // Bond per epoch
@@ -249,14 +248,12 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param _componentFraction Fraction for component owners.
     /// @param _agentFraction Fraction for agent owners.
     /// @param _topUpOwnerFraction Fraction for OLA top-up for component / agent owners.
-    /// @param _bondFraction Fraction for OLA bonding limit.
     /// @param _topUpStakerFraction Fraction for OLA top-up for stakers.
     function changeRewardFraction(
         uint256 _stakerFraction,
         uint256 _componentFraction,
         uint256 _agentFraction,
         uint256 _topUpOwnerFraction,
-        uint256 _bondFraction,
         uint256 _topUpStakerFraction
     ) external onlyOwner {
         // Check that the sum of fractions is 100%
@@ -265,8 +262,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
 
         // Same check for OLA-related fractions
-        if (_topUpOwnerFraction + _bondFraction + _topUpStakerFraction != 100) {
-            revert WrongAmount(_topUpOwnerFraction + _bondFraction + _topUpStakerFraction, 100);
+        if (_topUpOwnerFraction + _topUpStakerFraction > 100) {
+            revert WrongAmount(_topUpOwnerFraction + _topUpStakerFraction, 100);
         }
 
         stakerFraction = _stakerFraction;
@@ -274,7 +271,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         agentFraction = _agentFraction;
 
         topUpOwnerFraction = _topUpOwnerFraction;
-        bondFraction = _bondFraction;
         topUpStakerFraction = _topUpStakerFraction;
     }
 

@@ -9,8 +9,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
 import "../interfaces/ITokenomics.sol";
-import "../interfaces/ITreasury.sol";
-import "hardhat/console.sol";
 
 /// @title Dispenser - Smart contract for rewards
 /// @author AL
@@ -26,7 +24,7 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     address public immutable ola;
     // Tokenomics address
     address public tokenomics;
-    // Mapping account => last taken reward block for staking
+    // Mapping account => last reward block for staking
     mapping(address => uint256) public mapLastRewardEpochs;
 
     constructor(address _ola, address _tokenomics) {
@@ -42,16 +40,15 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     /// @dev Withdraws rewards for owners of components / agents.
     /// @return reward Reward amount in ETH.
     /// @return topUp Top-up amount in OLA.
-    function withdrawOwnerRewards() external nonReentrant whenNotPaused returns (uint256 reward, uint256 topUp) {
+    /// @return success
+    function withdrawOwnerRewards() external nonReentrant whenNotPaused
+        returns (uint256 reward, uint256 topUp, bool success)
+    {
+        success = true;
         (reward, topUp) = ITokenomics(tokenomics).accountOwnerRewards(msg.sender);
-        console.log("reward", reward);
-        console.log("topUp", topUp);
-        console.log("ether balance", address(this).balance);
         if (reward > 0) {
-            (bool success, ) = msg.sender.call{value: reward}("");
+            (success, ) = msg.sender.call{value: reward}("");
             if (!success) {
-                console.log("No success");
-                // TODO: Decide what to do later, so that still try the ola transfer
                 emit TransferETHFailed(msg.sender, reward);
             }
         }
@@ -63,7 +60,10 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     /// @dev Withdraws rewards for a staker.
     /// @return reward Reward amount in ETH.
     /// @return topUp Top-up amount in OLA.
-    function withdrawStakingRewards() external nonReentrant whenNotPaused returns (uint256 reward, uint256 topUp) {
+    function withdrawStakingRewards() external nonReentrant whenNotPaused
+        returns (uint256 reward, uint256 topUp, bool success)
+    {
+        success = true;
         // Starting epoch number where the last time reward was not yet given
         uint256 startEpochNumber = mapLastRewardEpochs[msg.sender];
         uint256 endEpochNumber;
@@ -73,11 +73,17 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
         mapLastRewardEpochs[msg.sender] = endEpochNumber;
 
         if (reward > 0) {
-            IERC20(ola).safeTransfer(msg.sender, reward);
+            (success, ) = msg.sender.call{value: reward}("");
+            if (!success) {
+                emit TransferETHFailed(msg.sender, reward);
+            }
+        }
+        if (topUp > 0) {
+            IERC20(ola).safeTransfer(msg.sender, topUp);
         }
     }
 
-    /// @dev TODO Fix modifier
+    /// @dev Receives ETH.
     receive() external payable {
         emit ReceivedETH(msg.sender, msg.value);
     }

@@ -41,4 +41,9 @@ interface ITokenomics is IStructs {
     /// @return endEpochNumber Epoch number where the reward calculation will start the next time.
     function calculateStakingRewards(address account, uint256 startEpochNumber) external view
         returns (uint256 reward, uint256 topUp, uint256 endEpochNumber);
+
+    /// @dev Checks for the OLA minting ability WRT the inflation schedule.
+    /// @param amount Amount of requested OLA tokens to mint.
+    /// @return True if the mint is allowed.
+    function isAllowedMint(uint256 amount) external returns (bool);
 }

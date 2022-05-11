@@ -164,35 +164,28 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         _;
     }
 
-    /// @dev Changes treasury address.
-    function changeTreasury(address newTreasury) external onlyOwner {
-        treasury = newTreasury;
-        emit TreasuryUpdated(newTreasury);
-    }
-
-    /// @dev Changes treasury address.
-    function changeDepository(address newDepository) external onlyOwner {
-        depository = newDepository;
-        emit DepositoryUpdated(newDepository);
-    }
-
-    /// @dev Changes treasury address.
-    function changeDispenser(address newDispenser) external onlyOwner {
-        dispenser = newDispenser;
-        emit DispenserUpdated(newDispenser);
-    }
-
-    /// @dev Changes voting escrow address.
-    function changeVotingEscrow(address newVE) external onlyOwner {
-        ve = newVE;
-        emit VotingEscrowUpdated(newVE);
-    }
-
-    /// @dev Changes epoch length.
-    /// @param newEpochLen New epoch length.
-    function changeEpochLength(uint256 newEpochLen) external onlyOwner {
-        epochLen = newEpochLen;
-        emit EpochLengthUpdated(newEpochLen);
+    /// @dev Changes various managing contract addresses.
+    /// @param _treasury Treasury address.
+    /// @param _depository Depository address.
+    /// @param _dispenser Dispenser address.
+    /// @param _ve Voting Escrow address.
+    function changeManagers(address _treasury, address _depository, address _dispenser, address _ve) external onlyOwner {
+        if (_treasury != address(0)) {
+            treasury = _treasury;
+            emit TreasuryUpdated(_treasury);
+        }
+        if (_depository != address(0)) {
+            depository = _depository;
+            emit DepositoryUpdated(_depository);
+        }
+        if (_dispenser != address(0)) {
+            dispenser = _dispenser;
+            emit DispenserUpdated(_dispenser);
+        }
+        if (_ve != address(0)) {
+            ve = _ve;
+            emit VotingEscrowUpdated(_ve);
+        }
     }
 
     /// @dev Gets the current epoch number.
@@ -209,6 +202,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param _devsPerCapital Number of valuable devs can be paid per units of capital per epoch.
     /// @param _epsilonRate Epsilon rate that contributes to the interest rate value.
     /// @param _maxBond MaxBond OLA, 18 decimals.
+    /// @param _epochLen New epoch length.
     /// @param _blockTimeETH Time between blocks for ETH.
     function changeTokenomicsParameters(
         uint256 _ucfcWeight,
@@ -218,6 +212,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         uint256 _devsPerCapital,
         uint256 _epsilonRate,
         uint256 _maxBond,
+        uint256 _epochLen,
         uint256 _blockTimeETH
     ) external onlyOwner {
         ucfcWeight = _ucfcWeight;
@@ -240,6 +235,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             }
         }
         maxBond = _maxBond;
+        epochLen = _epochLen;
         blockTimeETH = _blockTimeETH;
     }
 

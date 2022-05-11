@@ -76,14 +76,13 @@ describe("Depository LP", async () => {
             deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, AddressZero);
-        // Change to the correct treasury address
-        await tokenomics.changeTreasury(treasury.address);
         // Change bond fraction to 100% in these tests
         await tokenomics.changeRewardFraction(50, 33, 17, 0, 0);
         // Change to the correct depository address
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
-        await treasury.changeDepository(depository.address);
-        await tokenomics.changeDepository(depository.address);
+        // Change to the correct addresses
+        await treasury.changeManagers(depository.address, AddressZero, AddressZero);
+        await tokenomics.changeManagers(treasury.address, depository.address, AddressZero, AddressZero);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);

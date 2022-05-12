@@ -32,7 +32,7 @@ describe("Depository LP", async () => {
     let epochLen = 100;
 
     // 5,000
-    let supplyProductOLA =  "5" + "0".repeat(3) + decimals;
+    let supplyProductOLA =  "2" + "0".repeat(3) + decimals;
 
     let vesting = 60 * 60 * 24;
     let timeToConclusion = 60 * 60 * 24;
@@ -78,6 +78,8 @@ describe("Depository LP", async () => {
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, AddressZero);
         // Change to the correct treasury address
         await tokenomics.changeTreasury(treasury.address);
+        // Change bond fraction to 100% in these tests
+        await tokenomics.changeRewardFraction(50, 33, 17, 0, 0);
         // Change to the correct depository address
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
         await treasury.changeDepository(depository.address);
@@ -145,7 +147,7 @@ describe("Depository LP", async () => {
         //console.log("deployer LP balance:", await pairODAI.balanceOf(deployer.address));
         //console.log("LP total supplyProductOLA:", await pairODAI.totalSupply());
         // send half of the balance from deployer
-        const amountTo = new ethers.BigNumber.from(await pairODAI.balanceOf(deployer.address)).div(2);
+        const amountTo = new ethers.BigNumber.from(await pairODAI.balanceOf(deployer.address)).div(4);
         await pairODAI.connect(deployer).transfer(bob.address, amountTo);
         //console.log("balance LP for bob:", (await pairODAI.balanceOf(bob.address)));
         //console.log("deployer LP new balance:", await pairODAI.balanceOf(deployer.address));
@@ -220,15 +222,15 @@ describe("Depository LP", async () => {
             .connect(bob)
             .deposit(pairODAI.address, bid, bamount, bob.address);
         expect(Array(await depository.getPendingBonds(bob.address)).length).to.equal(1);
-        const res = await depository.getBondStatus(bob.address,0);
-        // 2500 * 1.5 = 3750 * e18 =  3.75 * e21
-        expect(Number(res.payout)).to.equal(3.75e+21);
+        const res = await depository.getBondStatus(bob.address, 0);
+        // 1250 * 1.5 = 1875 * e18 =  1.875 * e21
+        expect(Number(res.payout)).to.equal(1.875e+21);
     });
 
     it("should not allow a deposit with insufficient allowance", async () => {
-        let amount = (await pairODAI.balanceOf(deployer.address));
+        let amount = (await pairODAI.balanceOf(bob.address));
         await expect(
-            depository.connect(deployer).deposit(pairODAI.address, bid, amount, deployer.address)
+            depository.deposit(pairODAI.address, bid, amount, bob.address)
         ).to.be.revertedWith("InsufficientAllowance");
     });
 
@@ -311,7 +313,8 @@ describe("Depository LP", async () => {
         const payout = await tokenomics.calculatePayoutFromLP(pairODAI.address, amount);
 
         // Gets DF
-        const df = await tokenomics.getDF();
+        let lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+        const df = await tokenomics.getDF(lastEpoch);
 
         // Payouts with direct calculation and via DF must be equal
         expect(amountOLA.mul(df).div(E18)).to.equal(payout);

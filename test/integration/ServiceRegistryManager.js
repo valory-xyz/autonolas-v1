@@ -78,7 +78,7 @@ describe("ServiceRegistry integration", function () {
         await tokenomics.deployed();
 
         // Change to the correct tokenomics address
-        await treasury.changeTokenomics(tokenomics.address);
+        await treasury.changeManagers(AddressZero, AddressZero, tokenomics.address);
         await token.changeMinter(treasury.address);
 
         signers = await ethers.getSigners();

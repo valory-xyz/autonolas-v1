@@ -87,6 +87,11 @@ describe("Governance unit", function () {
             await governorBravo.deployed();
             // console.log("Governor Bravo deployed to", governorBravo.address);
 
+            // Checks for the compatibility with IERC165
+            const interfaceIdIERC165 = "0x01ffc9a7";
+            const checkInterfaceId = await governorBravo.supportsInterface(interfaceIdIERC165);
+            expect(checkInterfaceId).to.equal(true);
+
             // Change the admin from deployer to governorBravo
             const deployer = signers[0];
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
@@ -96,6 +101,38 @@ describe("Governance unit", function () {
             await expect(
                 timelock.connect(deployer).revokeRole(adminRole, governorBravo.address)
             ).to.be.revertedWith("AccessControl: account ");
+        });
+
+        it("Changes the ownership of a governance contract and a timelock", async function () {
+            const deployer = signers[0];
+            const user = signers[1];
+
+            // Deploy first timelock
+            const executors = [deployer.address];
+            const proposers = [user.address];
+            const Timelock = await ethers.getContractFactory("Timelock");
+            const timelock = await Timelock.deploy(minDelay, proposers, executors);
+            await timelock.deployed();
+
+            // Deploy Governance Bravo with a deployer being a timelock address
+            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const governorBravo = await GovernorBravo.deploy(ve.address, deployer.address, initialVotingDelay,
+                initialVotingPeriod, initialProposalThreshold, quorum);
+            await governorBravo.deployed();
+
+            // Swap timelock
+            // Only current governor (owner of a government, i.e. a timelock) can do that
+            await expect(
+                governorBravo.connect(user).updateTimelock(timelock.address)
+            ).to.be.revertedWith("Governor: onlyGovernance");
+
+            // Update timelock to its native address
+            await governorBravo.updateTimelock(timelock.address);
+
+            // Try to execute with the old timelock
+            await expect(
+                governorBravo.updateTimelock(user.address)
+            ).to.be.revertedWith("Governor: onlyGovernance");
         });
 
         it("Deposit for voting power: deposit 10 eth worth of ve to address 1", async function () {

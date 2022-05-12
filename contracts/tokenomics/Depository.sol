@@ -65,14 +65,18 @@ contract Depository is IErrors, Ownable {
         tokenomics = _tokenomics;
     }
 
-    function changeTreasury(address newTreasury) external onlyOwner {
-        treasury = newTreasury;
-        emit TreasuryUpdated(newTreasury);
-    }
-
-    function changeTokenomics(address newTokenomics) external onlyOwner {
-        tokenomics = newTokenomics;
-        emit TokenomicsUpdated(newTokenomics);
+    /// @dev Changes various managing contract addresses.
+    /// @param _treasury Treasury address.
+    /// @param _tokenomics Tokenomics address.
+    function changeManagers(address _treasury, address _tokenomics) external onlyOwner {
+        if (_treasury != address(0)) {
+            treasury = _treasury;
+            emit TreasuryUpdated(_treasury);
+        }
+        if (_tokenomics != address(0)) {
+            tokenomics = _tokenomics;
+            emit TokenomicsUpdated(_tokenomics);
+        }
     }
 
     /// @dev Deposits tokens in exchange for a bond from a specified product.

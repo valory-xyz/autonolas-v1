@@ -103,25 +103,6 @@ contract Treasury is IErrors, IStructs, Ownable, ReentrancyGuard  {
         }
     }
 
-    /// @dev Changes the depository address.
-    /// @param newDepository Address of a new depository.
-    function changeDepository(address newDepository) external onlyOwner {
-        depository = newDepository;
-        emit DepositoryUpdated(newDepository);
-    }
-
-    /// @dev Changes dispenser address.
-    /// @param newDispenser Address of a new dispenser.
-    function changeDispenser(address newDispenser) external onlyOwner {
-        dispenser = newDispenser;
-        emit DispenserUpdated(newDispenser);
-    }
-
-    function changeTokenomics(address newTokenomics) external onlyOwner {
-        tokenomics = newTokenomics;
-        emit TokenomicsUpdated(newTokenomics);
-    }
-
     /// @dev Allows the depository to deposit an asset for OLA.
     /// @param tokenAmount Token amount to get OLA for.
     /// @param token Token address.

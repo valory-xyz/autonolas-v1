@@ -32,9 +32,11 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
         tokenomics = _tokenomics;
     }
 
-    function changeTokenomics(address newTokenomics) external onlyOwner {
-        tokenomics = newTokenomics;
-        emit TokenomicsUpdated(newTokenomics);
+    /// @dev Changes the tokenomics addess.
+    /// @param _tokenomics Tokenomics address.
+    function changeTokenomics(address _tokenomics) external onlyOwner {
+        tokenomics = _tokenomics;
+        emit TokenomicsUpdated(_tokenomics);
     }
 
     /// @dev Withdraws rewards for owners of components / agents.

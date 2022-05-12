@@ -43,6 +43,7 @@ describe("Tokenomics integration", async () => {
     const configHash = {hash: "0x" + "6".repeat(64), hashFunction: "0x12", size: "0x20"};
     const configHash1 = {hash: "0x" + "7".repeat(64), hashFunction: "0x12", size: "0x20"};
     const configHash2 = {hash: "0x" + "8".repeat(64), hashFunction: "0x12", size: "0x20"};
+    const AddressZero = "0x" + "0".repeat(40);
     const regBond = 1000;
     const regDeposit = 1000;
     const maxThreshold = 1;
@@ -116,19 +117,13 @@ describe("Tokenomics integration", async () => {
             deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, deployer.address);
-        // Change to the correct treasury address
-        await tokenomics.changeTreasury(treasury.address);
         await ola.changeMinter(treasury.address);
-        // Change to the correct depository address
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
-        await treasury.changeDepository(depository.address);
-        await tokenomics.changeDepository(depository.address);
-
         ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA", "0.1");
         dispenser = await dispenserFactory.deploy(ola.address, tokenomics.address);
-        await treasury.changeDispenser(dispenser.address);
-        await tokenomics.changeDispenser(dispenser.address);
-        await tokenomics.changeVotingEscrow(ve.address);
+        // Change to the correct addresses
+        await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address, ve.address);
+        await treasury.changeManagers(depository.address, dispenser.address, AddressZero);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
@@ -1050,7 +1045,7 @@ describe("Tokenomics integration", async () => {
             const df = Number(await tokenomics.getDF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(df - 1.36)).to.lessThan(delta);
 
-            // Get owners rewards
+            // Get owners top-ups
             // We have 4 components
             let balanceComponentOwner = new Array(4);
             for (let i = 0; i < 4; i++) {
@@ -1062,30 +1057,33 @@ describe("Tokenomics integration", async () => {
             let balanceAgentOwner = new Array(3);
             for (let i = 0; i < 3; i++) {
                 await dispenser.connect(agentOwners[i]).withdrawOwnerRewards();
-                balanceAgentOwner[i] = await ola.balanceOf(agentOwners[i].address);
+                balanceAgentOwner[i] = Number(await ola.balanceOf(agentOwners[i].address));
             }
 
-            // Check the received reward for components
-            const componentFraction = await tokenomics.componentFraction();
-            let expectedComponentRewards = tripleRegServiceRevenue * componentFraction / 100;
-            // Calculate component reward difference with the expected value
-            let sumComponentOwnerRewards = 0;
+            // Check the received top-ups for components in OLA
+            // Calculate component top-up sum in OLA
+            let topUpOwnerFraction = await tokenomics.topUpOwnerFraction();
+            let componentWeight = await tokenomics.componentWeight();
+            let agentWeight = await tokenomics.agentWeight();
+            let expectedComponentTopUp = topUpPerEpoch * topUpOwnerFraction * componentWeight;
+            expectedComponentTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
+            // Calculate component top-up sup
+            let sumComponentOwnerTopUps = 0;
             for (let i = 0; i < 4; i++) {
-                sumComponentOwnerRewards += balanceComponentOwner[i];
+                sumComponentOwnerTopUps += balanceComponentOwner[i];
             }
-            let diffComponentReward = Number(expectedComponentRewards) - sumComponentOwnerRewards;
-            expect(diffComponentReward / E18).to.lessThan(delta);
 
-            // Check the received reward for agents
-            const agentFraction = await tokenomics.agentFraction();
-            let expectedAgentRewards = tripleRegServiceRevenue * agentFraction / 100;
-            // Calculate agent reward difference with the expected value
-            let sumAgentOwnerRewards = 0;
+            // Check the received top-ups for agents
+            let expectedAgentTopUp = topUpPerEpoch * topUpOwnerFraction * agentWeight;
+            expectedAgentTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
+            // Calculate agent top-up sum difference with the expected value
+            let sumAgentOwnerTopUps = 0;
             for (let i = 0; i < 3; i++) {
-                sumAgentOwnerRewards += balanceAgentOwner[i];
+                sumAgentOwnerTopUps += balanceAgentOwner[i];
             }
-            let diffAgentReward = Number(expectedAgentRewards) - sumAgentOwnerRewards;
-            expect(diffAgentReward / E18).to.lessThan(delta);
+            // Get the overall sum and compare the difference with the expected value
+            let diffTopUp = expectedComponentTopUp + expectedAgentTopUp - sumComponentOwnerTopUps - sumAgentOwnerTopUps;
+            expect(diffTopUp / E18).to.lessThan(delta);
 
             // Staking rewards will be calculated after 2 epochs are completed
 
@@ -1137,35 +1135,39 @@ describe("Tokenomics integration", async () => {
             balanceComponentOwner = new Array(4);
             for (let i = 0; i < 4; i++) {
                 await dispenser.connect(componentOwners[i]).withdrawOwnerRewards();
-                balanceComponentOwner[i] = await ola.balanceOf(componentOwners[i].address);
+                balanceComponentOwner[i] = Number(await ola.balanceOf(componentOwners[i].address));
             }
 
             // 3 agents
             balanceAgentOwner = new Array(3);
             for (let i = 0; i < 3; i++) {
                 await dispenser.connect(agentOwners[i]).withdrawOwnerRewards();
-                balanceAgentOwner[i] = await ola.balanceOf(agentOwners[i].address);
+                balanceAgentOwner[i] = Number(await ola.balanceOf(agentOwners[i].address));
             }
 
-            // Check the received reward for components
-            expectedComponentRewards = tripleRegServiceRevenue * componentFraction / 100;
+            // Check the received top-ups for components
+            topUpOwnerFraction = await tokenomics.topUpOwnerFraction();
+            componentWeight = await tokenomics.componentWeight();
+            agentWeight = await tokenomics.agentWeight();
+            expectedComponentTopUp = topUpPerEpoch * topUpOwnerFraction * componentWeight;
+            expectedComponentTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
             // Calculate component reward difference with the expected value
-            sumComponentOwnerRewards = 0;
+            sumComponentOwnerTopUps = 0;
             for (let i = 0; i < 4; i++) {
-                sumComponentOwnerRewards += balanceComponentOwner[i];
+                sumComponentOwnerTopUps += balanceComponentOwner[i];
             }
-            diffComponentReward = Number(expectedComponentRewards) - sumComponentOwnerRewards;
-            expect(diffComponentReward / E18).to.lessThan(delta);
 
-            // Check the received reward for agents
-            expectedAgentRewards = tripleRegServiceRevenue * agentFraction / 100;
-            // Calculate agent reward difference with the expected value
-            sumAgentOwnerRewards = 0;
+            // Check the received top-ups for agents
+            expectedAgentTopUp = topUpPerEpoch * topUpOwnerFraction * agentWeight;
+            expectedAgentTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
+            // Calculate agent top-up sum difference with the expected value
+            sumAgentOwnerTopUps = 0;
             for (let i = 0; i < 3; i++) {
-                sumAgentOwnerRewards += balanceAgentOwner[i];
+                sumAgentOwnerTopUps += balanceAgentOwner[i];
             }
-            diffAgentReward = Number(expectedAgentRewards) - sumAgentOwnerRewards;
-            expect(diffAgentReward / E18).to.lessThan(delta);
+            // Get the overall sum and compare the difference with the expected value
+            diffTopUp = expectedComponentTopUp + expectedAgentTopUp - sumComponentOwnerTopUps - sumAgentOwnerTopUps;
+            expect(diffTopUp / E18).to.lessThan(delta);
 
             // Withdraw skating by the deployer (considered rewards for 1 epoch) and a staker
             ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
@@ -1177,7 +1179,8 @@ describe("Tokenomics integration", async () => {
             await dispenser.connect(deployer).withdrawStakingRewards();
             await dispenser.connect(staker).withdrawStakingRewards();
 
-            // Staker balance must increase on the stakerFraction amount of the received service revenue plus the previous epoch rewards
+            // Staker balance must increase on the topUpStakerFraction amount of the received service revenue
+            // plus the previous epoch rewards
             const expectedTopUp = topUpPerEpoch * topUpStakerFraction / 100 + expectedStakerTopUpEpoch1;
             const deployerBalance = await ola.balanceOf(deployer.address);
             const stakerBalance = await ola.balanceOf(staker.address);

@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
 import "../interfaces/ITokenomics.sol";
-import "../interfaces/ITreasury.sol";
 
 /// @title Dispenser - Smart contract for rewards
 /// @author AL
@@ -17,35 +16,20 @@ import "../interfaces/ITreasury.sol";
 contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    event TreasuryUpdated(address treasury);
     event TokenomicsUpdated(address tokenomics);
+    event TransferETHFailed(address account, uint256 amount);
+    event ReceivedETH(address sender, uint amount);
 
     // OLA token address
     address public immutable ola;
-    // Treasury address
-    address public treasury;
     // Tokenomics address
     address public tokenomics;
-    // Mapping account => last taken reward block for staking
+    // Mapping account => last reward block for staking
     mapping(address => uint256) public mapLastRewardEpochs;
 
-    constructor(address _ola, address _treasury, address _tokenomics) {
+    constructor(address _ola, address _tokenomics) {
         ola = _ola;
-        treasury = _treasury;
         tokenomics = _tokenomics;
-    }
-
-    // Only treasury has a privilege to manipulate a dispenser
-    modifier onlyTreasury() {
-        if (treasury != msg.sender) {
-            revert ManagerOnly(msg.sender, treasury);
-        }
-        _;
-    }
-
-    function changeTreasury(address newTreasury) external onlyOwner {
-        treasury = newTreasury;
-        emit TreasuryUpdated(newTreasury);
     }
 
     function changeTokenomics(address newTokenomics) external onlyOwner {
@@ -54,32 +38,53 @@ contract Dispenser is IStructs, IErrors, Ownable, Pausable, ReentrancyGuard {
     }
 
     /// @dev Withdraws rewards for owners of components / agents.
-    function withdrawOwnerRewards() external nonReentrant {
-        uint256 reward = ITokenomics(tokenomics).accountOwnerRewards(msg.sender);
+    /// @return reward Reward amount in ETH.
+    /// @return topUp Top-up amount in OLA.
+    /// @return success
+    function withdrawOwnerRewards() external nonReentrant whenNotPaused
+        returns (uint256 reward, uint256 topUp, bool success)
+    {
+        success = true;
+        (reward, topUp) = ITokenomics(tokenomics).accountOwnerRewards(msg.sender);
         if (reward > 0) {
-            IERC20(ola).safeTransfer(msg.sender, reward);
+            (success, ) = msg.sender.call{value: reward}("");
+            if (!success) {
+                emit TransferETHFailed(msg.sender, reward);
+            }
+        }
+        if (topUp > 0) {
+            IERC20(ola).safeTransfer(msg.sender, topUp);
         }
     }
 
     /// @dev Withdraws rewards for a staker.
-    /// @return reward Reward amount.
-    function withdrawStakingRewards() external nonReentrant returns (uint256 reward) {
+    /// @return reward Reward amount in ETH.
+    /// @return topUp Top-up amount in OLA.
+    function withdrawStakingRewards() external nonReentrant whenNotPaused
+        returns (uint256 reward, uint256 topUp, bool success)
+    {
+        success = true;
         // Starting epoch number where the last time reward was not yet given
         uint256 startEpochNumber = mapLastRewardEpochs[msg.sender];
         uint256 endEpochNumber;
         // Get the reward and epoch number up to which the reward was calculated
-        (reward, endEpochNumber) = ITokenomics(tokenomics).calculateStakingRewards(msg.sender, startEpochNumber);
+        (reward, topUp, endEpochNumber) = ITokenomics(tokenomics).calculateStakingRewards(msg.sender, startEpochNumber);
         // Update the latest epoch number from which reward will be calculated the next time
         mapLastRewardEpochs[msg.sender] = endEpochNumber;
 
         if (reward > 0) {
-            IERC20(ola).safeTransfer(msg.sender, reward);
+            (success, ) = msg.sender.call{value: reward}("");
+            if (!success) {
+                emit TransferETHFailed(msg.sender, reward);
+            }
+        }
+        if (topUp > 0) {
+            IERC20(ola).safeTransfer(msg.sender, topUp);
         }
     }
 
-    /// @dev Gets the paused state.
-    /// @return True, if paused.
-    function isPaused() external view returns (bool) {
-        return paused();
+    /// @dev Receives ETH.
+    receive() external payable {
+        emit ReceivedETH(msg.sender, msg.value);
     }
 }

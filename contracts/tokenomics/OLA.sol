@@ -9,16 +9,15 @@ import "../interfaces/IErrors.sol";
 
 /// @title OLA - Smart contract for the main OLA token
 /// @author AL
-contract OLA is IErrors, Context, Ownable, ERC20, ERC20Burnable, ERC20Permit {
+/// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
+contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     event MinterUpdated(address minter);
 
     // One year interval
     uint256 public constant oneYear = 1 days * 365;
-    // Ten years interval
-    uint256 public constant tenYears = 10 * oneYear;
     // Total supply cap for the first ten years (one billion OLA tokens)
     uint256 public constant tenYearSupplyCap = 1_000_000_000e18;
-    // Maximum mint amount after first ten years
+    // Maximum annual inflation after first ten years
     uint256 public constant maxMintCapFraction = 2;
     // Initial timestamp of the token deployment
     uint256 public timeLaunch;
@@ -30,7 +29,7 @@ contract OLA is IErrors, Context, Ownable, ERC20, ERC20Burnable, ERC20Permit {
         minter = _minter;
         timeLaunch = block.timestamp;
         if (_supply > 0) {
-            mint(msg.sender, _supply);
+            super._mint(msg.sender, _supply);
         }
     }
 
@@ -60,27 +59,34 @@ contract OLA is IErrors, Context, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     /// @dev Provides various checks for the inflation control.
     /// @param amount Amount of OLA to mint.
     /// @return True if the amount request is within inflation boundaries.
-    function inflationControl(uint256 amount) public returns (bool) {
+    function inflationControl(uint256 amount) public view returns (bool) {
         // Scenario for the first ten years
+        uint256 remainder = inflationRemainder();
+        if (amount > remainder) {
+            return false;
+        }
+        return true;
+    }
+
+    /// @dev Gets the reminder of OLA possible for the mint.
+    /// @return remainder OLA token remainder.
+    function inflationRemainder() public view returns (uint256 remainder) {
         uint256 totalSupply = super.totalSupply();
-        if (block.timestamp - timeLaunch < tenYears) {
+        // Current year
+        uint256 numYears = (block.timestamp - timeLaunch) / oneYear;
+        if (numYears < 10) {
             // Check for the requested mint overflow
-            if (totalSupply + amount > tenYearSupplyCap) {
-                return false;
-            }
+            remainder = tenYearSupplyCap - totalSupply;
         } else {
-            // Number of years after ten years have passed
-            uint256 numYears = (block.timestamp - tenYears - timeLaunch) / oneYear + 1;
+            // Number of years after ten years have passed (including ongoing ones)
+            numYears -= 9;
             // Calculate maximum mint amount to date
             uint256 supplyCap = tenYearSupplyCap;
             for (uint256 i = 0; i < numYears; ++i) {
                 supplyCap += supplyCap * maxMintCapFraction / 100;
             }
             // Check for the requested mint overflow
-            if (totalSupply + amount > supplyCap) {
-                return false;
-            }
+            remainder = supplyCap - totalSupply;
         }
-        return true;
     }
 }

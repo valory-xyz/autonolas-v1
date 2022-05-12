@@ -58,6 +58,10 @@ interface IStructs {
         uint256 stakerRewards;
         // Donation in ETH
         uint256 totalDonationETH;
+        // Top-ups for component / agent owners
+        uint256 ownerTopUps;
+        // Top-ups for stakers
+        uint256 stakerTopUps;
         // Number of valuable devs can be paid per units of capital per epoch
         uint256 devsPerCapital;
         // Timestamp

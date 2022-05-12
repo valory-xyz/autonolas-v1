@@ -58,7 +58,7 @@ The tests are logically separated into unit and integration ones.
 ## Compile the code and run
 Compile the code:
 ```
-npx hardhat compile
+npm run compile
 ```
 Run the tests:
 ```

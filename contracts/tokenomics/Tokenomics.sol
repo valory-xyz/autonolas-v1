@@ -45,7 +45,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // source: https://github.com/compound-finance/open-oracle/blob/d0a0d0301bff08457d9dfc5861080d3124d079cd/contracts/Uniswap/UniswapLib.sol#L27 
     // 2^(112 - log2(1e18))
     uint256 public constant MAGIC_DENOMINATOR =  5192296858534816;
-    // TODO Verify OLA max bond by default
     // ~120k of OLA tokens per epoch (the max cap is 20 million during 1st year, and the bonding fraction is 40%)
     uint256 public maxBond = 120_000 * 1e18;
     // TODO Decide which rate has to be put by default
@@ -81,6 +80,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     uint256 public bondPerEpoch;
     // MaxBond(e) - sum(BondingProgram) over all epochs: accumulates leftovers from previous epochs
     uint256 public effectiveBond = maxBond;
+    // Manual or auto control of max bond
+    bool bondAutoControl;
 
     // Component Registry
     address public immutable componentRegistry;
@@ -204,6 +205,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     /// @param _maxBond MaxBond OLA, 18 decimals.
     /// @param _epochLen New epoch length.
     /// @param _blockTimeETH Time between blocks for ETH.
+    /// @param _bondAutoControl True to enable auto-tuning of max bonding value depending on the OLA remainder
     function changeTokenomicsParameters(
         uint256 _ucfcWeight,
         uint256 _ucfaWeight,
@@ -213,7 +215,8 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         uint256 _epsilonRate,
         uint256 _maxBond,
         uint256 _epochLen,
-        uint256 _blockTimeETH
+        uint256 _blockTimeETH,
+        bool _bondAutoControl
     ) external onlyOwner {
         ucfcWeight = _ucfcWeight;
         ucfaWeight = _ucfaWeight;
@@ -222,21 +225,10 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         devsPerCapital = _devsPerCapital;
         epsilonRate = _epsilonRate;
         // take into account the change during the epoch
-        if(_maxBond > maxBond) {
-            uint256 delta = _maxBond - maxBond;
-            effectiveBond += delta;
-        }
-        if(_maxBond < maxBond) {
-            uint256 delta = maxBond - _maxBond;
-            if(delta < effectiveBond) {
-                effectiveBond -= delta;
-            } else {
-                effectiveBond = 0;
-            }
-        }
-        maxBond = _maxBond;
+        _adjustMaxBond(_maxBond);
         epochLen = _epochLen;
         blockTimeETH = _blockTimeETH;
+        bondAutoControl = _bondAutoControl;
     }
 
     /// @dev Sets staking parameters in fractions of distributed rewards.
@@ -464,12 +456,6 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         }
         delete protocolServiceIds;
         epochServiceRevenueETH = 0;
-        // Effective bond accumulates leftovers from previous epochs
-        if (maxBond > bondPerEpoch) {
-            effectiveBond += maxBond - bondPerEpoch;
-        }
-        // Bond per epoch starts from zero every epoch
-        bondPerEpoch = 0;
     }
 
     /// @dev Record global data to the checkpoint
@@ -482,6 +468,24 @@ contract Tokenomics is IErrors, IStructs, Ownable {
                 _checkpoint();
             }
         }
+    }
+
+    /// @dev Adjusts max bond every epoch if max bond is contract-controlled.
+    function _adjustMaxBond(uint256 _maxBond) internal {
+        // take into account the change during the epoch
+        if(_maxBond > maxBond) {
+            uint256 delta = _maxBond - maxBond;
+            effectiveBond += delta;
+        }
+        if(_maxBond < maxBond) {
+            uint256 delta = maxBond - _maxBond;
+            if(delta < effectiveBond) {
+                effectiveBond -= delta;
+            } else {
+                effectiveBond = 0;
+            }
+        }
+        maxBond = _maxBond;
     }
 
     /// @dev Gets top-up value for epoch.
@@ -507,6 +511,17 @@ contract Tokenomics is IErrors, IStructs, Ownable {
         rewards[5] = totalTopUps * topUpOwnerFraction / 100;
         rewards[6] = totalTopUps * topUpStakerFraction / 100;
         rewards[7] = totalTopUps - rewards[5] - rewards[6];
+
+        // Effective bond accumulates leftovers from previous epochs (with last max bond value set)
+        if (maxBond > bondPerEpoch) {
+            effectiveBond += maxBond - bondPerEpoch;
+        }
+        // Bond per epoch starts from zero every epoch
+        bondPerEpoch = 0;
+        // Adjust max bond and effective bond if contract-controlled max bond is enabled
+        if (bondAutoControl) {
+            _adjustMaxBond(rewards[7]);
+        }
 
         // df = 1/(1 + iterest_rate) by documantation, reverse_df = 1/df >= 1.0.
         uint256 df;

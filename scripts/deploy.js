@@ -29,7 +29,8 @@ async function main() {
 
     const signers = await ethers.getSigners();
     const deployer = signers[0];
-    const agentInstances = [signers[1].address, signers[2].address, signers[3].address, signers[4].address];
+    const operator = signers[10];
+    const agentInstances = [signers[0].address, signers[1].address, signers[2].address, signers[3].address];
     console.log("Deploying contracts with the account:", deployer.address);
     console.log("Account balance:", (await deployer.getBalance()).toString());
 
@@ -115,7 +116,7 @@ async function main() {
     // Register agents
     await serviceRegistry.activateRegistration(testAddress, serviceId, {value: regDeposit});
     // Owner / deployer is the operator of agent instances as well
-    await serviceRegistry.registerAgents(deployer.address, serviceId, agentInstances, [1, 1, 1, 1], {value: 4*regBond});
+    await serviceRegistry.registerAgents(operator.address, serviceId, agentInstances, [1, 1, 1, 1], {value: 4*regBond});
 
     // Whitelist gnosis multisig implementation
     await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);

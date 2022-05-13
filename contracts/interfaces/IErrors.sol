@@ -88,9 +88,13 @@ interface IErrors {
     /// @param max Maximum possible value.
     error Overflow(uint256 provided, uint256 max);
 
-    /// @dev Token is non-transferrable.
+    /// @dev Token is non-transferable.
     /// @param account Token address.
-    error NonTransferrable(address account);
+    error NonTransferable(address account);
+
+    /// @dev Token is non-delegatable.
+    /// @param account Token address.
+    error NonDelegatable(address account);
 
     /// @dev Service must be active.
     /// @param serviceId Service Id.

@@ -119,7 +119,7 @@ describe("Tokenomics integration", async () => {
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, deployer.address);
         await ola.changeMinter(treasury.address);
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
-        ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA", "0.1");
+        ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA");
         dispenser = await dispenserFactory.deploy(ola.address, tokenomics.address);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address, ve.address);

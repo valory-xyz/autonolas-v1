@@ -3,7 +3,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe.only("VotingEscrow", function () {
+describe("VotingEscrow", function () {
     let ola;
     let ve;
     let signers;
@@ -298,7 +298,7 @@ describe.only("VotingEscrow", function () {
             ).to.be.revertedWith("WrongBlockNumber");
         });
 
-        it.only("Getting past votes and supply", async function () {
+        it("Getting past votes and supply", async function () {
             // Transfer 10 OLA worth of OLA to signers[1]
             const deployer = signers[0];
             const owner = signers[1];
@@ -336,30 +336,6 @@ describe.only("VotingEscrow", function () {
             block = await ethers.provider.getBlock(blockNumber);
             const supplyAt = await ve.totalSupplyLockedAtT(block.timestamp + oneWeek + 1000);
             expect(Number(supplyAt)).to.equal(0);
-            console.log(supplyAt);
-
-            await ve.increaseUnlockTime(lockDuration + oneWeek);
-
-            // Move forward in time and withdraw from the owner
-            ethers.provider.send("evm_increaseTime", [oneWeek + 1000]);
-            ethers.provider.send("evm_mine");
-            await ve.connect(owner).withdraw();
-
-            // Move forward in time for more than two weeks
-            ethers.provider.send("evm_increaseTime", [2 * oneWeek - 2000]);
-            ethers.provider.send("evm_mine");
-//
-//            // Define 4 week for the lock duration and lock for the owner
-//            blockNumber = await ethers.provider.getBlockNumber();
-//            block = await ethers.provider.getBlock(blockNumber);
-//            lockDuration = block.timestamp + 4 * oneWeek;
-//            await ve.connect(owner).createLock(twoOLABalance, lockDuration);
-//
-//            // Move forward in time for more than four weeks and withdraw from both
-//            ethers.provider.send("evm_increaseTime", [4 * oneWeek +  5000]);
-//            ethers.provider.send("evm_mine");
-//            await ve.withdraw();
-//            await ve.connect(owner).withdraw();
         });
     });
 

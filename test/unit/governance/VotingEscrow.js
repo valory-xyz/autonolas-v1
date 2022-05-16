@@ -278,12 +278,12 @@ describe("VotingEscrow", function () {
         it("Checkpoint", async function () {
             const user = signers[1].address;
             // We don't have any points at the beginning
-            let numPoints = await ve.numPoints();
+            let numPoints = await ve.totalNumPoints();
             expect(numPoints).to.equal(0);
 
             // Checkpoint writes point and increases their global counter
             await ve.checkpoint();
-            numPoints = await ve.numPoints();
+            numPoints = await ve.totalNumPoints();
             expect(numPoints).to.equal(1);
 
             // Try to get past total voting supply of a block number in the future

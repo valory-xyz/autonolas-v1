@@ -81,7 +81,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // MaxBond(e) - sum(BondingProgram) over all epochs: accumulates leftovers from previous epochs
     uint256 public effectiveBond = maxBond;
     // Manual or auto control of max bond
-    bool bondAutoControl;
+    bool public bondAutoControl;
 
     // Component Registry
     address public immutable componentRegistry;
@@ -685,12 +685,12 @@ contract Tokenomics is IErrors, IStructs, Ownable {
             // Last block number of a previous epoch
             uint256 iBlock = mapEpochEconomics[endEpochNumber - 1].blockNumber - 1;
             // Get account's balance at the end of epoch
-            (uint256 balance, ) = IVotingEscrow(ve).balanceOfAt(account, iBlock);
+            uint256 balance = IVotingEscrow(ve).balanceOfAt(account, iBlock);
 
             // If there was no locking / staking, we skip the reward computation
             if (balance > 0) {
                 // Get the total supply at the last block of the epoch
-                (uint256 supply, ) = IVotingEscrow(ve).totalSupplyAt(iBlock);
+                uint256 supply = IVotingEscrow(ve).totalSupplyAt(iBlock);
 
                 // Add to the reward depending on the staker reward
                 if (supply > 0) {

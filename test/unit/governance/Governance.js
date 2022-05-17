@@ -10,17 +10,17 @@ describe("Governance unit", function () {
     let ve;
     let signers;
     const oneWeek = 7 * 86400;
-    const oneETHBalance = ethers.utils.parseEther("1");
-    const twoETHBalance = ethers.utils.parseEther("2");
-    const fiveETHBalance = ethers.utils.parseEther("5");
-    const tenETHBalance = ethers.utils.parseEther("10");
+    const oneOLABalance = ethers.utils.parseEther("1");
+    const twoOLABalance = ethers.utils.parseEther("2");
+    const fiveOLABalance = ethers.utils.parseEther("5");
+    const tenOLABalance = ethers.utils.parseEther("10");
     const AddressZero = "0x" + "0".repeat(40);
     const safeThreshold = 7;
     const nonce =  0;
     const minDelay = 1;
     const initialVotingDelay = 1; // blocks
     const initialVotingPeriod = 45818; // blocks ±= 1 week
-    const initialProposalThreshold = fiveETHBalance; // required voting power
+    const initialProposalThreshold = fiveOLABalance; // required voting power
     const quorum = 1; // quorum factor
     const proposalDescription = "Proposal 0";
     beforeEach(async function () {
@@ -43,8 +43,8 @@ describe("Governance unit", function () {
 
         signers = await ethers.getSigners();
 
-        // Mint 10 ETH worth of OLA tokens by default
-        await token.mint(signers[0].address, tenETHBalance);
+        // Mint 10 OLA worth of OLA tokens by default
+        await token.mint(signers[0].address, tenOLABalance);
         const balance = await token.balanceOf(signers[0].address);
         expect(ethers.utils.formatEther(balance) == 10).to.be.true;
     });
@@ -135,35 +135,33 @@ describe("Governance unit", function () {
             ).to.be.revertedWith("Governor: onlyGovernance");
         });
 
-        it("Deposit for voting power: deposit 10 eth worth of ve to address 1", async function () {
+        it("Deposit for voting power: deposit 10 OLA worth of ve to address 1", async function () {
             // Get the list of delegators and a delegatee address
             const numDelegators = 10;
             const delegatee = signers[1].address;
 
-            // Transfer initial balances to all the gelegators: 1 eth to each
+            // Transfer initial balances to all the gelegators: 1 OLA to each
             for (let i = 1; i <= numDelegators; i++) {
-                await token.transfer(signers[i].address, oneETHBalance);
+                await token.transfer(signers[i].address, oneOLABalance);
                 const balance = await token.balanceOf(signers[i].address);
                 expect(ethers.utils.formatEther(balance) == 1).to.be.true;
             }
 
-            // Approve signers[1]-signers[10] for 1 ETH by voting ve
+            // Approve signers[1]-signers[10] for 1 OLA by voting ve
             for (let i = 1; i <= numDelegators; i++) {
-                await token.connect(signers[i]).approve(ve.address, oneETHBalance);
+                await token.connect(signers[i]).approve(ve.address, oneOLABalance);
             }
 
             // Define 1 week for the lock duration
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             // Deposit tokens as a voting power to a chosen delegatee
-            await ve.connect(signers[1]).createLock(oneETHBalance, lockDuration);
+            await ve.connect(signers[1]).createLock(oneOLABalance, lockDuration);
             for (let i = 2; i <= numDelegators; i++) {
-                await ve.connect(signers[i]).depositFor(delegatee, oneETHBalance);
+                await ve.connect(signers[i]).depositFor(delegatee, oneOLABalance);
             }
 
-            // Given 1 eth worth of voting power from every address, the cumulative voting power must be 10
+            // Given 1 OLA worth of voting power from every address, the cumulative voting power must be 10
             const vPower = await ve.getVotes(delegatee);
             expect(ethers.utils.formatEther(vPower) > 0).to.be.true;
 
@@ -177,19 +175,17 @@ describe("Governance unit", function () {
             const balance = await token.balanceOf(signers[0].address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve signers[0] for 10 ETH by voting ve
-            await token.connect(signers[0]).approve(ve.address, tenETHBalance);
+            // Approve signers[0] for 10 OLA by voting ve
+            await token.connect(signers[0]).approve(ve.address, tenOLABalance);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as ETH amount locked:
+            // This will result in voting power being almost exactly as OLA amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * oneWeek / 7;
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + fourYears;
+            const lockDuration = fourYears;
 
-            // Lock 5 ETH, which is lower than the initial proposal threshold by a bit
-            await ve.connect(signers[0]).createLock(fiveETHBalance, lockDuration);
+            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            await ve.connect(signers[0]).createLock(fiveOLABalance, lockDuration);
 
             // Deploy simple version of a timelock
             const executors = [];
@@ -204,15 +200,15 @@ describe("Governance unit", function () {
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
 
-            // Initial proposal threshold is 10 eth, our delegatee voting power is 5 eth
+            // Initial proposal threshold is 10 OLA, our delegatee voting power is almost 5 OLA
             await expect(
                 // Solidity overridden functions must be explicitly declared
                 governorBravo.connect(signers[0])["propose(address[],uint256[],bytes[],string)"]([AddressZero], [0],
                     ["0x"], proposalDescription)
             ).to.be.revertedWith("GovernorCompatibilityBravo: proposer votes below proposal threshold");
 
-            // Adding voting power, and the proposal must go through, 4 + 2 of ETH in voting power is almost 6 > 5 required
-            await ve.connect(signers[0]).increaseAmount(twoETHBalance);
+            // Adding voting power, and the proposal must go through, 4 + 2 of OLA in voting power is almost 6 > 5 required
+            await ve.connect(signers[0]).increaseAmount(twoOLABalance);
             await governorBravo.connect(signers[0])["propose(address[],uint256[],bytes[],string)"]([AddressZero], [0],
                 ["0x"], proposalDescription);
         });

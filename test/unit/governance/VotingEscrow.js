@@ -310,7 +310,7 @@ describe("VotingEscrow", function () {
             // Create and increase locks for both addresses signers[0] and signers[1]
             await ve.createLock(twoOLABalance, lockDuration);
             await ve.increaseAmount(oneOLABalance);
-            blockNumber = await ethers.provider.getBlockNumber();
+            let blockNumber = await ethers.provider.getBlockNumber();
             await ve.connect(owner).createLock(twoOLABalance, lockDuration);
             await ve.connect(owner).increaseAmount(oneOLABalance);
             await ve.connect(owner).increaseAmount(oneOLABalance);
@@ -327,7 +327,7 @@ describe("VotingEscrow", function () {
 
             // Try to get voting supply power at time in the future
             blockNumber = await ethers.provider.getBlockNumber();
-            block = await ethers.provider.getBlock(blockNumber);
+            const block = await ethers.provider.getBlock(blockNumber);
             const supplyAt = await ve.totalSupplyLockedAtT(block.timestamp + oneWeek + 1000);
             expect(Number(supplyAt)).to.equal(0);
         });

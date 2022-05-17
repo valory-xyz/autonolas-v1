@@ -64,13 +64,13 @@ describe("VotingEscrow", function () {
             expect(Math.floor(lockDuration / oneWeek) * oneWeek).to.equal(lockEnd);
 
             // Get the account of the last user point
-            const pv = await ve.getLastUserPointHistory(owner.address);
+            const pv = await ve.getLastUserPoint(owner.address);
             expect(pv.balance).to.equal(oneOLABalance);
 
             // Get the number of user points for owner and compare the balance of the last point
-            const numAccountPoints = await ve.getNumAccountPoints(owner.address);
+            const numAccountPoints = await ve.getNumUserPoints(owner.address);
             expect(numAccountPoints).to.equal(1);
-            const pvLast = await ve.getUserPointHistory(owner.address, numAccountPoints - 1);
+            const pvLast = await ve.getUserPoint(owner.address, numAccountPoints - 1);
             expect(pvLast.balance).to.equal(pv.balance);
 
             // Balance is time-based, it changes slightly every fraction of a time
@@ -296,6 +296,46 @@ describe("VotingEscrow", function () {
             await expect(
                 ve.getPastVotes(user, blockNumber + 20)
             ).to.be.revertedWith("WrongBlockNumber");
+        });
+
+        it("Getting past votes and supply", async function () {
+            // Transfer 10 OLA worth of OLA to signers[1]
+            const deployer = signers[0];
+            const owner = signers[1];
+            await ola.transfer(owner.address, tenOLABalance);
+
+            // Approve signers[0] and signers[1] for 1 OLA by voting escrow
+            await ola.approve(ve.address, tenOLABalance);
+            await ola.connect(owner).approve(ve.address, tenOLABalance);
+
+            // Define 1 week for the lock duration
+            let blockNumber = await ethers.provider.getBlockNumber();
+            let block = await ethers.provider.getBlock(blockNumber);
+            let lockDuration = block.timestamp + oneWeek;
+
+            // Create and increase locks for both addresses signers[0] and signers[1]
+            await ve.createLock(twoOLABalance, lockDuration);
+            await ve.increaseAmount(oneOLABalance);
+            blockNumber = await ethers.provider.getBlockNumber();
+            await ve.connect(owner).createLock(twoOLABalance, lockDuration);
+            await ve.connect(owner).increaseAmount(oneOLABalance);
+            await ve.connect(owner).increaseAmount(oneOLABalance);
+
+            // Get past votes of the owner
+            const votesOwner = await ve.getPastVotes(owner.address, blockNumber);
+            expect(Number(votesOwner)).to.greaterThan(0);
+
+            // Get past voting supply from the same block number
+            const supply = await ve.getPastTotalSupply(blockNumber);
+            // They must be equal with the deployer voting power at that time
+            const votesDeployer = await ve.getPastVotes(deployer.address, blockNumber);
+            expect(Number(supply)).to.equal(Number(votesDeployer));
+
+            // Try to get voting supply power at time in the future
+            blockNumber = await ethers.provider.getBlockNumber();
+            block = await ethers.provider.getBlock(blockNumber);
+            const supplyAt = await ve.totalSupplyLockedAtT(block.timestamp + oneWeek + 1000);
+            expect(Number(supplyAt)).to.equal(0);
         });
     });
 

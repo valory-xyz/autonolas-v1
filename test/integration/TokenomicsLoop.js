@@ -739,9 +739,7 @@ describe("Tokenomics integration", async () => {
             await ola.transfer(staker.address, twoHundredETHBalance);
             await ola.approve(ve.address, hundredETHBalance);
             await ola.connect(staker).approve(ve.address, twoHundredETHBalance);
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             // Balance should be zero before the lock and specified amount after the lock
             expect(await ve.getVotes(deployer.address)).to.equal(0);
@@ -970,9 +968,7 @@ describe("Tokenomics integration", async () => {
             await ola.transfer(staker.address, twoHundredETHBalance);
             await ola.approve(ve.address, hundredETHBalance);
             await ola.connect(staker).approve(ve.address, twoHundredETHBalance);
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             // Balance should be zero before the lock and specified amount after the lock
             expect(await ve.getVotes(deployer.address)).to.equal(0);

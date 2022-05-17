@@ -50,9 +50,7 @@ describe("VotingEscrow", function () {
             await ola.connect(owner).approve(ve.address, oneOLABalance);
 
             // Define 1 week for the lock duration
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek; // 1 week from now
+            const lockDuration = oneWeek; // 1 week from now
 
             // Balance should be zero before the lock
             expect(await ve.getVotes(owner.address)).to.equal(0);
@@ -61,7 +59,9 @@ describe("VotingEscrow", function () {
 
             // Lock end is rounded by 1 week, as implemented by design
             const lockEnd = await ve.lockedEnd(owner.address);
-            expect(Math.floor(lockDuration / oneWeek) * oneWeek).to.equal(lockEnd);
+            const blockNumber = await ethers.provider.getBlockNumber();
+            const block = await ethers.provider.getBlock(blockNumber);
+            expect(Math.floor((block.timestamp + lockDuration) / oneWeek) * oneWeek).to.equal(lockEnd);
 
             // Get the account of the last user point
             const pv = await ve.getLastUserPoint(owner.address);
@@ -92,9 +92,7 @@ describe("VotingEscrow", function () {
             await ola.connect(owner).approve(ve.address, oneOLABalance);
 
             // Define 1 week for the lock duration
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek; // 1 week from now
+            const lockDuration = oneWeek; // 1 week from now
 
             // Try to deposit 1 OLA for deployer without initially locked balance
             await expect(
@@ -128,9 +126,7 @@ describe("VotingEscrow", function () {
             const fourYears = 4 * 365 * oneWeek / 7;
             await ola.approve(ve.address, oneOLABalance);
 
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + fourYears + oneWeek; // 4 years and 1 week
+            const lockDuration = fourYears + oneWeek; // 4 years and 1 week
 
             await expect(
                 ve.createLock(oneOLABalance, lockDuration)
@@ -139,10 +135,7 @@ describe("VotingEscrow", function () {
 
         it("Should fail when creating a lock with already locked value", async function () {
             await ola.approve(ve.address, oneOLABalance);
-
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             ve.createLock(oneOLABalance, lockDuration);
             await expect(
@@ -152,10 +145,7 @@ describe("VotingEscrow", function () {
 
         it("Increase amount of lock", async function () {
             await ola.approve(ve.address, tenOLABalance);
-
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             // Should fail if requires are not satisfied
             // No previous lock
@@ -185,10 +175,7 @@ describe("VotingEscrow", function () {
 
         it("Increase amount of unlock time", async function () {
             await ola.approve(ve.address, tenOLABalance);
-
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = oneWeek;
 
             // Should fail if requires are not satisfied
             // Nothing is locked
@@ -229,16 +216,27 @@ describe("VotingEscrow", function () {
             await ola.connect(owner).approve(ve.address, oneOLABalance);
 
             // Lock 1 OLA
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek;
+            const lockDuration = 2 * oneWeek;
             await ve.connect(owner).createLock(oneOLABalance, lockDuration);
 
             // Try withdraw early
             await expect(ve.connect(owner).withdraw()).to.be.revertedWith("LockNotExpired");
-            // Now try withdraw after the time has expired
-            ethers.provider.send("evm_increaseTime", [oneWeek]);
-            ethers.provider.send("evm_mine"); // mine the next block
+            // Move time close to the lock duration
+            const blockNumber = await ethers.provider.getBlockNumber();
+            const block = await ethers.provider.getBlock(blockNumber);
+            const roundedLockTime = Math.floor((block.timestamp + lockDuration) / oneWeek) * oneWeek;
+            const adjustedLockDuration = roundedLockTime - block.timestamp;
+            ethers.provider.send("evm_increaseTime", [adjustedLockDuration - 100]);
+            ethers.provider.send("evm_mine");
+
+            // Try withdraw about the unlock time, but not quite there yet
+            await expect(ve.connect(owner).withdraw()).to.be.revertedWith("LockNotExpired");
+
+            // Move time after the lock duration
+            ethers.provider.send("evm_increaseTime", [200]);
+            ethers.provider.send("evm_mine");
+
+            // Now withdraw must work
             await ve.connect(owner).withdraw();
             expect(await ola.balanceOf(owner.address)).to.equal(tenOLABalance);
         });
@@ -258,9 +256,7 @@ describe("VotingEscrow", function () {
             expect(await ve.totalSupply()).to.equal(0);
 
             // Define 1 week for the lock duration
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek; // 1 week from now
+            const lockDuration = oneWeek; // 1 week from now
 
             // Create locks for both addresses signers[0] and signers[1]
             await ve.createLock(oneOLABalance, lockDuration);
@@ -278,12 +274,12 @@ describe("VotingEscrow", function () {
         it("Checkpoint", async function () {
             const user = signers[1].address;
             // We don't have any points at the beginning
-            let numPoints = await ve.numPoints();
+            let numPoints = await ve.totalNumPoints();
             expect(numPoints).to.equal(0);
 
             // Checkpoint writes point and increases their global counter
             await ve.checkpoint();
-            numPoints = await ve.numPoints();
+            numPoints = await ve.totalNumPoints();
             expect(numPoints).to.equal(1);
 
             // Try to get past total voting supply of a block number in the future
@@ -309,14 +305,12 @@ describe("VotingEscrow", function () {
             await ola.connect(owner).approve(ve.address, tenOLABalance);
 
             // Define 1 week for the lock duration
-            let blockNumber = await ethers.provider.getBlockNumber();
-            let block = await ethers.provider.getBlock(blockNumber);
-            let lockDuration = block.timestamp + oneWeek;
+            let lockDuration = oneWeek;
 
             // Create and increase locks for both addresses signers[0] and signers[1]
             await ve.createLock(twoOLABalance, lockDuration);
             await ve.increaseAmount(oneOLABalance);
-            blockNumber = await ethers.provider.getBlockNumber();
+            let blockNumber = await ethers.provider.getBlockNumber();
             await ve.connect(owner).createLock(twoOLABalance, lockDuration);
             await ve.connect(owner).increaseAmount(oneOLABalance);
             await ve.connect(owner).increaseAmount(oneOLABalance);
@@ -333,7 +327,7 @@ describe("VotingEscrow", function () {
 
             // Try to get voting supply power at time in the future
             blockNumber = await ethers.provider.getBlockNumber();
-            block = await ethers.provider.getBlock(blockNumber);
+            const block = await ethers.provider.getBlock(blockNumber);
             const supplyAt = await ve.totalSupplyLockedAtT(block.timestamp + oneWeek + 1000);
             expect(Number(supplyAt)).to.equal(0);
         });
@@ -350,9 +344,7 @@ describe("VotingEscrow", function () {
             expect(await ve.totalSupply()).to.equal(0);
 
             // Define 1 week for the lock duration
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + oneWeek; // 1 week from now
+            const lockDuration = oneWeek; // 1 week from now
 
             // Create locks for both addresses signers[0] and signers[1]
             await ve.createLock(oneOLABalance, lockDuration);

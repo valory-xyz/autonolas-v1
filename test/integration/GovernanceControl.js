@@ -12,13 +12,13 @@ describe("Governance integration", function () {
     let signers;
     const AddressZero = "0x" + "0".repeat(40);
     const bytes32Zero = "0x" + "0".repeat(64);
-    const oneETHBalance = ethers.utils.parseEther("1");
-    const fiveETHBalance = ethers.utils.parseEther("5");
-    const tenETHBalance = ethers.utils.parseEther("10");
-    const minDelay = 1;
+    const oneOLABalance = ethers.utils.parseEther("1");
+    const fiveOLABalance = ethers.utils.parseEther("5");
+    const tenOLABalance = ethers.utils.parseEther("10");
+    const minDelay = 1; // blocks
     const initialVotingDelay = 0; // blocks
     const initialVotingPeriod = 1; // blocks
-    const initialProposalThreshold = fiveETHBalance; // required voting power
+    const initialProposalThreshold = fiveOLABalance; // required voting power
     const quorum = 1; // quorum factor
     const proposalDescription = "Proposal to change value";
     const controlValue = 20;
@@ -46,8 +46,8 @@ describe("Governance integration", function () {
 
         signers = await ethers.getSigners();
 
-        // Mint 10 ETH worth of OLA tokens by default
-        await token.mint(signers[0].address, tenETHBalance);
+        // Mint 10 OLA worth of OLA tokens by default
+        await token.mint(signers[0].address, tenOLABalance);
         const balance = await token.balanceOf(signers[0].address);
         expect(ethers.utils.formatEther(balance) == 10).to.be.true;
     });
@@ -76,10 +76,10 @@ describe("Governance integration", function () {
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
             await timelock.schedule(testServiceRegistry.address, 0, callData, bytes32Zero, bytes32Zero, minDelay);
 
-            // Waiting for the next minDelay blocks to pass
-            const blockNumber = await ethers.provider.getBlockNumber();
-            const block = await ethers.provider.getBlock(blockNumber);
-            await ethers.provider.send("evm_mine", [block.timestamp + minDelay * 86460]);
+            // Waiting for the minDelay number of blocks to pass
+            for (let i = 0; i < minDelay; i++) {
+                ethers.provider.send("evm_mine");
+            }
 
             // Execute the proposed operation and check the execution result
             await timelock.execute(testServiceRegistry.address, 0, callData, bytes32Zero, bytes32Zero);
@@ -92,21 +92,19 @@ describe("Governance integration", function () {
             const balance = await token.balanceOf(deployer.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve signers[0] for 10 ETH by voting ve
-            await token.connect(deployer).approve(ve.address, tenETHBalance);
+            // Approve signers[0] for 10 OLA by voting ve
+            await token.connect(deployer).approve(ve.address, tenOLABalance);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as ETH amount locked:
+            // This will result in voting power being almost exactly as OLA amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
-            let blockNumber = await ethers.provider.getBlockNumber();
-            let block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + fourYears;
+            const lockDuration = fourYears;
 
-            // Lock 5 ETH, which is lower than the initial proposal threshold by a bit
-            await ve.connect(deployer).createLock(fiveETHBalance, lockDuration);
+            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            await ve.connect(deployer).createLock(fiveOLABalance, lockDuration);
             // Add a bit more
-            await ve.connect(deployer).increaseAmount(oneETHBalance);
+            await ve.connect(deployer).increaseAmount(oneOLABalance);
 
             // Deploy Timelock
             const executors = [];
@@ -151,7 +149,8 @@ describe("Governance integration", function () {
                 [callData], descriptionHash);
 
             // Waiting for the next minDelay blocks to pass
-            await ethers.provider.send("evm_mine", [block.timestamp + minDelay * 86460]);
+            ethers.provider.send("evm_increaseTime", [minDelay * 86460]);
+            ethers.provider.send("evm_mine");
 
             // Execute the proposed operation and check the execution result
             await governorBravo["execute(uint256)"](proposalId);
@@ -164,21 +163,19 @@ describe("Governance integration", function () {
             const balance = await token.balanceOf(deployer.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve signers[0] for 10 ETH by voting ve
-            await token.connect(deployer).approve(ve.address, tenETHBalance);
+            // Approve signers[0] for 10 OLA by voting ve
+            await token.connect(deployer).approve(ve.address, tenOLABalance);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as ETH amount locked:
+            // This will result in voting power being almost exactly as OLA amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
-            let blockNumber = await ethers.provider.getBlockNumber();
-            let block = await ethers.provider.getBlock(blockNumber);
-            const lockDuration = block.timestamp + fourYears;
+            const lockDuration = fourYears;
 
-            // Lock 5 ETH, which is lower than the initial proposal threshold by a bit
-            await ve.connect(deployer).createLock(fiveETHBalance, lockDuration);
+            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            await ve.connect(deployer).createLock(fiveOLABalance, lockDuration);
             // Add a bit more
-            await ve.connect(deployer).increaseAmount(oneETHBalance);
+            await ve.connect(deployer).increaseAmount(oneOLABalance);
 
             // Deploy Timelock
             const executors = [];

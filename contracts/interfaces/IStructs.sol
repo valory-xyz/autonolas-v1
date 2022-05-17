@@ -72,15 +72,15 @@ interface IStructs {
 
     // Structure for voting escrow points
     struct PointVoting {
-        // b: y = ax + b
+        // w(i) = at + b (bias)
         int128 bias;
-        // a: dweight / dt
+        // dw / dt = a (slope)
         int128 slope;
         // Timestamp
         uint256 ts;
         // Block number
         uint256 blockNumber;
-        // Total balance or account balance
+        // Supply or account balance
         uint256 balance;
     }
 }

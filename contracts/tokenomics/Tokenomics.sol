@@ -81,7 +81,7 @@ contract Tokenomics is IErrors, IStructs, Ownable {
     // MaxBond(e) - sum(BondingProgram) over all epochs: accumulates leftovers from previous epochs
     uint256 public effectiveBond = maxBond;
     // Manual or auto control of max bond
-    bool bondAutoControl;
+    bool public bondAutoControl;
 
     // Component Registry
     address public immutable componentRegistry;

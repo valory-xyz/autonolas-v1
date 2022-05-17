@@ -35,6 +35,7 @@ more than `MAXTIME` (4 years).
 /// @title Voting Escrow - the workflow is ported from Curve Finance Vyper implementation
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
 /// Code ported from: https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VotingEscrow.vy
+/// and: https://github.com/solidlyexchange/solidly/blob/master/contracts/ve.sol
 
 //# Interface for checking whether address belongs to a whitelisted
 //# type of a smart wallet.
@@ -92,11 +93,11 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     // Economical checkpoint
     uint256 public numPoints;
     // Mapping of point Id => point
-    mapping(uint256 => PointVoting) public pointHistory;
+    mapping(uint256 => PointVoting) public mapSupplyPoints;
     // Mapping of account address => PointVoting[point Id]
-    mapping(address => PointVoting[]) public userPointHistory;
+    mapping(address => PointVoting[]) public mapUserPoints;
     // Mapping of time => signed slope change
-    mapping(uint256 => int128) public slopeChanges;
+    mapping(uint256 => int128) public mapSlopeChanges;
 
     uint8 public decimals;
     string public name;
@@ -113,8 +114,8 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     constructor(address _token, string memory _name, string memory _symbol)
     {
         token = _token;
-        pointHistory[0].blockNumber = block.number;
-        pointHistory[0].ts = block.timestamp;
+        mapSupplyPoints[0].blockNumber = block.number;
+        mapSupplyPoints[0].ts = block.timestamp;
         name = _name;
         symbol = _symbol;
         decimals = ERC20(_token).decimals();
@@ -131,8 +132,8 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     function assertNotContract(address account) internal {
         if (account != tx.origin) {
             // TODO Implement own smart contract checker or use one from oracle-dev
-            if (smartWalletChecker != address(0)) {
-                require(IChecker(smartWalletChecker).check(account), "SC depositors not allowed");
+            if (smartWalletChecker != address(0) && !IChecker(smartWalletChecker).check(account)) {
+                revert UnauthorizedAccount(account);
             }
         }
     }
@@ -140,26 +141,26 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     /// @dev Gets the most recently recorded user point for `account`.
     /// @param account Account address.
     /// @return pv Last checkpoint.
-    function getLastUserPointHistory(address account) external view returns (PointVoting memory pv) {
-        uint256 uPoint = userPointHistory[account].length;
+    function getLastUserPoint(address account) external view returns (PointVoting memory pv) {
+        uint256 uPoint = mapUserPoints[account].length;
         if (uPoint > 0) {
-            pv = userPointHistory[account][uPoint - 1];
+            pv = mapUserPoints[account][uPoint - 1];
         }
     }
 
     /// @dev Gets the number of user points.
     /// @param account Account address.
     /// @return accountNumPoints Number of user points.
-    function getNumAccountPoints(address account) external view returns (uint256 accountNumPoints) {
-        accountNumPoints = userPointHistory[account].length;
+    function getNumUserPoints(address account) external view returns (uint256 accountNumPoints) {
+        accountNumPoints = mapUserPoints[account].length;
     }
 
     /// @dev Gets the checkpoint structure at number `idx` for `account`.
     /// @param account User wallet address.
     /// @param idx User point number.
     /// @return The requested checkpoint.
-    function getUserPointHistory(address account, uint256 idx) external view returns (PointVoting memory) {
-        return userPointHistory[account][idx];
+    function getUserPoint(address account, uint256 idx) external view returns (PointVoting memory) {
+        return mapUserPoints[account][idx];
     }
 
 
@@ -201,19 +202,19 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
             // Read values of scheduled changes in the slope
             // oldLocked.end can be in the past and in the future
             // newLocked.end can ONLY be in the FUTURE unless everything expired: than zeros
-            oldDSlope = slopeChanges[oldLocked.end];
+            oldDSlope = mapSlopeChanges[oldLocked.end];
             if (newLocked.end != 0) {
                 if (newLocked.end == oldLocked.end) {
                     newDSlope = oldDSlope;
                 } else {
-                    newDSlope = slopeChanges[newLocked.end];
+                    newDSlope = mapSlopeChanges[newLocked.end];
                 }
             }
         }
 
         PointVoting memory lastPoint;
         if (_point > 0) {
-            lastPoint = pointHistory[_point];
+            lastPoint = mapSupplyPoints[_point];
         } else {
             lastPoint = PointVoting({bias: 0, slope: 0, ts: block.timestamp, blockNumber: block.number, balance: supply});
         }
@@ -240,7 +241,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
                 if (tStep > block.timestamp) {
                     tStep = block.timestamp;
                 } else {
-                    dSlope = slopeChanges[tStep];
+                    dSlope = mapSlopeChanges[tStep];
                 }
                 lastPoint.bias -= lastPoint.slope * int128(int256(tStep - lastCheckpoint));
                 lastPoint.slope += dSlope;
@@ -262,13 +263,13 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
                     lastPoint.balance = supply;
                     break;
                 } else {
-                    pointHistory[_point] = lastPoint;
+                    mapSupplyPoints[_point] = lastPoint;
                 }
             }
         }
 
         numPoints = _point;
-        // Now pointHistory is filled until t=now
+        // Now mapSupplyPoints is filled until t=now
 
         if (account != address(0)) {
             // If last point was in this block, the slope change has been applied already
@@ -284,7 +285,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
         }
 
         // Record the changed point into history
-        pointHistory[_point] = lastPoint;
+        mapSupplyPoints[_point] = lastPoint;
 
         if (account != address(0)) {
             // Schedule the slope changes (slope is going down)
@@ -296,13 +297,13 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
                 if (newLocked.end == oldLocked.end) {
                     oldDSlope -= uNew.slope; // It was a new deposit, not extension
                 }
-                slopeChanges[oldLocked.end] = oldDSlope;
+                mapSlopeChanges[oldLocked.end] = oldDSlope;
             }
 
             if (newLocked.end > block.timestamp) {
                 if (newLocked.end > oldLocked.end) {
                     newDSlope -= uNew.slope; // old slope disappeared at this point
-                    slopeChanges[newLocked.end] = newDSlope;
+                    mapSlopeChanges[newLocked.end] = newDSlope;
                 }
                 // else: we recorded it already in oldDSlope
             }
@@ -310,7 +311,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
             uNew.ts = block.timestamp;
             uNew.blockNumber = block.number;
             uNew.balance = uint256(uint128(newLocked.amount));
-            userPointHistory[account].push(uNew);
+            mapUserPoints[account].push(uNew);
         }
     }
 
@@ -478,7 +479,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     /// @return Approximate point number for the specified block.
     function _findBlockPointIndexForAccount(address account, uint256 blockNumber) internal view returns (uint256) {
         uint256 _min = 0;
-        uint256 _max = userPointHistory[account].length;
+        uint256 _max = mapUserPoints[account].length;
         if (_max > 0) {
             _max -= 1;
         }
@@ -489,7 +490,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
                 break;
             }
             uint256 _mid = (_min + _max + 1) / 2;
-            if (userPointHistory[account][_mid].blockNumber <= blockNumber) {
+            if (mapUserPoints[account][_mid].blockNumber <= blockNumber) {
                 _min = _mid;
             } else {
                 _max = _mid - 1;
@@ -513,7 +514,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
                 break;
             }
             uint256 _mid = (_min + _max + 1) / 2;
-            if (pointHistory[_mid].blockNumber <= blockNumber) {
+            if (mapSupplyPoints[_mid].blockNumber <= blockNumber) {
                 _min = _mid;
             } else {
                 _max = _mid - 1;
@@ -528,11 +529,11 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     /// @param t Epoch time to return voting power at
     /// @return vBalance User voting power.
     function _balanceOfLocked(address account, uint256 t) internal view returns (uint256 vBalance) {
-        uint256 _point = userPointHistory[account].length;
+        uint256 _point = mapUserPoints[account].length;
         if (_point == 0) {
             return 0;
         } else {
-            PointVoting memory lastPoint = userPointHistory[account][_point - 1];
+            PointVoting memory lastPoint = mapUserPoints[account][_point - 1];
             lastPoint.bias -= lastPoint.slope * int128(int256(t) - int256(lastPoint.ts));
             if (lastPoint.bias > 0) {
                 vBalance = uint256(int256(lastPoint.bias));
@@ -555,8 +556,8 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
         // Find point with the closest block number to the provided one
         pointIdx = _findBlockPointIndexForAccount(account, blockNumber);
         // If the block number at the point index is bigger than the specified block number, the balance was zero
-        if (userPointHistory[account][pointIdx].blockNumber <= blockNumber) {
-            balance = userPointHistory[account][pointIdx].balance;
+        if (mapUserPoints[account][pointIdx].blockNumber <= blockNumber) {
+            balance = mapUserPoints[account][pointIdx].balance;
         }
     }
 
@@ -578,15 +579,15 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
         // Binary search
         uint256 _min = _findBlockPointIndexForAccount(account, blockNumber);
 
-        PointVoting memory uPoint = userPointHistory[account][_min];
+        PointVoting memory uPoint = mapUserPoints[account][_min];
 
         uint256 maxPoint = numPoints;
         uint256 _point = _findBlockPointIndex(blockNumber, maxPoint);
-        PointVoting memory point0 = pointHistory[_point];
+        PointVoting memory point0 = mapSupplyPoints[_point];
         uint256 d_block = 0;
         uint256 d_t = 0;
         if (_point < maxPoint) {
-            PointVoting memory point1 = pointHistory[_point + 1];
+            PointVoting memory point1 = mapSupplyPoints[_point + 1];
             d_block = point1.blockNumber - point0.blockNumber;
             d_t = point1.ts - point0.ts;
         } else {
@@ -598,7 +599,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
             block_time += (d_t * (blockNumber - point0.blockNumber)) / d_block;
         }
 
-        uPoint.bias -= uPoint.slope * int128(int256(block_time - uPoint.ts));
+        uPoint.bias -= uPoint.slope * int128(int256(block_time) - int256(uPoint.ts));
         if (uPoint.bias >= 0) {
             balance = uint256(uint128(uPoint.bias));
         }
@@ -617,9 +618,9 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
             if (tStep > t) {
                 tStep = t;
             } else {
-                dSlope = slopeChanges[tStep];
+                dSlope = mapSlopeChanges[tStep];
             }
-            lastPoint.bias -= lastPoint.slope * int128(int256(tStep - lastPoint.ts));
+            lastPoint.bias -= lastPoint.slope * int128(int256(tStep) - int256(lastPoint.ts));
             if (tStep == t) {
                 break;
             }
@@ -636,7 +637,7 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
     /// @return Total voting power
     function totalSupplyLockedAtT(uint256 t) public view returns (uint256) {
         uint256 _point = numPoints;
-        PointVoting memory lastPoint = pointHistory[_point];
+        PointVoting memory lastPoint = mapSupplyPoints[_point];
         return supplyLockedAt(lastPoint, t);
     }
 
@@ -654,8 +655,8 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
         // Find point with the closest block number to the provided one
         pointIdx = _findBlockPointIndex(blockNumber, numPoints);
         // If the block number at the point index is bigger than the specified block number, the balance was zero
-        if (pointHistory[pointIdx].blockNumber <= blockNumber) {
-            supplyAt = pointHistory[pointIdx].balance;
+        if (mapSupplyPoints[pointIdx].blockNumber <= blockNumber) {
+            supplyAt = mapSupplyPoints[pointIdx].balance;
         }
     }
     
@@ -675,10 +676,10 @@ contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransf
         uint256 _point = numPoints;
         uint256 target_point = _findBlockPointIndex(blockNumber, _point);
 
-        PointVoting memory pv = pointHistory[target_point];
+        PointVoting memory pv = mapSupplyPoints[target_point];
         uint256 dt = 0;
         if (target_point < _point) {
-            PointVoting memory pointNext = pointHistory[target_point + 1];
+            PointVoting memory pointNext = mapSupplyPoints[target_point + 1];
             if (pv.blockNumber != pointNext.blockNumber) {
                 dt = ((blockNumber - pv.blockNumber) * (pointNext.ts - pv.ts)) / (pointNext.blockNumber - pv.blockNumber);
             }

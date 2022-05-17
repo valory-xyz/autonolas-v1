@@ -7,12 +7,10 @@ interface IVotingEscrow {
     /// @param account Account address.
     /// @param blockNumber Block number.
     /// @return balance Token balance.
-    /// @return pointIdx Index of a point with the requested block number balance.
-    function balanceOfAt(address account, uint256 blockNumber) external view returns (uint256 balance, uint256 pointIdx);
+    function balanceOfAt(address account, uint256 blockNumber) external view returns (uint256 balance);
 
     /// @dev Gets total token supply at a specific block number.
     /// @param blockNumber Block number.
     /// @return supplyAt Supply at the specified block number.
-    /// @return pointIdx Index of a point with the requested block number balance.
-    function totalSupplyAt(uint256 blockNumber) external view returns (uint256 supplyAt, uint256 pointIdx);
+    function totalSupplyAt(uint256 blockNumber) external view returns (uint256 supplyAt);
 }

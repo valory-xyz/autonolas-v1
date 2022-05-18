@@ -15,6 +15,7 @@ describe("Governance unit", function () {
     const fiveOLABalance = ethers.utils.parseEther("5");
     const tenOLABalance = ethers.utils.parseEther("10");
     const AddressZero = "0x" + "0".repeat(40);
+    const bytes32Zero = "0x" + "0".repeat(64);
     const safeThreshold = 7;
     const nonce =  0;
     const minDelay = 1; // blocks
@@ -104,6 +105,7 @@ describe("Governance unit", function () {
         });
 
         it("Changes the ownership of a governance contract and a timelock", async function () {
+            const deployer = signers[0];
             // Approve signers[0] for 10 OLA by voting ve
             await token.approve(ve.address, tenOLABalance);
             // Define 4 years for the lock duration in Voting Escrow.
@@ -115,8 +117,8 @@ describe("Governance unit", function () {
             await ve.createLock(tenOLABalance, lockDuration);
 
             // Deploy first timelock
-            const executors = [];
-            const proposers = [];
+            const executors = [deployer.address];
+            const proposers = [deployer.address];
             const Timelock = await ethers.getContractFactory("Timelock");
             const timelock = await Timelock.deploy(minDelay, proposers, executors);
             await timelock.deployed();
@@ -147,7 +149,7 @@ describe("Governance unit", function () {
             ).to.be.revertedWith("Governor: onlyGovernance");
 
             // Let the deployer propose the change of the timelock
-            const callData = governorBravo.interface.encodeFunctionData("updateTimelock", [timelock2.address]);
+            let callData = governorBravo.interface.encodeFunctionData("updateTimelock", [timelock2.address]);
             await governorBravo["propose(address[],uint256[],bytes[],string)"]([governorBravo.address], [0],
                 [callData], proposalDescription);
 
@@ -172,6 +174,23 @@ describe("Governance unit", function () {
 
             // Check the new timelock address
             expect(await governorBravo.timelock()).to.equal(timelock2.address);
+
+
+            // Trying to change back timelock with just the proposal roles
+            callData = governorBravo.interface.encodeFunctionData("updateTimelock", [timelock.address]);
+            // Schedule the change right away by the deployer as a proposer
+            await timelock2.schedule(governorBravo.address, 0, callData, bytes32Zero, bytes32Zero, minDelay);
+
+            // Waiting for the minDelay number of blocks to pass
+            for (let i = 0; i < minDelay; i++) {
+                ethers.provider.send("evm_mine");
+            }
+
+            // Executing via this rpoposal will fail as onlyGovernance checks for the proposals passed throught the
+            // governor itself, i.e with voting
+            await expect(
+                timelock2.execute(governorBravo.address, 0, callData, bytes32Zero, bytes32Zero)
+            ).to.be.revertedWith("TimelockController: underlying transaction reverted");
         });
 
         it("Deposit for voting power: deposit 10 OLA worth of ve to address 1", async function () {

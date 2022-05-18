@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
@@ -40,7 +40,7 @@ struct LockedBalance {
 }
 
 /// @notice This token supports the ERC20 interface specifications except for transfers.
-contract VotingEscrow is IStructs, Ownable, ReentrancyGuard, ERC20VotesNonTransferable {
+contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
     using SafeERC20 for IERC20;
 
     enum DepositType {

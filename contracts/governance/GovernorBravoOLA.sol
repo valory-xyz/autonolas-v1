@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
@@ -50,8 +50,8 @@ contract GovernorBravoOLA is Governor, GovernorSettings, GovernorCompatibilityBr
         return super.propose(targets, values, calldatas, description);
     }
 
-    /// @dev Gets the number of votes.
-    /// @return The number of votes required in order for a voter to become a proposer.
+    /// @dev Gets the voting power for the proposal threshold.
+    /// @return The voting power required in order for a voter to become a proposer.
     function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256)
     {
         return super.proposalThreshold();

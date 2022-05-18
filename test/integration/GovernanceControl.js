@@ -190,13 +190,15 @@ describe("Governance integration", function () {
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
 
-            // Grand governorBravo an admin, proposer and executor role in the timelock
+            // Grand governorBravo an admin, proposer, executor and canceller role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
             await timelock.grantRole(adminRole, governorBravo.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
             await timelock.grantRole(proposerRole, governorBravo.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
             await timelock.grantRole(executorRole, governorBravo.address);
+            const cancellerRole = ethers.utils.id("CANCELLER_ROLE");
+            await timelock.grantRole(cancellerRole, governorBravo.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);

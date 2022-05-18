@@ -158,8 +158,6 @@ describe("Governance unit", function () {
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
-            console.log("proposalId", proposalId);
-            console.log("state", await governorBravo.state(proposalId));
             await governorBravo.castVote(proposalId, 1);
             await governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([governorBravo.address], [0],
                 [callData], descriptionHash);

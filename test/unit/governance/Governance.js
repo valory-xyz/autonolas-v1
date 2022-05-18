@@ -17,9 +17,9 @@ describe("Governance unit", function () {
     const AddressZero = "0x" + "0".repeat(40);
     const safeThreshold = 7;
     const nonce =  0;
-    const minDelay = 1;
-    const initialVotingDelay = 1; // blocks
-    const initialVotingPeriod = 45818; // blocks ±= 1 week
+    const minDelay = 1; // blocks
+    const initialVotingDelay = 0; // blocks
+    const initialVotingPeriod = 1; // blocks
     const initialProposalThreshold = fiveOLABalance; // required voting power
     const quorum = 1; // quorum factor
     const proposalDescription = "Proposal 0";
@@ -104,35 +104,76 @@ describe("Governance unit", function () {
         });
 
         it("Changes the ownership of a governance contract and a timelock", async function () {
-            const deployer = signers[0];
-            const user = signers[1];
+            // Approve signers[0] for 10 OLA by voting ve
+            await token.approve(ve.address, tenOLABalance);
+            // Define 4 years for the lock duration in Voting Escrow.
+            // This will result in voting power being almost exactly as OLA amount locked:
+            // voting power = amount * t_left_before_unlock / t_max
+            const lockDuration = 4 * 365 * 86400;
+
+            // Lock 10 OLA, which is enough to cover the 5 OLA of initial proposal threshold voting power
+            await ve.createLock(tenOLABalance, lockDuration);
 
             // Deploy first timelock
-            const executors = [deployer.address];
-            const proposers = [user.address];
+            const executors = [];
+            const proposers = [];
             const Timelock = await ethers.getContractFactory("Timelock");
             const timelock = await Timelock.deploy(minDelay, proposers, executors);
             await timelock.deployed();
 
+            const timelock2 = await Timelock.deploy(minDelay, proposers, executors);
+            await timelock2.deployed();
+
             // Deploy Governance Bravo with a deployer being a timelock address
             const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, deployer.address, initialVotingDelay,
+            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
 
-            // Swap timelock
-            // Only current governor (owner of a government, i.e. a timelock) can do that
+            // Check the initial timelock address
+            expect(await governorBravo.timelock()).to.equal(timelock.address);
+
+            // Grand governorBravo proposer and executor roles in the timelock
+            const proposerRole = ethers.utils.id("PROPOSER_ROLE");
+            await timelock.grantRole(proposerRole, governorBravo.address);
+            const executorRole = ethers.utils.id("EXECUTOR_ROLE");
+            await timelock.grantRole(executorRole, governorBravo.address);
+
+            // Update timelock to a different address: possible via governor execute function
+            // The action from timelock itself without the governance proposal will fail as it tries to match
+            // the execution request in the msg.value coming to the governor, and straight call to the function is rejecte.
             await expect(
-                governorBravo.connect(user).updateTimelock(timelock.address)
+                governorBravo.updateTimelock(timelock2.address)
             ).to.be.revertedWith("Governor: onlyGovernance");
 
-            // Update timelock to its native address
-            await governorBravo.updateTimelock(timelock.address);
+            // Let the deployer propose the change of the timelock
+            const callData = governorBravo.interface.encodeFunctionData("updateTimelock", [timelock2.address]);
+            await governorBravo["propose(address[],uint256[],bytes[],string)"]([governorBravo.address], [0],
+                [callData], proposalDescription);
 
-            // Try to execute with the old timelock
-            await expect(
-                governorBravo.updateTimelock(user.address)
-            ).to.be.revertedWith("Governor: onlyGovernance");
+            // Get the proposalId
+            const descriptionHash = ethers.utils.id(proposalDescription);
+            const proposalId = await governorBravo.hashProposal([governorBravo.address], [0], [callData],
+                descriptionHash);
+
+            // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
+            // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
+            console.log("proposalId", proposalId);
+            console.log("state", await governorBravo.state(proposalId));
+            await governorBravo.castVote(proposalId, 1);
+            await governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([governorBravo.address], [0],
+                [callData], descriptionHash);
+
+            // Waiting for the minDelay number of blocks to pass
+            for (let i = 0; i < minDelay; i++) {
+                ethers.provider.send("evm_mine");
+            }
+
+            // Execute the proposed operation and check the execution result
+            await governorBravo["execute(uint256)"](proposalId);
+
+            // Check the new timelock address
+            expect(await governorBravo.timelock()).to.equal(timelock2.address);
         });
 
         it("Deposit for voting power: deposit 10 OLA worth of ve to address 1", async function () {
@@ -205,7 +246,7 @@ describe("Governance unit", function () {
                 // Solidity overridden functions must be explicitly declared
                 governorBravo.connect(signers[0])["propose(address[],uint256[],bytes[],string)"]([AddressZero], [0],
                     ["0x"], proposalDescription)
-            ).to.be.revertedWith("GovernorCompatibilityBravo: proposer votes below proposal threshold");
+            ).to.be.revertedWith("Governor: proposer votes below proposal threshold");
 
             // Adding voting power, and the proposal must go through, 4 + 2 of OLA in voting power is almost 6 > 5 required
             await ve.connect(signers[0]).increaseAmount(twoOLABalance);

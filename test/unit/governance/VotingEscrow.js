@@ -333,8 +333,8 @@ describe("VotingEscrow", function () {
         });
     });
 
-    context("ERC20VotesNonTransferable", async function () {
-        it("Check all the related functions", async function () {
+    context("Non-transferable veOLA", async function () {
+        it("Check that veOLA is non-transferable", async function () {
             const deployer = signers[0].address;
             const user = signers[1].address;
             // Approve signers[0] for 1 OLA by voting escrow
@@ -362,18 +362,6 @@ describe("VotingEscrow", function () {
             await expect(
                 ve.transferFrom(deployer, user, oneOLABalance)
             ).to.be.revertedWith("NonTransferable");
-
-            // Try to call delegate-related functions for veOLA
-            await expect(
-                ve.delegates(user)
-            ).to.be.revertedWith("NonDelegatable");
-            await expect(
-                ve.delegate(deployer)
-            ).to.be.revertedWith("NonDelegatable");
-            const rv = "0x" + "0".repeat(64);
-            await expect(
-                ve.delegateBySig(deployer, 0, 0, 0, rv, rv)
-            ).to.be.revertedWith("NonDelegatable");
         });
     });
 });

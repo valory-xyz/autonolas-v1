@@ -31,23 +31,4 @@ abstract contract ERC20VotesNonTransferable is IErrors, IVotes, IERC20 {
     {
         revert NonTransferable(address(this));
     }
-
-    /// @dev Compatibility with IVotes.
-    function delegates(address account) external view virtual override returns (address)
-    {
-        revert NonDelegatable(address(this));
-    }
-
-    /// @dev Compatibility with IVotes.
-    function delegate(address delegatee) external virtual override
-    {
-        revert NonDelegatable(address(this));
-    }
-
-    /// @dev Compatibility with IVotes.
-    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
-        external virtual override
-    {
-        revert NonDelegatable(address(this));
-    }
 }

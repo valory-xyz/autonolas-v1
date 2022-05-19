@@ -34,9 +34,22 @@ achieved with the longest lock possible. This way the users are incentivized to 
 * and per block could be fairly bad b/c Ethereum changes blocktimes.
 * What we can do is to extrapolate ***At functions */
 
+// Locked balances struct
 struct LockedBalance {
+    // Amount locked
     int128 amount;
+    // Time of the lock end
     uint256 end;
+}
+
+// Delegation related struct
+struct DelegatedAccount {
+    // Delegatee address
+    address to;
+    // Last block number the delegation took place
+    uint256 blockNumber;
+    // Index in the delegation set
+    uint256 idx;
 }
 
 /// @notice This token supports the ERC20 interface specifications except for transfers.
@@ -59,28 +72,32 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
     // Maximum lock time (4 years)
     uint256 internal constant MAXTIME = 4 * 365 * 86400;
 
-    // Token address
-    address immutable public token;
-    // Total token supply
-    uint256 public supply;
-    // Mapping of account address => LockedBalance
-    mapping(address => LockedBalance) public mapLockedBalances;
-
-    // Total number of economical checkpoints (starting from zero)
-    uint256 public totalNumPoints;
-    // Mapping of point Id => point
-    mapping(uint256 => PointVoting) public mapSupplyPoints;
-    // Mapping of account address => PointVoting[point Id]
-    mapping(address => PointVoting[]) public mapUserPoints;
-    // Mapping of time => signed slope change
-    mapping(uint256 => int128) public mapSlopeChanges;
-
     // Number of decimals
     uint8 public decimals;
     // Voting token name
     string public name;
     // Voting token symbol
     string public symbol;
+    // Token address
+    address immutable public token;
+    // Total token supply
+    uint256 public supply;
+    // Total number of economical checkpoints (starting from zero)
+    uint256 public totalNumPoints;
+    // Mapping of account address => LockedBalance
+    mapping(address => LockedBalance) public mapLockedBalances;
+    // Mapping of point Id => point
+    mapping(uint256 => PointVoting) public mapSupplyPoints;
+    // Mapping of account address => PointVoting[point Id]
+    mapping(address => PointVoting[]) public mapUserPoints;
+    // Mapping of time => signed slope change
+    mapping(uint256 => int128) public mapSlopeChanges;
+    // Mapping of states for signing / validating signatures
+    mapping (address => uint) public nonces;
+    // Mapping of account address => delegatee address
+    mapping(address => DelegatedAccount) private _mapDelegations;
+    // Mapping of account address => set of delegator addresses
+    mapping(address => address[]) private _mapSetDelegators;
 
     /// @dev Contract constructor
     /// @param _token Token address.
@@ -333,7 +350,7 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
     /// @param unlockTime Time when tokens unlock, rounded down to a whole week.
     function createLock(uint256 amount, uint256 unlockTime) external nonReentrant {
         // Lock time is rounded down to weeks
-        uint256 unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
+        unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
         // Check if the amount is zero
         if (amount == 0) {
@@ -379,7 +396,7 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
     /// @param unlockTime New tokens unlock time.
     function increaseUnlockTime(uint256 unlockTime) external nonReentrant {
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
-        uint256 unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
+        unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
         // The locked balance must already exist
         if (lockedBalance.amount == 0) {
             revert NoValueLocked(msg.sender);
@@ -516,10 +533,19 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
         }
     }
 
-    /// @dev Gets the voting power.
+    /// @dev Gets total voting power based on all the possible delegators.
     /// @param account Account address.
-    function getVotes(address account) public view override returns (uint256) {
-        return _balanceOfLocked(account, block.timestamp);
+    /// @return vBalance Account voting power.
+    function getVotes(address account) public view override returns (uint256 vBalance) {
+        // Check if the account has delegated to another delegatee and record votes only if there is no delegation
+        if (_mapDelegations[account].to == address(0)) {
+            vBalance = _balanceOfLocked(account, block.timestamp);
+        }
+        // Go through other delegators who delegated to us
+        address[] memory setDelegators = _mapSetDelegators[account];
+        for (uint256 i = 0; i < setDelegators.length; ++i) {
+            vBalance += _balanceOfLocked(setDelegators[i], block.timestamp);
+        }
     }
 
     /// @dev Gets the block time adjustment for two neighboring points.
@@ -551,21 +577,43 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
         }
     }
 
-    /// @dev Gets voting power at a specific block number.
+    /// @dev Gets voting power at a specific block number for a single account.
     /// @param account Account address.
     /// @param blockNumber Block number.
-    /// @return balance Voting balance / power.
-    function getPastVotes(address account, uint256 blockNumber) public view override returns (uint256 balance) {
+    /// @param blockTime Estimated block time.
+    /// @return vBalance Voting vBalance / power.
+    function _getPastVotes(address account, uint256 blockNumber, uint256 blockTime) internal view
+        returns (uint256 vBalance)
+    {
         // Find the user point for the provided block number
         (PointVoting memory uPoint, ) = _findPointByBlock(blockNumber, account);
-
-        // Get block time adjustment.
-        (, uint256 blockTime) = _getBlockTime(blockNumber);
 
         // Calculate bias based on a block time
         uPoint.bias -= uPoint.slope * int128(int256(blockTime) - int256(uPoint.ts));
         if (uPoint.bias > 0) {
-            balance = uint256(uint128(uPoint.bias));
+            vBalance = uint256(uint128(uPoint.bias));
+        }
+    }
+
+    /// @dev Gets total voting power at a specific block number.
+    /// @param account Account address.
+    /// @param blockNumber Block number.
+    /// @return vBalance Voting vBalance / power.
+    function getPastVotes(address account, uint256 blockNumber) public view override returns (uint256 vBalance) {
+        // Get block time adjustment.
+        (, uint256 blockTime) = _getBlockTime(blockNumber);
+
+        // Check for our delegations at that block number
+        DelegatedAccount memory oldDelegatee = _mapDelegations[account];
+        // If we had a self delegation at the block number not bigger than the provided block number, count the voting power
+        if (oldDelegatee.to == address(0) && oldDelegatee.blockNumber <= blockNumber) {
+            vBalance = _getPastVotes(account, blockNumber, blockTime);
+        }
+
+        // Go through other delegators who delegated to us
+        address[] memory setDelegators = _mapSetDelegators[account];
+        for (uint256 i = 0; i < setDelegators.length; ++i) {
+            vBalance += _getPastVotes(setDelegators[i], blockNumber, blockTime);
         }
     }
 
@@ -635,5 +683,104 @@ contract VotingEscrow is IStructs, ReentrancyGuard, ERC20VotesNonTransferable {
         (PointVoting memory sPoint, uint256 blockTime) = _getBlockTime(blockNumber);
         // Now dt contains info on how far are we beyond the point
         return _supplyLockedAt(sPoint, blockTime);
+    }
+
+    /// @dev Gets the delegatee address.
+    /// @param account Account address.
+    /// @return The delegatee of the `account`.
+    function delegates(address account) external view override returns (address) {
+        return _mapDelegations[account].to;
+    }
+
+    /// @dev Delegate votes from `msg.sender` to `delegatee`.
+    /// @param delegatee The address to delegate votes to.
+    function delegate(address delegatee) external override {
+        _delegate(msg.sender, delegatee);
+    }
+
+    /// @dev Delegate votes from `delegator` to `delegatee`.
+    /// @param delegator Delegator address
+    /// @param delegatee The address to delegate votes to.
+    function _delegate(address delegator, address delegatee) internal {
+        // Don't allow delegating to self
+        if (delegator == delegatee) {
+            revert WrongAccountAddress(delegatee);
+        }
+
+        // Get the old delegatee data
+        DelegatedAccount memory oldDelegatee = _mapDelegations[delegator];
+        // Only engage if the delegatee address change
+        if (oldDelegatee.to != delegatee) {
+            // Remove from the delegators map of old delegatee if the change happens in the same current block number
+            if (oldDelegatee.to != address(0)) {
+                address[] storage setDelegators = _mapSetDelegators[oldDelegatee.to];
+                address checkAddress = setDelegators[oldDelegatee.idx];
+                // The value under the index must point exactly at the delegator itself
+                // TODO check with echidna it's always the case and then remove it
+                if (checkAddress != delegator) {
+                    revert WrongAccountAddress(checkAddress);
+                }
+                // Eliminate this element from the set
+                uint256 size = setDelegators.length;
+                if (size > 1) {
+                    setDelegators[oldDelegatee.idx] = setDelegators[size - 1];
+                    address changeAddress = setDelegators[oldDelegatee.idx];
+                    _mapDelegations[changeAddress].idx = oldDelegatee.idx;
+                }
+                setDelegators.pop();
+            }
+
+            // Update the delegations map data and add the delegator to the new delegatee checkpoing map
+            oldDelegatee.to = delegatee;
+            oldDelegatee.blockNumber = block.number;
+            if (delegatee != address(0)) {
+                oldDelegatee.idx = _mapSetDelegators[delegatee].length;
+                // The duplication of delegators is impossible since it would mean delegatees are the same
+                _mapSetDelegators[delegatee].push(delegator);
+            }
+        }
+    }
+
+    /// @dev Delegates votes from signatory to `delegatee`
+    /// @param delegatee The address to delegate votes to
+    /// @param nonce The contract state required to match the signature
+    /// @param expiry The time at which to expire the signature
+    /// @param v The recovery byte of the signature
+    /// @param r Half of the ECDSA signature pair
+    /// @param s Half of the ECDSA signature pair.
+    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+        external override
+    {
+        // The EIP-712 typehash for the contract's domain
+        bytes32 domainTypehash = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
+        // The EIP-712 typehash for the delegation struct used by the contract
+        bytes32 delegationTypehash = keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
+
+        // Get the chain Id
+        uint256 chainId;
+        assembly { chainId := chainid() }
+
+        // Get other data for the signature recovery
+        bytes32 domainSeparator = keccak256(abi.encode(domainTypehash, keccak256(bytes(name)), chainId, address(this)));
+        bytes32 structHash = keccak256(abi.encode(delegationTypehash, delegatee, nonce, expiry));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+        address signatory = ecrecover(digest, v, r, s);
+
+        // Check for the recovered address
+        if (signatory == address(0)) {
+            revert ZeroAddress();
+        }
+        // Check for the nonce
+        if (nonce != nonces[signatory]) {
+            revert IncorrectNonce(nonce, nonces[signatory]);
+        }
+        nonces[signatory]++;
+        // Check the signature expiry
+        if (block.timestamp > expiry) {
+            revert SignatureExpired(expiry, block.timestamp);
+        }
+
+        // Call the delegate function with the recovered signatory
+        _delegate(signatory, delegatee);
     }
 }

@@ -92,10 +92,6 @@ interface IErrors {
     /// @param account Token address.
     error NonTransferable(address account);
 
-    /// @dev Token is non-delegatable.
-    /// @param account Token address.
-    error NonDelegatable(address account);
-
     /// @dev Service must be active.
     /// @param serviceId Service Id.
     error ServiceMustBeActive(uint256 serviceId);
@@ -145,6 +141,10 @@ interface IErrors {
     /// @dev Account is not whitelisted.
     /// @param account Account address.
     error UnauthorizedAccount(address account);
+
+    /// @dev Account address is incorrect.
+    /// @param account Account address.
+    error WrongAccountAddress(address account);
 
     /// @dev Provided token address is incorrect.
     /// @param provided Provided token address.
@@ -240,4 +240,14 @@ interface IErrors {
     /// @param providedBlockNumber Provided block number.
     /// @param actualBlockNumber Actual block number.
     error WrongBlockNumber(uint256 providedBlockNumber, uint256 actualBlockNumber);
+
+    /// @dev Provided nonce is incorrect.
+    /// @param provided Provided nonce.
+    /// @param expected Expected nonce.
+    error IncorrectNonce(uint256 provided, uint256 expected);
+
+    /// @dev Provided signature expiry time has passed.
+    /// @param provided Provided time.
+    /// @param expected Minimum expected time.
+    error SignatureExpired(uint256 provided, uint256 expected);
 }

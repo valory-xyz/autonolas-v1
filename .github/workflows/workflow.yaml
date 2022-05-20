@@ -43,7 +43,7 @@ jobs:
           directory: ./coverage
           flags: unittests
           name: codecov-umbrella
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
   docker:
     runs-on: ubuntu-latest

@@ -1,0 +1,1836 @@
+'npx hardhat compile --force' running
+Compiled 113 Solidity files successfully
+
+Solidity 0.8.14 is not fully supported yet. You can still use Hardhat, but some features, like stack traces, might not work correctly.
+
+Learn more at https://hardhat.org/reference/solidity-support
+
+@uniswap/v2-periphery/contracts/UniswapV2Router02.sol:12:1: Warning: Contract code size exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+contract UniswapV2Router02 is IUniswapV2Router02 {
+^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IWETH.sol
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:23:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                       ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:35:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                                   ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:22:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                      ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:39:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                                       ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:27:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                           ^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:41:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                         ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:53:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                                     ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:24:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                        ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:39:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                                       ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:36:24:
+   |
+36 |     function delegates(address account) external view virtual override returns (address)
+   |                        ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:42:23:
+   |
+42 |     function delegate(address delegatee) external virtual override
+   |                       ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:28:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                            ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:47:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                               ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:62:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                              ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:78:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                              ^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:87:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                       ^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:98:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                                  ^^^^^^^^^
+
+
+Warning: Contract code size is 24918 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+ --> contracts/test/TestServiceRegistry.sol:8:1:
+  |
+8 | contract TestServiceRegistry is ServiceRegistry {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
+
+
+Contract UniswapV2Factory
++----------------+-----------+
+|    Function    | Modifiers |
++----------------+-----------+
+|     feeTo      |     []    |
+|  feeToSetter   |     []    |
+|    getPair     |     []    |
+|    allPairs    |     []    |
+| allPairsLength |     []    |
+|   createPair   |     []    |
+|    setFeeTo    |     []    |
+| setFeeToSetter |     []    |
+|  constructor   |     []    |
+| allPairsLength |     []    |
+|   createPair   |     []    |
+|    setFeeTo    |     []    |
+| setFeeToSetter |     []    |
++----------------+-----------+
+
+Contract UniswapV2Pair
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|             constructor             |     []    |
+|                _mint                |     []    |
+|                _burn                |     []    |
+|               _approve              |     []    |
+|              _transfer              |     []    |
+|               approve               |     []    |
+|               transfer              |     []    |
+|             transferFrom            |     []    |
+|                permit               |     []    |
+|                 name                |     []    |
+|                symbol               |     []    |
+|               decimals              |     []    |
+|             totalSupply             |     []    |
+|              balanceOf              |     []    |
+|              allowance              |     []    |
+|               approve               |     []    |
+|               transfer              |     []    |
+|             transferFrom            |     []    |
+|           DOMAIN_SEPARATOR          |     []    |
+|           PERMIT_TYPEHASH           |     []    |
+|                nonces               |     []    |
+|                permit               |     []    |
+|                 name                |     []    |
+|                symbol               |     []    |
+|               decimals              |     []    |
+|             totalSupply             |     []    |
+|              balanceOf              |     []    |
+|              allowance              |     []    |
+|               approve               |     []    |
+|               transfer              |     []    |
+|             transferFrom            |     []    |
+|           DOMAIN_SEPARATOR          |     []    |
+|           PERMIT_TYPEHASH           |     []    |
+|                nonces               |     []    |
+|                permit               |     []    |
+|          MINIMUM_LIQUIDITY          |     []    |
+|               factory               |     []    |
+|                token0               |     []    |
+|                token1               |     []    |
+|             getReserves             |     []    |
+|         price0CumulativeLast        |     []    |
+|         price1CumulativeLast        |     []    |
+|                kLast                |     []    |
+|                 mint                |     []    |
+|                 burn                |     []    |
+|                 swap                |     []    |
+|                 skim                |     []    |
+|                 sync                |     []    |
+|              initialize             |     []    |
+|             getReserves             |     []    |
+|            _safeTransfer            |     []    |
+|             constructor             |     []    |
+|              initialize             |     []    |
+|               _update               |     []    |
+|               _mintFee              |     []    |
+|                 mint                |  ['lock'] |
+|                 burn                |  ['lock'] |
+|                 swap                |  ['lock'] |
+|                 skim                |  ['lock'] |
+|                 sync                |  ['lock'] |
+|     slitherConstructorVariables     |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract IERC20
++--------------+-----------+
+|   Function   | Modifiers |
++--------------+-----------+
+|     name     |     []    |
+|    symbol    |     []    |
+|   decimals   |     []    |
+| totalSupply  |     []    |
+|  balanceOf   |     []    |
+|  allowance   |     []    |
+|   approve    |     []    |
+|   transfer   |     []    |
+| transferFrom |     []    |
++--------------+-----------+
+
+Contract IUniswapV2Callee
++---------------+-----------+
+|    Function   | Modifiers |
++---------------+-----------+
+| uniswapV2Call |     []    |
++---------------+-----------+
+
+Contract Math
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|   min    |     []    |
+|   sqrt   |     []    |
++----------+-----------+
+
+Contract SafeMath
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|   add    |     []    |
+|   sub    |     []    |
+|   mul    |     []    |
++----------+-----------+
+
+Contract UQ112x112
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|                encode               |     []    |
+|                uqdiv                |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract WETH9
++-----------------------------+-----------+
+|           Function          | Modifiers |
++-----------------------------+-----------+
+|           fallback          |     []    |
+|           deposit           |     []    |
+|           withdraw          |     []    |
+|         totalSupply         |     []    |
+|           approve           |     []    |
+|           transfer          |     []    |
+|         transferFrom        |     []    |
+| slitherConstructorVariables |     []    |
++-----------------------------+-----------+
+
+Contract TransferHelper
++------------------+-----------+
+|     Function     | Modifiers |
++------------------+-----------+
+|   safeApprove    |     []    |
+|   safeTransfer   |     []    |
+| safeTransferFrom |     []    |
+| safeTransferETH  |     []    |
++------------------+-----------+
+
+Contract IUniswapV2Factory
++----------------+-----------+
+|    Function    | Modifiers |
++----------------+-----------+
+|     feeTo      |     []    |
+|  feeToSetter   |     []    |
+|    getPair     |     []    |
+|    allPairs    |     []    |
+| allPairsLength |     []    |
+|   createPair   |     []    |
+|    setFeeTo    |     []    |
+| setFeeToSetter |     []    |
++----------------+-----------+
+
+Contract IUniswapV2Pair
++----------------------+-----------+
+|       Function       | Modifiers |
++----------------------+-----------+
+|         name         |     []    |
+|        symbol        |     []    |
+|       decimals       |     []    |
+|     totalSupply      |     []    |
+|      balanceOf       |     []    |
+|      allowance       |     []    |
+|       approve        |     []    |
+|       transfer       |     []    |
+|     transferFrom     |     []    |
+|   DOMAIN_SEPARATOR   |     []    |
+|   PERMIT_TYPEHASH    |     []    |
+|        nonces        |     []    |
+|        permit        |     []    |
+|  MINIMUM_LIQUIDITY   |     []    |
+|       factory        |     []    |
+|        token0        |     []    |
+|        token1        |     []    |
+|     getReserves      |     []    |
+| price0CumulativeLast |     []    |
+| price1CumulativeLast |     []    |
+|        kLast         |     []    |
+|         mint         |     []    |
+|         burn         |     []    |
+|         swap         |     []    |
+|         skim         |     []    |
+|         sync         |     []    |
+|      initialize      |     []    |
++----------------------+-----------+
+
+Contract UniswapV2Router02
++-----------------------------------------------------------+------------+
+|                          Function                         | Modifiers  |
++-----------------------------------------------------------+------------+
+|      removeLiquidityETHSupportingFeeOnTransferTokens      |     []     |
+| removeLiquidityETHWithPermitSupportingFeeOnTransferTokens |     []     |
+|   swapExactTokensForTokensSupportingFeeOnTransferTokens   |     []     |
+|     swapExactETHForTokensSupportingFeeOnTransferTokens    |     []     |
+|     swapExactTokensForETHSupportingFeeOnTransferTokens    |     []     |
+|                          factory                          |     []     |
+|                            WETH                           |     []     |
+|                        addLiquidity                       |     []     |
+|                      addLiquidityETH                      |     []     |
+|                      removeLiquidity                      |     []     |
+|                     removeLiquidityETH                    |     []     |
+|                 removeLiquidityWithPermit                 |     []     |
+|                removeLiquidityETHWithPermit               |     []     |
+|                  swapExactTokensForTokens                 |     []     |
+|                  swapTokensForExactTokens                 |     []     |
+|                   swapExactETHForTokens                   |     []     |
+|                   swapTokensForExactETH                   |     []     |
+|                   swapExactTokensForETH                   |     []     |
+|                   swapETHForExactTokens                   |     []     |
+|                           quote                           |     []     |
+|                        getAmountOut                       |     []     |
+|                        getAmountIn                        |     []     |
+|                       getAmountsOut                       |     []     |
+|                        getAmountsIn                       |     []     |
+|                        constructor                        |     []     |
+|                          receive                          |     []     |
+|                       _addLiquidity                       |     []     |
+|                        addLiquidity                       | ['ensure'] |
+|                      addLiquidityETH                      | ['ensure'] |
+|                      removeLiquidity                      | ['ensure'] |
+|                     removeLiquidityETH                    | ['ensure'] |
+|                 removeLiquidityWithPermit                 | ['ensure'] |
+|                removeLiquidityETHWithPermit               | ['ensure'] |
+|      removeLiquidityETHSupportingFeeOnTransferTokens      | ['ensure'] |
+| removeLiquidityETHWithPermitSupportingFeeOnTransferTokens | ['ensure'] |
+|                           _swap                           |     []     |
+|                  swapExactTokensForTokens                 | ['ensure'] |
+|                  swapTokensForExactTokens                 | ['ensure'] |
+|                   swapExactETHForTokens                   | ['ensure'] |
+|                   swapTokensForExactETH                   | ['ensure'] |
+|                   swapExactTokensForETH                   | ['ensure'] |
+|                   swapETHForExactTokens                   | ['ensure'] |
+|             _swapSupportingFeeOnTransferTokens            |     []     |
+|   swapExactTokensForTokensSupportingFeeOnTransferTokens   | ['ensure'] |
+|     swapExactETHForTokensSupportingFeeOnTransferTokens    | ['ensure'] |
+|     swapExactTokensForETHSupportingFeeOnTransferTokens    | ['ensure'] |
+|                           quote                           |     []     |
+|                        getAmountOut                       |     []     |
+|                        getAmountIn                        |     []     |
+|                       getAmountsOut                       |     []     |
+|                        getAmountsIn                       |     []     |
++-----------------------------------------------------------+------------+
+
+Contract IERC20
++--------------+-----------+
+|   Function   | Modifiers |
++--------------+-----------+
+|     name     |     []    |
+|    symbol    |     []    |
+|   decimals   |     []    |
+| totalSupply  |     []    |
+|  balanceOf   |     []    |
+|  allowance   |     []    |
+|   approve    |     []    |
+|   transfer   |     []    |
+| transferFrom |     []    |
++--------------+-----------+
+
+Contract IWETH
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+| deposit  |     []    |
+| transfer |     []    |
+| withdraw |     []    |
++----------+-----------+
+
+Contract SafeMath
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|   add    |     []    |
+|   sub    |     []    |
+|   mul    |     []    |
++----------+-----------+
+
+Contract UniswapV2Library
++---------------+-----------+
+|    Function   | Modifiers |
++---------------+-----------+
+|   sortTokens  |     []    |
+|    pairFor    |     []    |
+|  getReserves  |     []    |
+|     quote     |     []    |
+|  getAmountOut |     []    |
+|  getAmountIn  |     []    |
+| getAmountsOut |     []    |
+|  getAmountsIn |     []    |
++---------------+-----------+
+
+Contract IProxy
++------------+-----------+
+|  Function  | Modifiers |
++------------+-----------+
+| masterCopy |     []    |
++------------+-----------+
+
+Contract GnosisSafeProxy
++-------------+-----------+
+|   Function  | Modifiers |
++-------------+-----------+
+| constructor |     []    |
+|   fallback  |     []    |
++-------------+-----------+
+
+Contract GnosisSafeProxyFactory
++--------------------------------------+-----------+
+|               Function               | Modifiers |
++--------------------------------------+-----------+
+|             createProxy              |     []    |
+|           proxyRuntimeCode           |     []    |
+|          proxyCreationCode           |     []    |
+|         deployProxyWithNonce         |     []    |
+|         createProxyWithNonce         |     []    |
+|       createProxyWithCallback        |     []    |
+| calculateCreateProxyWithNonceAddress |     []    |
++--------------------------------------+-----------+
+
+Contract IProxyCreationCallback
++--------------+-----------+
+|   Function   | Modifiers |
++--------------+-----------+
+| proxyCreated |     []    |
++--------------+-----------+
+
+Contract GnosisSafeMultisig
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|             constructor             |     []    |
+|              _parseData             |     []    |
+|                create               |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract GnosisSafeL2
++-------------------------------------+----------------+
+|               Function              |   Modifiers    |
++-------------------------------------+----------------+
+|             constructor             |       []       |
+|                setup                |       []       |
+|           execTransaction           |       []       |
+|            handlePayment            |       []       |
+|           checkSignatures           |       []       |
+|           checkNSignatures          |       []       |
+|            requiredTxGas            |       []       |
+|             approveHash             |       []       |
+|              getChainId             |       []       |
+|           domainSeparator           |       []       |
+|        encodeTransactionData        |       []       |
+|          getTransactionHash         |       []       |
+|               setGuard              | ['authorized'] |
+|               getGuard              |       []       |
+|           requireSelfCall           |       []       |
+|             getStorageAt            |       []       |
+|          simulateAndRevert          |       []       |
+|      internalSetFallbackHandler     |       []       |
+|          setFallbackHandler         | ['authorized'] |
+|               fallback              |       []       |
+|            transferToken            |       []       |
+|            signatureSplit           |       []       |
+|             setupOwners             |       []       |
+|        addOwnerWithThreshold        | ['authorized'] |
+|             removeOwner             | ['authorized'] |
+|              swapOwner              | ['authorized'] |
+|           changeThreshold           | ['authorized'] |
+|             getThreshold            |       []       |
+|               isOwner               |       []       |
+|              getOwners              |       []       |
+|             setupModules            |       []       |
+|             enableModule            | ['authorized'] |
+|            disableModule            | ['authorized'] |
+|      execTransactionFromModule      |       []       |
+| execTransactionFromModuleReturnData |       []       |
+|           isModuleEnabled           |       []       |
+|         getModulesPaginated         |       []       |
+|               execute               |       []       |
+|               receive               |       []       |
+|           execTransaction           |       []       |
+|      execTransactionFromModule      |       []       |
+| slitherConstructorConstantVariables |       []       |
++-------------------------------------+----------------+
+
+Contract Guard
++---------------------+-----------+
+|       Function      | Modifiers |
++---------------------+-----------+
+|   checkTransaction  |     []    |
+| checkAfterExecution |     []    |
++---------------------+-----------+
+
+Contract Enum
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
++----------+-----------+
+
+Contract GnosisSafeMath
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|   mul    |     []    |
+|   sub    |     []    |
+|   add    |     []    |
+|   max    |     []    |
++----------+-----------+
+
+Contract ISignatureValidator
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|           isValidSignature          |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract SafeERC20
++-----------------------+-----------+
+|        Function       | Modifiers |
++-----------------------+-----------+
+|      safeTransfer     |     []    |
+|    safeTransferFrom   |     []    |
+|      safeApprove      |     []    |
+| safeIncreaseAllowance |     []    |
+| safeDecreaseAllowance |     []    |
+|  _callOptionalReturn  |     []    |
++-----------------------+-----------+
+
+Contract Address
++-----------------------+-----------+
+|        Function       | Modifiers |
++-----------------------+-----------+
+|       isContract      |     []    |
+|       sendValue       |     []    |
+|      functionCall     |     []    |
+|      functionCall     |     []    |
+| functionCallWithValue |     []    |
+| functionCallWithValue |     []    |
+|   functionStaticCall  |     []    |
+|   functionStaticCall  |     []    |
+|  functionDelegateCall |     []    |
+|  functionDelegateCall |     []    |
+|    verifyCallResult   |     []    |
++-----------------------+-----------+
+
+Contract Counters
++-----------+-----------+
+|  Function | Modifiers |
++-----------+-----------+
+|  current  |     []    |
+| increment |     []    |
+| decrement |     []    |
+|   reset   |     []    |
++-----------+-----------+
+
+Contract Strings
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|               toString              |     []    |
+|             toHexString             |     []    |
+|             toHexString             |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract Timers
++-------------+-----------+
+|   Function  | Modifiers |
++-------------+-----------+
+| getDeadline |     []    |
+| setDeadline |     []    |
+|    reset    |     []    |
+|   isUnset   |     []    |
+|  isStarted  |     []    |
+|  isPending  |     []    |
+|  isExpired  |     []    |
+| getDeadline |     []    |
+| setDeadline |     []    |
+|    reset    |     []    |
+|   isUnset   |     []    |
+|  isStarted  |     []    |
+|  isPending  |     []    |
+|  isExpired  |     []    |
++-------------+-----------+
+
+Contract ECDSA
++------------------------+-----------+
+|        Function        | Modifiers |
++------------------------+-----------+
+|      _throwError       |     []    |
+|       tryRecover       |     []    |
+|        recover         |     []    |
+|       tryRecover       |     []    |
+|        recover         |     []    |
+|       tryRecover       |     []    |
+|        recover         |     []    |
+| toEthSignedMessageHash |     []    |
+| toEthSignedMessageHash |     []    |
+|    toTypedDataHash     |     []    |
++------------------------+-----------+
+
+Contract SafeCast
++-----------+-----------+
+|  Function | Modifiers |
++-----------+-----------+
+| toUint224 |     []    |
+| toUint128 |     []    |
+|  toUint96 |     []    |
+|  toUint64 |     []    |
+|  toUint32 |     []    |
+|  toUint16 |     []    |
+|  toUint8  |     []    |
+| toUint256 |     []    |
+|  toInt128 |     []    |
+|  toInt64  |     []    |
+|  toInt32  |     []    |
+|  toInt16  |     []    |
+|   toInt8  |     []    |
+|  toInt256 |     []    |
++-----------+-----------+
+
+Contract DoubleEndedQueue
++-----------+-----------+
+|  Function | Modifiers |
++-----------+-----------+
+|  pushBack |     []    |
+|  popBack  |     []    |
+| pushFront |     []    |
+|  popFront |     []    |
+|   front   |     []    |
+|    back   |     []    |
+|     at    |     []    |
+|   clear   |     []    |
+|   length  |     []    |
+|   empty   |     []    |
++-----------+-----------+
+
+Contract Babylonian
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|   sqrt   |     []    |
++----------+-----------+
+
+Contract BitMath
++---------------------+-----------+
+|       Function      | Modifiers |
++---------------------+-----------+
+|  mostSignificantBit |     []    |
+| leastSignificantBit |     []    |
++---------------------+-----------+
+
+Contract FixedPoint
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|                encode               |     []    |
+|              encode144              |     []    |
+|                decode               |     []    |
+|              decode144              |     []    |
+|                 mul                 |     []    |
+|                 muli                |     []    |
+|                muluq                |     []    |
+|                divuq                |     []    |
+|               fraction              |     []    |
+|              reciprocal             |     []    |
+|                 sqrt                |     []    |
+| slitherConstructorConstantVariables |     []    |
++-------------------------------------+-----------+
+
+Contract FullMath
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+| fullMul  |     []    |
+| fullDiv  |     []    |
+|  mulDiv  |     []    |
++----------+-----------+
+
+Contract TransferHelper
++------------------+-----------+
+|     Function     | Modifiers |
++------------------+-----------+
+|   safeApprove    |     []    |
+|   safeTransfer   |     []    |
+| safeTransferFrom |     []    |
+| safeTransferETH  |     []    |
++------------------+-----------+
+
+Contract IERC20
++--------------+-----------+
+|   Function   | Modifiers |
++--------------+-----------+
+|     name     |     []    |
+|    symbol    |     []    |
+|   decimals   |     []    |
+| totalSupply  |     []    |
+|  balanceOf   |     []    |
+|  allowance   |     []    |
+|   approve    |     []    |
+|   transfer   |     []    |
+| transferFrom |     []    |
++--------------+-----------+
+
+Contract IUniswapV2Callee
++---------------+-----------+
+|    Function   | Modifiers |
++---------------+-----------+
+| uniswapV2Call |     []    |
++---------------+-----------+
+
+Contract IUniswapV2ERC20
++------------------+-----------+
+|     Function     | Modifiers |
++------------------+-----------+
+|       name       |     []    |
+|      symbol      |     []    |
+|     decimals     |     []    |
+|   totalSupply    |     []    |
+|    balanceOf     |     []    |
+|    allowance     |     []    |
+|     approve      |     []    |
+|     transfer     |     []    |
+|   transferFrom   |     []    |
+| DOMAIN_SEPARATOR |     []    |
+| PERMIT_TYPEHASH  |     []    |
+|      nonces      |     []    |
+|      permit      |     []    |
++------------------+-----------+
+
+Contract IUniswapV2Factory
++----------------+-----------+
+|    Function    | Modifiers |
++----------------+-----------+
+|     feeTo      |     []    |
+|  feeToSetter   |     []    |
+|    getPair     |     []    |
+|    allPairs    |     []    |
+| allPairsLength |     []    |
+|   createPair   |     []    |
+|    setFeeTo    |     []    |
+| setFeeToSetter |     []    |
++----------------+-----------+
+
+Contract IUniswapV2Pair
++----------------------+-----------+
+|       Function       | Modifiers |
++----------------------+-----------+
+|         name         |     []    |
+|        symbol        |     []    |
+|       decimals       |     []    |
+|     totalSupply      |     []    |
+|      balanceOf       |     []    |
+|      allowance       |     []    |
+|       approve        |     []    |
+|       transfer       |     []    |
+|     transferFrom     |     []    |
+|   DOMAIN_SEPARATOR   |     []    |
+|   PERMIT_TYPEHASH    |     []    |
+|        nonces        |     []    |
+|        permit        |     []    |
+|  MINIMUM_LIQUIDITY   |     []    |
+|       factory        |     []    |
+|        token0        |     []    |
+|        token1        |     []    |
+|     getReserves      |     []    |
+| price0CumulativeLast |     []    |
+| price1CumulativeLast |     []    |
+|        kLast         |     []    |
+|         mint         |     []    |
+|         burn         |     []    |
+|         swap         |     []    |
+|         skim         |     []    |
+|         sync         |     []    |
+|      initialize      |     []    |
++----------------------+-----------+
+
+Contract IERC20
++--------------+-----------+
+|   Function   | Modifiers |
++--------------+-----------+
+|     name     |     []    |
+|    symbol    |     []    |
+|   decimals   |     []    |
+| totalSupply  |     []    |
+|  balanceOf   |     []    |
+|  allowance   |     []    |
+|   approve    |     []    |
+|   transfer   |     []    |
+| transferFrom |     []    |
++--------------+-----------+
+
+Contract IUniswapV2Router02
++-----------------------------------------------------------+-----------+
+|                          Function                         | Modifiers |
++-----------------------------------------------------------+-----------+
+|                          factory                          |     []    |
+|                            WETH                           |     []    |
+|                        addLiquidity                       |     []    |
+|                      addLiquidityETH                      |     []    |
+|                      removeLiquidity                      |     []    |
+|                     removeLiquidityETH                    |     []    |
+|                 removeLiquidityWithPermit                 |     []    |
+|                removeLiquidityETHWithPermit               |     []    |
+|                  swapExactTokensForTokens                 |     []    |
+|                  swapTokensForExactTokens                 |     []    |
+|                   swapExactETHForTokens                   |     []    |
+|                   swapTokensForExactETH                   |     []    |
+|                   swapExactTokensForETH                   |     []    |
+|                   swapETHForExactTokens                   |     []    |
+|                           quote                           |     []    |
+|                        getAmountOut                       |     []    |
+|                        getAmountIn                        |     []    |
+|                       getAmountsOut                       |     []    |
+|                        getAmountsIn                       |     []    |
+|      removeLiquidityETHSupportingFeeOnTransferTokens      |     []    |
+| removeLiquidityETHWithPermitSupportingFeeOnTransferTokens |     []    |
+|   swapExactTokensForTokensSupportingFeeOnTransferTokens   |     []    |
+|     swapExactETHForTokensSupportingFeeOnTransferTokens    |     []    |
+|     swapExactTokensForETHSupportingFeeOnTransferTokens    |     []    |
++-----------------------------------------------------------+-----------+
+
+Contract IWETH
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+| deposit  |     []    |
+| transfer |     []    |
+| withdraw |     []    |
++----------+-----------+
+
+Contract GovernorBravoOLA
++-------------------------------------+--------------------+
+|               Function              |     Modifiers      |
++-------------------------------------+--------------------+
+|             constructor             |         []         |
+|          supportsInterface          |         []         |
+|                state                |         []         |
+|               timelock              |         []         |
+|             proposalEta             |         []         |
+|                queue                |         []         |
+|               _execute              |         []         |
+|               _cancel               |         []         |
+|              _executor              |         []         |
+|            updateTimelock           | ['onlyGovernance'] |
+|           _updateTimelock           |         []         |
+|             constructor             |    ['version']     |
+|               receive               |         []         |
+|          supportsInterface          |         []         |
+|                 name                |         []         |
+|               version               |         []         |
+|             hashProposal            |         []         |
+|                state                |         []         |
+|           proposalSnapshot          |         []         |
+|           proposalDeadline          |         []         |
+|          proposalThreshold          |         []         |
+|            _quorumReached           |         []         |
+|            _voteSucceeded           |         []         |
+|              _getVotes              |         []         |
+|              _countVote             |         []         |
+|            _defaultParams           |         []         |
+|               propose               |         []         |
+|               execute               |         []         |
+|               _execute              |         []         |
+|            _beforeExecute           |         []         |
+|            _afterExecute            |         []         |
+|               _cancel               |         []         |
+|               getVotes              |         []         |
+|          getVotesWithParams         |         []         |
+|               castVote              |         []         |
+|          castVoteWithReason         |         []         |
+|     castVoteWithReasonAndParams     |         []         |
+|            castVoteBySig            |         []         |
+|   castVoteWithReasonAndParamsBySig  |         []         |
+|              _castVote              |         []         |
+|              _castVote              |         []         |
+|                relay                | ['onlyGovernance'] |
+|              _executor              |         []         |
+|           onERC721Received          |         []         |
+|          onERC1155Received          |         []         |
+|        onERC1155BatchReceived       |         []         |
+|          onERC1155Received          |         []         |
+|        onERC1155BatchReceived       |         []         |
+|          supportsInterface          |         []         |
+|           onERC721Received          |         []         |
+|                 name                |         []         |
+|               version               |         []         |
+|            COUNTING_MODE            |         []         |
+|             hashProposal            |         []         |
+|                state                |         []         |
+|           proposalSnapshot          |         []         |
+|           proposalDeadline          |         []         |
+|             votingDelay             |         []         |
+|             votingPeriod            |         []         |
+|                quorum               |         []         |
+|               getVotes              |         []         |
+|          getVotesWithParams         |         []         |
+|               hasVoted              |         []         |
+|               propose               |         []         |
+|               execute               |         []         |
+|               castVote              |         []         |
+|          castVoteWithReason         |         []         |
+|     castVoteWithReasonAndParams     |         []         |
+|            castVoteBySig            |         []         |
+|   castVoteWithReasonAndParamsBySig  |         []         |
+|             constructor             |         []         |
+|          _domainSeparatorV4         |         []         |
+|        _buildDomainSeparator        |         []         |
+|           _hashTypedDataV4          |         []         |
+|          supportsInterface          |         []         |
+|              _msgSender             |         []         |
+|               _msgData              |         []         |
+|               timelock              |         []         |
+|             proposalEta             |         []         |
+|                queue                |         []         |
+|             constructor             |         []         |
+|           quorumNumerator           |         []         |
+|          quorumDenominator          |         []         |
+|                quorum               |         []         |
+|        updateQuorumNumerator        | ['onlyGovernance'] |
+|        _updateQuorumNumerator       |         []         |
+|             constructor             |         []         |
+|              _getVotes              |         []         |
+|            COUNTING_MODE            |         []         |
+|               propose               |         []         |
+|               propose               |         []         |
+|                queue                |         []         |
+|               execute               |         []         |
+|                cancel               |         []         |
+|           _encodeCalldata           |         []         |
+|            _storeProposal           |         []         |
+|              proposals              |         []         |
+|              getActions             |         []         |
+|              getReceipt             |         []         |
+|             quorumVotes             |         []         |
+|               hasVoted              |         []         |
+|            _quorumReached           |         []         |
+|            _voteSucceeded           |         []         |
+|              _countVote             |         []         |
+|             quorumVotes             |         []         |
+|              proposals              |         []         |
+|               propose               |         []         |
+|                queue                |         []         |
+|               execute               |         []         |
+|                cancel               |         []         |
+|              getActions             |         []         |
+|              getReceipt             |         []         |
+|             constructor             |         []         |
+|             votingDelay             |         []         |
+|             votingPeriod            |         []         |
+|          proposalThreshold          |         []         |
+|            setVotingDelay           | ['onlyGovernance'] |
+|           setVotingPeriod           | ['onlyGovernance'] |
+|         setProposalThreshold        | ['onlyGovernance'] |
+|           _setVotingDelay           |         []         |
+|           _setVotingPeriod          |         []         |
+|        _setProposalThreshold        |         []         |
+|             constructor             |    ['version']     |
+|                state                |         []         |
+|               propose               |         []         |
+|          proposalThreshold          |         []         |
+|               _execute              |         []         |
+|               _cancel               |         []         |
+|              _executor              |         []         |
+|          supportsInterface          |         []         |
+| slitherConstructorConstantVariables |         []         |
++-------------------------------------+--------------------+
+
+Contract Timelock
++-------------------------------------+------------------------------+
+|               Function              |          Modifiers           |
++-------------------------------------+------------------------------+
+|             constructor             |              []              |
+|               receive               |              []              |
+|          supportsInterface          |              []              |
+|             isOperation             |              []              |
+|          isOperationPending         |              []              |
+|           isOperationReady          |              []              |
+|           isOperationDone           |              []              |
+|             getTimestamp            |              []              |
+|             getMinDelay             |              []              |
+|            hashOperation            |              []              |
+|          hashOperationBatch         |              []              |
+|               schedule              |         ['onlyRole']         |
+|            scheduleBatch            |         ['onlyRole']         |
+|              _schedule              |              []              |
+|                cancel               |         ['onlyRole']         |
+|               execute               |    ['onlyRoleOrOpenRole']    |
+|             executeBatch            |    ['onlyRoleOrOpenRole']    |
+|             _beforeCall             |              []              |
+|              _afterCall             |              []              |
+|                _call                |              []              |
+|             updateDelay             |              []              |
+|           onERC721Received          |              []              |
+|          onERC1155Received          |              []              |
+|        onERC1155BatchReceived       |              []              |
+|          onERC1155Received          |              []              |
+|        onERC1155BatchReceived       |              []              |
+|          supportsInterface          |              []              |
+|           onERC721Received          |              []              |
+|          supportsInterface          |              []              |
+|               hasRole               |              []              |
+|              _checkRole             |              []              |
+|              _checkRole             |              []              |
+|             getRoleAdmin            |              []              |
+|              grantRole              | ['onlyRole', 'getRoleAdmin'] |
+|              revokeRole             | ['onlyRole', 'getRoleAdmin'] |
+|             renounceRole            |              []              |
+|              _setupRole             |              []              |
+|            _setRoleAdmin            |              []              |
+|              _grantRole             |              []              |
+|             _revokeRole             |              []              |
+|          supportsInterface          |              []              |
+|               hasRole               |              []              |
+|             getRoleAdmin            |              []              |
+|              grantRole              |              []              |
+|              revokeRole             |              []              |
+|             renounceRole            |              []              |
+|              _msgSender             |              []              |
+|               _msgData              |              []              |
+|             constructor             |              []              |
+| slitherConstructorConstantVariables |              []              |
++-------------------------------------+------------------------------+
+
+Contract VotingEscrow
++-------------------------------------+------------------+
+|               Function              |    Modifiers     |
++-------------------------------------+------------------+
+|               transfer              |        []        |
+|               approve               |        []        |
+|             transferFrom            |        []        |
+|              allowance              |        []        |
+|              delegates              |        []        |
+|               delegate              |        []        |
+|            delegateBySig            |        []        |
+|             totalSupply             |        []        |
+|              balanceOf              |        []        |
+|               transfer              |        []        |
+|              allowance              |        []        |
+|               approve               |        []        |
+|             transferFrom            |        []        |
+|               getVotes              |        []        |
+|             getPastVotes            |        []        |
+|          getPastTotalSupply         |        []        |
+|              delegates              |        []        |
+|               delegate              |        []        |
+|            delegateBySig            |        []        |
+|             constructor             |        []        |
+|             constructor             |        []        |
+|           getLastUserPoint          |        []        |
+|           getNumUserPoints          |        []        |
+|             getUserPoint            |        []        |
+|             _checkpoint             |        []        |
+|             _depositFor             |        []        |
+|              checkpoint             |        []        |
+|              depositFor             | ['nonReentrant'] |
+|              createLock             | ['nonReentrant'] |
+|            increaseAmount           | ['nonReentrant'] |
+|          increaseUnlockTime         | ['nonReentrant'] |
+|               withdraw              | ['nonReentrant'] |
+|          _findPointByBlock          |        []        |
+|           _balanceOfLocked          |        []        |
+|              balanceOf              |        []        |
+|              lockedEnd              |        []        |
+|             balanceOfAt             |        []        |
+|               getVotes              |        []        |
+|            _getBlockTime            |        []        |
+|             getPastVotes            |        []        |
+|           _supplyLockedAt           |        []        |
+|             totalSupply             |        []        |
+|            totalSupplyAt            |        []        |
+|         totalSupplyLockedAtT        |        []        |
+|          totalSupplyLocked          |        []        |
+|          getPastTotalSupply         |        []        |
+| slitherConstructorConstantVariables |        []        |
++-------------------------------------+------------------+
+
+Contract IDispenser
++-------------------+-----------+
+|      Function     | Modifiers |
++-------------------+-----------+
+| distributeRewards |     []    |
+|      isPaused     |     []    |
++-------------------+-----------+
+
+Contract IMultisig
++----------+-----------+
+| Function | Modifiers |
++----------+-----------+
+|  create  |     []    |
++----------+-----------+
+
+Contract IOLA
++--------------------+-----------+
+|      Function      | Modifiers |
++--------------------+-----------+
+|    totalSupply     |     []    |
+|     balanceOf      |     []    |
+|      transfer      |     []    |
+|     allowance      |     []    |
+|      approve       |     []    |
+|    transferFrom    |     []    |
+|        mint        |     []    |
+|     timeLaunch     |     []    |
+|  inflationControl  |     []    |
+| inflationRemainder |     []    |
+|      decimals      |     []    |
++--------------------+-----------+
+
+Contract IRegistry
++---------------------+-----------+
+|       Function      | Modifiers |
++---------------------+-----------+
+|     totalSupply     |     []    |
+| tokenOfOwnerByIndex |     []    |
+|     tokenByIndex    |     []    |
+|      balanceOf      |     []    |
+|       ownerOf       |     []    |
+|   safeTransferFrom  |     []    |
+|   safeTransferFrom  |     []    |
+|     transferFrom    |     []    |
+|       approve       |     []    |
+|  setApprovalForAll  |     []    |
+|     getApproved     |     []    |
+|   isApprovedForAll  |     []    |
+|  supportsInterface  |     []    |
+|        create       |     []    |
+|      updateHash     |     []    |
+|        exists       |     []    |
+|       getInfo       |     []    |
+|   getDependencies   |     []    |
+|      getHashes      |     []    |
+|      getBaseURI     |     []    |
+|      setBaseURI     |     []    |
++---------------------+-----------+
+
+Contract IService
++-------------------------------------+-----------+
+|               Function              | Modifiers |
++-------------------------------------+-----------+
+|            createService            |     []    |
+|                update               |     []    |
+|         activateRegistration        |     []    |
+|            registerAgents           |     []    |
+|                deploy               |     []    |
+|              terminate              |     []    |
+|                unbond               |     []    |
+|               destroy               |     []    |
+|                exists               |     []    |
+|   getServiceIdsCreatedWithAgentId   |     []    |
+| getServiceIdsCreatedWithComponentId |     []    |
+|        getAgentIdsOfServiceId       |     []    |
+|      getComponentIdsOfServiceId     |     []    |
++-------------------------------------+-----------+
+
+Contract ITokenomics
++-------------------------+-----------+
+|         Function        | Modifiers |
++-------------------------+-----------+
+|     getCurrentEpoch     |     []    |
+|      effectiveBond      |     []    |
+|         epochLen        |     []    |
+|          getDF          |     []    |
+|         getPoint        |     []    |
+|       getLastPoint      |     []    |
+|  calculatePayoutFromLP  |     []    |
+| trackServicesETHRevenue |     []    |
+|        checkpoint       |     []    |
+|   getExchangeAmountOLA  |     []    |
+| getProfitableComponents |     []    |
+|   getProfitableAgents   |     []    |
+|         usedBond        |     []    |
+|      allowedNewBond     |     []    |
+|   accountOwnerRewards   |     []    |
+| calculateStakingRewards |     []    |
+|      isAllowedMint      |     []    |
++-------------------------+-----------+
+
+Contract ITreasury
++------------------------+-----------+
+|        Function        | Modifiers |
++------------------------+-----------+
+|   depositTokenForOLA   |     []    |
+| depositETHFromServices |     []    |
+|        withdraw        |     []    |
+|      enableToken       |     []    |
+|      disableToken      |     []    |
+|       isEnabled        |     []    |
+|       checkPair        |     []    |
+|      requestFunds      |     []    |
+|    allocateRewards     |     []    |
++------------------------+-----------+
+
+Contract IVotingEscrow
++---------------+-----------+
+|    Function   | Modifiers |
++---------------+-----------+
+|  balanceOfAt  |     []    |
+| totalSupplyAt |     []    |
++---------------+-----------+
+
+Contract AgentRegistry
++--------------------------------------+----------------------------------------------+
+|               Function               |                  Modifiers                   |
++--------------------------------------+----------------------------------------------+
+|             constructor              |                      []                      |
+|             constructor              |                      []                      |
+|                owner                 |                      []                      |
+|          renounceOwnership           |                ['onlyOwner']                 |
+|          transferOwnership           |                ['onlyOwner']                 |
+|          _transferOwnership          |                      []                      |
+|              _msgSender              |                      []                      |
+|               _msgData               |                      []                      |
+|          supportsInterface           |                      []                      |
+|         tokenOfOwnerByIndex          |                      []                      |
+|             totalSupply              |                      []                      |
+|             tokenByIndex             |                      []                      |
+|         _beforeTokenTransfer         |                      []                      |
+|     _addTokenToOwnerEnumeration      |                      []                      |
+|   _addTokenToAllTokensEnumeration    |                      []                      |
+|   _removeTokenFromOwnerEnumeration   |                      []                      |
+| _removeTokenFromAllTokensEnumeration |                      []                      |
+|             totalSupply              |                      []                      |
+|         tokenOfOwnerByIndex          |                      []                      |
+|             tokenByIndex             |                      []                      |
+|              balanceOf               |                      []                      |
+|               ownerOf                |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|             transferFrom             |                      []                      |
+|               approve                |                      []                      |
+|          setApprovalForAll           |                      []                      |
+|             getApproved              |                      []                      |
+|           isApprovedForAll           |                      []                      |
+|          supportsInterface           |                      []                      |
+|             constructor              |                      []                      |
+|          supportsInterface           |                      []                      |
+|              balanceOf               |                      []                      |
+|               ownerOf                |                      []                      |
+|                 name                 |                      []                      |
+|                symbol                |                      []                      |
+|               tokenURI               |                      []                      |
+|               _baseURI               |                      []                      |
+|               approve                |                      []                      |
+|             getApproved              |                      []                      |
+|          setApprovalForAll           |                      []                      |
+|           isApprovedForAll           |                      []                      |
+|             transferFrom             |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|            _safeTransfer             |                      []                      |
+|               _exists                |                      []                      |
+|          _isApprovedOrOwner          |                      []                      |
+|              _safeMint               |                      []                      |
+|              _safeMint               |                      []                      |
+|                _mint                 |                      []                      |
+|                _burn                 |                      []                      |
+|              _transfer               |                      []                      |
+|               _approve               |                      []                      |
+|          _setApprovalForAll          |                      []                      |
+|        _checkOnERC721Received        |                      []                      |
+|         _beforeTokenTransfer         |                      []                      |
+|         _afterTokenTransfer          |                      []                      |
+|                 name                 |                      []                      |
+|                symbol                |                      []                      |
+|               tokenURI               |                      []                      |
+|          supportsInterface           |                      []                      |
+|             constructor              |                      []                      |
+|            changeManager             |                ['onlyOwner']                 |
+|            _setAgentInfo             |                      []                      |
+|                create                | ['checkHash', 'nonReentrant', 'onlyManager'] |
+|              updateHash              |         ['checkHash', 'onlyManager']         |
+|                exists                |                      []                      |
+|               getInfo                |                      []                      |
+|           getDependencies            |                      []                      |
+|              getHashes               |                      []                      |
+|               _baseURI               |                      []                      |
+|              getBaseURI              |                      []                      |
+|              setBaseURI              |                ['onlyOwner']                 |
+| slitherConstructorConstantVariables  |                      []                      |
++--------------------------------------+----------------------------------------------+
+
+Contract ComponentRegistry
++--------------------------------------+----------------------------------------------+
+|               Function               |                  Modifiers                   |
++--------------------------------------+----------------------------------------------+
+|             constructor              |                      []                      |
+|             constructor              |                      []                      |
+|                owner                 |                      []                      |
+|          renounceOwnership           |                ['onlyOwner']                 |
+|          transferOwnership           |                ['onlyOwner']                 |
+|          _transferOwnership          |                      []                      |
+|              _msgSender              |                      []                      |
+|               _msgData               |                      []                      |
+|          supportsInterface           |                      []                      |
+|         tokenOfOwnerByIndex          |                      []                      |
+|             totalSupply              |                      []                      |
+|             tokenByIndex             |                      []                      |
+|         _beforeTokenTransfer         |                      []                      |
+|     _addTokenToOwnerEnumeration      |                      []                      |
+|   _addTokenToAllTokensEnumeration    |                      []                      |
+|   _removeTokenFromOwnerEnumeration   |                      []                      |
+| _removeTokenFromAllTokensEnumeration |                      []                      |
+|             totalSupply              |                      []                      |
+|         tokenOfOwnerByIndex          |                      []                      |
+|             tokenByIndex             |                      []                      |
+|              balanceOf               |                      []                      |
+|               ownerOf                |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|             transferFrom             |                      []                      |
+|               approve                |                      []                      |
+|          setApprovalForAll           |                      []                      |
+|             getApproved              |                      []                      |
+|           isApprovedForAll           |                      []                      |
+|          supportsInterface           |                      []                      |
+|             constructor              |                      []                      |
+|          supportsInterface           |                      []                      |
+|              balanceOf               |                      []                      |
+|               ownerOf                |                      []                      |
+|                 name                 |                      []                      |
+|                symbol                |                      []                      |
+|               tokenURI               |                      []                      |
+|               _baseURI               |                      []                      |
+|               approve                |                      []                      |
+|             getApproved              |                      []                      |
+|          setApprovalForAll           |                      []                      |
+|           isApprovedForAll           |                      []                      |
+|             transferFrom             |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|           safeTransferFrom           |                      []                      |
+|            _safeTransfer             |                      []                      |
+|               _exists                |                      []                      |
+|          _isApprovedOrOwner          |                      []                      |
+|              _safeMint               |                      []                      |
+|              _safeMint               |                      []                      |
+|                _mint                 |                      []                      |
+|                _burn                 |                      []                      |
+|              _transfer               |                      []                      |
+|               _approve               |                      []                      |
+|          _setApprovalForAll          |                      []                      |
+|        _checkOnERC721Received        |                      []                      |
+|         _beforeTokenTransfer         |                      []                      |
+|         _afterTokenTransfer          |                      []                      |
+|                 name                 |                      []                      |
+|                symbol                |                      []                      |
+|               tokenURI               |                      []                      |
+|          supportsInterface           |                      []                      |
+|             constructor              |                      []                      |
+|            changeManager             |                ['onlyOwner']                 |
+|          _setComponentInfo           |                      []                      |
+|                create                | ['nonReentrant', 'onlyManager', 'checkHash'] |
+|              updateHash              |         ['onlyManager', 'checkHash']         |
+|                exists                |                      []                      |
+|               getInfo                |                      []                      |
+|           getDependencies            |                      []                      |
+|              getHashes               |                      []                      |
+|               _baseURI               |                      []                      |
+|              getBaseURI              |                      []                      |
+|              setBaseURI              |                ['onlyOwner']                 |
+| slitherConstructorConstantVariables  |                      []                      |
++--------------------------------------+----------------------------------------------+
+
+Contract RegistriesManager
++---------------------+--------------------------------+
+|       Function      |           Modifiers            |
++---------------------+--------------------------------+
+|     constructor     |               []               |
+|        paused       |               []               |
+|        _pause       |       ['whenNotPaused']        |
+|       _unpause      |         ['whenPaused']         |
+|      _msgSender     |               []               |
+|       _msgData      |               []               |
+|     constructor     |               []               |
+|        owner        |               []               |
+|  renounceOwnership  |         ['onlyOwner']          |
+|  transferOwnership  |         ['onlyOwner']          |
+|  _transferOwnership |               []               |
+|     constructor     |               []               |
+|      mintAgent      |       ['whenNotPaused']        |
+|   updateAgentHash   |               []               |
+|    mintComponent    |       ['whenNotPaused']        |
+| updateComponentHash |               []               |
+|        pause        | ['onlyOwner', 'whenNotPaused'] |
+|       unpause       |  ['whenPaused', 'onlyOwner']   |
++---------------------+--------------------------------+
+
+Contract ServiceManager
++-----------------------------+--------------------------------+
+|           Function          |           Modifiers            |
++-----------------------------+--------------------------------+
+|         constructor         |               []               |
+|            paused           |               []               |
+|            _pause           |       ['whenNotPaused']        |
+|           _unpause          |         ['whenPaused']         |
+|          _msgSender         |               []               |
+|           _msgData          |               []               |
+|         constructor         |               []               |
+|            owner            |               []               |
+|      renounceOwnership      |         ['onlyOwner']          |
+|      transferOwnership      |         ['onlyOwner']          |
+|      _transferOwnership     |               []               |
+|         constructor         |               []               |
+|           fallback          |               []               |
+|           receive           |               []               |
+|        changeTreasury       |         ['onlyOwner']          |
+|        serviceCreate        |       ['whenNotPaused']        |
+|        serviceUpdate        |               []               |
+| serviceActivateRegistration |               []               |
+|    serviceRegisterAgents    |               []               |
+|        serviceDeploy        |               []               |
+|       serviceTerminate      |               []               |
+|        serviceUnbond        |               []               |
+|        serviceDestroy       |               []               |
+|        serviceReward        |               []               |
+|            pause            | ['onlyOwner', 'whenNotPaused'] |
+|           unpause           |  ['onlyOwner', 'whenPaused']   |
++-----------------------------+--------------------------------+
+
+Contract ERC20Token
++----------------------+---------------+
+|       Function       |   Modifiers   |
++----------------------+---------------+
+|     constructor      |       []      |
+|        owner         |       []      |
+|  renounceOwnership   | ['onlyOwner'] |
+|  transferOwnership   | ['onlyOwner'] |
+|  _transferOwnership  |       []      |
+|      _msgSender      |       []      |
+|       _msgData       |       []      |
+|     constructor      |       []      |
+|         name         |       []      |
+|        symbol        |       []      |
+|       decimals       |       []      |
+|     totalSupply      |       []      |
+|      balanceOf       |       []      |
+|       transfer       |       []      |
+|      allowance       |       []      |
+|       approve        |       []      |
+|     transferFrom     |       []      |
+|  increaseAllowance   |       []      |
+|  decreaseAllowance   |       []      |
+|      _transfer       |       []      |
+|        _mint         |       []      |
+|        _burn         |       []      |
+|       _approve       |       []      |
+|   _spendAllowance    |       []      |
+| _beforeTokenTransfer |       []      |
+| _afterTokenTransfer  |       []      |
+|         name         |       []      |
+|        symbol        |       []      |
+|       decimals       |       []      |
+|     totalSupply      |       []      |
+|      balanceOf       |       []      |
+|       transfer       |       []      |
+|      allowance       |       []      |
+|       approve        |       []      |
+|     transferFrom     |       []      |
+|     constructor      |       []      |
+|         mint         | ['onlyOwner'] |
++----------------------+---------------+
+
+Contract TestServiceRegistry
++----------------------------------------+-----------------------------------------------------+
+|                Function                |                      Modifiers                      |
++----------------------------------------+-----------------------------------------------------+
+|              constructor               |                          []                         |
+|                fallback                |                          []                         |
+|                receive                 |                          []                         |
+|             changeManager              |                    ['onlyOwner']                    |
+|             _initialChecks             |                          []                         |
+|            _setServiceData             |                          []                         |
+|             createService              |                   ['onlyManager']                   |
+|                 update                 |         ['onlyManager', 'onlyServiceOwner']         |
+|          activateRegistration          | ['onlyManager', 'nonReentrant', 'onlyServiceOwner'] |
+|             registerAgents             |           ['onlyManager', 'nonReentrant']           |
+|                 deploy                 |         ['onlyManager', 'onlyServiceOwner']         |
+|                 slash                  |                  ['serviceExists']                  |
+|               terminate                | ['onlyManager', 'nonReentrant', 'onlyServiceOwner'] |
+|                 unbond                 |           ['onlyManager', 'nonReentrant']           |
+|                destroy                 |         ['onlyManager', 'onlyServiceOwner']         |
+|           _getAgentInstances           |                          []                         |
+| _updateServiceComponentAgentConnection |                          []                         |
+|                 exists                 |                          []                         |
+|             getServiceInfo             |                  ['serviceExists']                  |
+|         getInstancesForAgentId         |                  ['serviceExists']                  |
+|            getConfigHashes             |                  ['serviceExists']                  |
+|         getAgentIdsOfServiceId         |                          []                         |
+|       getComponentIdsOfServiceId       |                          []                         |
+|            getServiceState             |                          []                         |
+|           getOperatorBalance           |                  ['serviceExists']                  |
+|        changeMultisigPermission        |                    ['onlyOwner']                    |
+|              constructor               |                          []                         |
+|           supportsInterface            |                          []                         |
+|          tokenOfOwnerByIndex           |                          []                         |
+|              totalSupply               |                          []                         |
+|              tokenByIndex              |                          []                         |
+|          _beforeTokenTransfer          |                          []                         |
+|      _addTokenToOwnerEnumeration       |                          []                         |
+|    _addTokenToAllTokensEnumeration     |                          []                         |
+|    _removeTokenFromOwnerEnumeration    |                          []                         |
+|  _removeTokenFromAllTokensEnumeration  |                          []                         |
+|              totalSupply               |                          []                         |
+|          tokenOfOwnerByIndex           |                          []                         |
+|              tokenByIndex              |                          []                         |
+|               balanceOf                |                          []                         |
+|                ownerOf                 |                          []                         |
+|            safeTransferFrom            |                          []                         |
+|            safeTransferFrom            |                          []                         |
+|              transferFrom              |                          []                         |
+|                approve                 |                          []                         |
+|           setApprovalForAll            |                          []                         |
+|              getApproved               |                          []                         |
+|            isApprovedForAll            |                          []                         |
+|           supportsInterface            |                          []                         |
+|              constructor               |                          []                         |
+|           supportsInterface            |                          []                         |
+|               balanceOf                |                          []                         |
+|                ownerOf                 |                          []                         |
+|                  name                  |                          []                         |
+|                 symbol                 |                          []                         |
+|                tokenURI                |                          []                         |
+|                _baseURI                |                          []                         |
+|                approve                 |                          []                         |
+|              getApproved               |                          []                         |
+|           setApprovalForAll            |                          []                         |
+|            isApprovedForAll            |                          []                         |
+|              transferFrom              |                          []                         |
+|            safeTransferFrom            |                          []                         |
+|            safeTransferFrom            |                          []                         |
+|             _safeTransfer              |                          []                         |
+|                _exists                 |                          []                         |
+|           _isApprovedOrOwner           |                          []                         |
+|               _safeMint                |                          []                         |
+|               _safeMint                |                          []                         |
+|                 _mint                  |                          []                         |
+|                 _burn                  |                          []                         |
+|               _transfer                |                          []                         |
+|                _approve                |                          []                         |
+|           _setApprovalForAll           |                          []                         |
+|         _checkOnERC721Received         |                          []                         |
+|          _beforeTokenTransfer          |                          []                         |
+|          _afterTokenTransfer           |                          []                         |
+|                  name                  |                          []                         |
+|                 symbol                 |                          []                         |
+|                tokenURI                |                          []                         |
+|           supportsInterface            |                          []                         |
+|               _msgSender               |                          []                         |
+|                _msgData                |                          []                         |
+|              constructor               |                          []                         |
+|                 owner                  |                          []                         |
+|           renounceOwnership            |                    ['onlyOwner']                    |
+|           transferOwnership            |                    ['onlyOwner']                    |
+|           _transferOwnership           |                          []                         |
+|              constructor               |                          []                         |
+|            createCheckSafe             |                          []                         |
+|           executeByGovernor            |                   ['onlyManager']                   |
+|            getControlValue             |                          []                         |
+|  slitherConstructorConstantVariables   |                          []                         |
++----------------------------------------+-----------------------------------------------------+
+
+Contract Depository
++---------------------------+---------------+
+|          Function         |   Modifiers   |
++---------------------------+---------------+
+|        constructor        |       []      |
+|           owner           |       []      |
+|     renounceOwnership     | ['onlyOwner'] |
+|     transferOwnership     | ['onlyOwner'] |
+|     _transferOwnership    |       []      |
+|         _msgSender        |       []      |
+|          _msgData         |       []      |
+|        constructor        |       []      |
+|       changeManagers      | ['onlyOwner'] |
+|          deposit          |       []      |
+|           redeem          |       []      |
+|         redeemAll         |       []      |
+|      getPendingBonds      |       []      |
+|       getBondStatus       |       []      |
+|           create          | ['onlyOwner'] |
+|           close           | ['onlyOwner'] |
+|          isActive         |       []      |
+| getActiveProductsForToken |       []      |
+|         getProduct        |       []      |
++---------------------------+---------------+
+
+Contract Dispenser
++-------------------------------------+-----------------------------------+
+|               Function              |             Modifiers             |
++-------------------------------------+-----------------------------------+
+|             constructor             |                 []                |
+|             constructor             |                 []                |
+|                paused               |                 []                |
+|                _pause               |         ['whenNotPaused']         |
+|               _unpause              |           ['whenPaused']          |
+|              _msgSender             |                 []                |
+|               _msgData              |                 []                |
+|             constructor             |                 []                |
+|                owner                |                 []                |
+|          renounceOwnership          |           ['onlyOwner']           |
+|          transferOwnership          |           ['onlyOwner']           |
+|          _transferOwnership         |                 []                |
+|             constructor             |                 []                |
+|           changeTokenomics          |           ['onlyOwner']           |
+|         withdrawOwnerRewards        | ['whenNotPaused', 'nonReentrant'] |
+|        withdrawStakingRewards       | ['whenNotPaused', 'nonReentrant'] |
+|               receive               |                 []                |
+| slitherConstructorConstantVariables |                 []                |
++-------------------------------------+-----------------------------------+
+
+Contract OLA
++-------------------------------------+-----------------+
+|               Function              |    Modifiers    |
++-------------------------------------+-----------------+
+|             constructor             |        []       |
+|                permit               |        []       |
+|                nonces               |        []       |
+|           DOMAIN_SEPARATOR          |        []       |
+|              _useNonce              |        []       |
+|             constructor             |        []       |
+|          _domainSeparatorV4         |        []       |
+|        _buildDomainSeparator        |        []       |
+|           _hashTypedDataV4          |        []       |
+|                permit               |        []       |
+|                nonces               |        []       |
+|           DOMAIN_SEPARATOR          |        []       |
+|             constructor             |        []       |
+|                 name                |        []       |
+|                symbol               |        []       |
+|               decimals              |        []       |
+|             totalSupply             |        []       |
+|              balanceOf              |        []       |
+|               transfer              |        []       |
+|              allowance              |        []       |
+|               approve               |        []       |
+|             transferFrom            |        []       |
+|          increaseAllowance          |        []       |
+|          decreaseAllowance          |        []       |
+|              _transfer              |        []       |
+|                _mint                |        []       |
+|                _burn                |        []       |
+|               _approve              |        []       |
+|           _spendAllowance           |        []       |
+|         _beforeTokenTransfer        |        []       |
+|         _afterTokenTransfer         |        []       |
+|                 name                |        []       |
+|                symbol               |        []       |
+|               decimals              |        []       |
+|             totalSupply             |        []       |
+|              balanceOf              |        []       |
+|               transfer              |        []       |
+|              allowance              |        []       |
+|               approve               |        []       |
+|             transferFrom            |        []       |
+|              _msgSender             |        []       |
+|               _msgData              |        []       |
+|                 burn                |        []       |
+|               burnFrom              |        []       |
+|             constructor             |        []       |
+|                owner                |        []       |
+|          renounceOwnership          |  ['onlyOwner']  |
+|          transferOwnership          |  ['onlyOwner']  |
+|          _transferOwnership         |        []       |
+|             constructor             |        []       |
+|             changeMinter            |  ['onlyOwner']  |
+|                 mint                | ['onlyManager'] |
+|           inflationControl          |        []       |
+|          inflationRemainder         |        []       |
+| slitherConstructorConstantVariables |        []       |
++-------------------------------------+-----------------+
+
+Contract Tokenomics
++-------------------------------------+--------------------+
+|               Function              |     Modifiers      |
++-------------------------------------+--------------------+
+|             constructor             |         []         |
+|                owner                |         []         |
+|          renounceOwnership          |   ['onlyOwner']    |
+|          transferOwnership          |   ['onlyOwner']    |
+|          _transferOwnership         |         []         |
+|              _msgSender             |         []         |
+|               _msgData              |         []         |
+|             constructor             |         []         |
+|            changeManagers           |   ['onlyOwner']    |
+|           getCurrentEpoch           |         []         |
+|      changeTokenomicsParameters     |   ['onlyOwner']    |
+|         changeRewardFraction        |   ['onlyOwner']    |
+|     changeServiceOwnerWhiteList     |   ['onlyOwner']    |
+|            isAllowedMint            |         []         |
+|    _getInflationRemainderForYear    |         []         |
+|            allowedNewBond           | ['onlyDepository'] |
+|               usedBond              | ['onlyDepository'] |
+|       trackServicesETHRevenue       |  ['onlyTreasury']  |
+|       _calculateUnitTokenomics      |         []         |
+|           _clearEpochData           |         []         |
+|              checkpoint             |  ['onlyTreasury']  |
+|            _adjustMaxBond           |         []         |
+|           getTopUpPerEpoch          |         []         |
+|             _checkpoint             |         []         |
+|        calculatePayoutFromLP        |         []         |
+|        _calculatePayoutFromLP       |         []         |
+|             getAmountOut            |         []         |
+|       calculateStakingRewards       |         []         |
+|               getPoint              |         []         |
+|             getLastPoint            |         []         |
+|                getDF                |         []         |
+|                 _add                |         []         |
+|                getUCF               |         []         |
+|           getOwnerRewards           |         []         |
+|         accountOwnerRewards         | ['onlyDispenser']  |
+|     slitherConstructorVariables     |         []         |
+| slitherConstructorConstantVariables |         []         |
++-------------------------------------+--------------------+
+
+Contract Treasury
++-------------------------------------+--------------------+
+|               Function              |     Modifiers      |
++-------------------------------------+--------------------+
+|             constructor             |         []         |
+|             constructor             |         []         |
+|                owner                |         []         |
+|          renounceOwnership          |   ['onlyOwner']    |
+|          transferOwnership          |   ['onlyOwner']    |
+|          _transferOwnership         |         []         |
+|              _msgSender             |         []         |
+|               _msgData              |         []         |
+|             constructor             |         []         |
+|            changeManagers           |   ['onlyOwner']    |
+|          depositTokenForOLA         | ['onlyDepository'] |
+|        depositETHFromServices       |  ['nonReentrant']  |
+|               withdraw              |   ['onlyOwner']    |
+|             enableToken             |   ['onlyOwner']    |
+|             disableToken            |   ['onlyOwner']    |
+|              isEnabled              |         []         |
+|              checkPair              |         []         |
+|            _rebalanceETH            |         []         |
+|        _sendFundsToDispenser        |         []         |
+|           allocateRewards           |   ['onlyOwner']    |
+|               receive               |         []         |
+| slitherConstructorConstantVariables |         []         |
++-------------------------------------+--------------------+
+. analyzed (126 contracts)

@@ -6,29 +6,43 @@ This repository contains the entirety of contracts making up our on-chain protoc
 
 A graphical overview is available here:
 
-![architecture](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/On-chain_architecture_v2.pdf?raw=true)
+![architecture](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/On-chain_architecture_v2.png?raw=true)
 
 
 The architecture is broken up into three main areas:
 
-1. Governance
+1. Governance:
+
+	We follow the standard governance setup by OpenZeppelin. Our governance token is a vote-escrow token.
+
+    - [VotingEscrow (veOLA)](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/governance/VotingEscrow.sol)
+    - [GovernorBravoOLA](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/governance/GovernorBravoOLA.sol)
+    - [Timelock](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/governance/Timelock.sol)
 
 
-2. Agent Services Functionality
+2. Agent Services Functionality:
 
-Provides the functionality to mint agent `components` and canonical `agents` via the ERC721 standard.
-It stores instances associated with components and agents, supplies a set of read-only functions to inquire the state
-of entities.
+	We have a core periphery architecture for both the components/agents and services. The core contracts are ERC721s primarily accessed via the peripheral manager contracts.
 
-The protocol also provides the capability of creating `services` that are based on canonical agents. Each service
-instance bears a set of canonical agent Ids it is composed of with the number of agent instances for each Id. For the
-service deployment `operators` supply agent instances to a specific service via registration. Once all the required
-agent instances are provided by operators, the service can be deployed forming a Gnosis Safe contract governed by
-a group of agent instances.
+	- [ComponentRegistry](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/registries/ComponentRegistry.sol)
+	- [AgentRegistry](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/registries/AgentRegistry.sol)
+	- [RegistriesManager](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/registries/RegistriesManager.sol)
+	- [ServiceRegistry](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/registries/ServiceRegistry.sol)
+	- [ServiceManager](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/registries/ServiceManager.sol)
+
 
 3. Tokenomics
 
-An overview is provided [here](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/Audit_Tokenomics.pdf?raw=true)
+	An overview of the design is provided [here](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/Audit_Tokenomics.pdf?raw=true)
+
+
+	The contracts borrow concepts from OlympusDAO.
+
+	- [Depository](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Depository.sol)
+	- [Dispenser](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Dispenser.sol)
+	- [OLA](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/OLA.sol)
+	- [Tokenomics](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Tokenomics.sol)
+	- [Treasury](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Treasury.sol)
 
 
 ## Development

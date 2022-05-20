@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for registries/ComponentRegistry.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">registries/</a> ComponentRegistry.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>39/39</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>20/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>14/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>52/52</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">411×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">61×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">61×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">59×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">57×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.14;
+&nbsp;
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "../interfaces/IErrors.sol";
+import "../interfaces/IRegistry.sol";
+&nbsp;
+/// @title Component Registry - Smart contract for registering components
+/// @author Aleksandr Kuperman - &lt;aleksandr.kuperman@valory.xyz&gt;
+contract ComponentRegistry is IErrors, IStructs, ERC721Enumerable, Ownable, ReentrancyGuard {
+    // Component parameters
+    struct Component {
+        // Developer of the component
+        address developer;
+        // IPFS hashes of the component
+        Multihash[] componentHashes;
+        // Description of the component
+        string description;
+        // Set of component dependencies
+        uint256[] dependencies;
+        // Component activity
+        bool active;
+    }
+&nbsp;
+    // Base URI
+    string public _BASEURI;
+    // Component counter
+    uint256 private _tokenIds;
+    // Component manager
+    address private _manager;
+    // Map of token Id =&gt; component
+    mapping(uint256 =&gt; Component) private _mapTokenIdComponent;
+    // Map of IPFS hash =&gt; token Id
+    mapping(bytes32 =&gt; uint256) private _mapHashTokenId;
+&nbsp;
+    // name = "agent components", symbol = "MECHCOMP"
+    constructor(string memory _name, string memory _symbol, string memory _bURI) ERC721(_name, _symbol) {
+        _BASEURI = _bURI;
+    }
+&nbsp;
+    // Only the manager has a privilege to manipulate an agent
+    modifier onlyManager {
+        if (_manager != msg.sender) {
+            revert ManagerOnly(msg.sender, _manager);
+        }
+        _;
+    }
+&nbsp;
+    // Checks for supplied IPFS hash
+    modifier checkHash(Multihash memory hashStruct) {
+        // Check hash IPFS current standard validity
+        if (hashStruct.hashFunction != 0x12 || hashStruct.size != 0x20) {
+            revert WrongHash(hashStruct.hashFunction, 0x12, hashStruct.size, 0x20);
+        }
+        // Check for the existent IPFS hashes
+        if (_mapHashTokenId[hashStruct.hash] &gt; 0) {
+            revert HashExists();
+        }
+        _;
+    }
+&nbsp;
+    /// @dev Changes the component manager.
+    /// @param newManager Address of a new component manager.
+    function changeManager(address newManager) public onlyOwner {
+        _manager = newManager;
+    }
+&nbsp;
+    /// @dev Sets the component data.
+    /// @param tokenId Token / component Id.
+    /// @param developer Developer of the component.
+    /// @param componentHash IPFS hash of the component.
+    /// @param description Description of the component.
+    /// @param dependencies Set of component dependencies.
+    function _setComponentInfo(uint256 tokenId, address developer, Multihash memory componentHash,
+        string memory description, uint256[] memory dependencies)
+        private
+    {
+        Component storage component = _mapTokenIdComponent[tokenId];
+        component.developer = developer;
+        component.componentHashes.push(componentHash);
+        component.description = description;
+        component.dependencies = dependencies;
+        component.active = true;
+        _mapHashTokenId[componentHash.hash] = tokenId;
+    }
+&nbsp;
+    /// @dev Creates component.
+    /// @param owner Owner of the component.
+    /// @param developer Developer of the component.
+    /// @param componentHash IPFS hash of the component.
+    /// @param description Description of the component.
+    /// @param dependencies Set of component dependencies in a sorted ascending order.
+    /// @return The id of a minted component.
+    function create(address owner, address developer, Multihash memory componentHash, string memory description,
+        uint256[] memory dependencies)
+        external
+        onlyManager
+        checkHash(componentHash)
+        nonReentrant
+        returns (uint256)
+    {
+        // Checks for owner and developer being not zero addresses
+        if(owner == address(0) || developer == address(0)) {
+            revert ZeroAddress();
+        }
+&nbsp;
+        // Checks for non-empty description and component dependency
+        if (bytes(description).length == 0) {
+            revert EmptyString();
+        }
+        
+        // Check for dependencies validity: must be already allocated, must not repeat
+        uint256 lastId = 0;
+        for (uint256 iDep = 0; iDep &lt; dependencies.length; iDep++) {
+            if (dependencies[iDep] &lt;= lastId || dependencies[iDep] &gt; _tokenIds) {
+                revert WrongComponentId(dependencies[iDep]);
+            }
+            lastId = dependencies[iDep];
+        }
+&nbsp;
+        // Mint token and initialize the component
+        _tokenIds++;
+        uint256 newTokenId = _tokenIds;
+        _setComponentInfo(newTokenId, developer, componentHash, description, dependencies);
+        _safeMint(owner, newTokenId);
+&nbsp;
+        return newTokenId;
+    }
+&nbsp;
+    /// @dev Updates the component hash.
+    /// @param owner Owner of the component.
+    /// @param tokenId Token Id.
+    /// @param componentHash New IPFS hash of the component.
+    /// @return success True, if function executed successfully.
+    function updateHash(address owner, uint256 tokenId, Multihash memory componentHash) external onlyManager
+        checkHash(componentHash)
+        returns (bool success)
+    {
+        if (ownerOf(tokenId) != owner) {
+            revert ComponentNotFound(tokenId);
+        }
+        Component storage component = _mapTokenIdComponent[tokenId];
+        component.componentHashes.push(componentHash);
+        success = true;
+    }
+&nbsp;
+    /// @dev Check for the token / component existence.
+    /// @param tokenId Token Id.
+    /// @return true if the component exists, false otherwise.
+    function exists(uint256 tokenId) public view returns (bool) {
+        return _exists(tokenId);
+    }
+&nbsp;
+    /// @dev Gets the component info.
+    /// @param tokenId Token Id.
+    /// @return owner Owner of the component.
+    /// @return developer The component developer.
+    /// @return componentHash The primary component IPFS hash.
+    /// @return description The component description.
+    /// @return numDependencies The number of components in the dependency list.
+    /// @return dependencies The list of component dependencies.
+    function getInfo(uint256 tokenId) public view
+        returns (address owner, address developer, Multihash memory componentHash, string memory description,
+            uint256 numDependencies, uint256[] memory dependencies)
+    {
+        if (!_exists(tokenId)) {
+            revert ComponentNotFound(tokenId);
+        }
+        Component storage component = _mapTokenIdComponent[tokenId];
+        return (ownerOf(tokenId), component.developer, component.componentHashes[0], component.description,
+            component.dependencies.length, component.dependencies);
+    }
+&nbsp;
+    /// @dev Gets component dependencies.
+    /// @return numDependencies The number of components in the dependency list.
+    /// @return dependencies The list of component dependencies.
+    function getDependencies(uint256 tokenId) public view
+        returns (uint256 numDependencies, uint256[] memory dependencies)
+    {
+        if (!_exists(tokenId)) {
+            revert ComponentNotFound(tokenId);
+        }
+        Component storage component = _mapTokenIdComponent[tokenId];
+        return (component.dependencies.length, component.dependencies);
+    }
+&nbsp;
+    /// @dev Gets component hashes.
+    /// @param tokenId Token Id.
+    /// @return numHashes Number of hashes.
+    /// @return componentHashes The list of component hashes.
+    function getHashes(uint256 tokenId) public view
+        returns (uint256 numHashes, Multihash[] memory componentHashes)
+    {
+        if (!_exists(tokenId)) {
+            revert ComponentNotFound(tokenId);
+        }
+        Component storage component = _mapTokenIdComponent[tokenId];
+        return (component.componentHashes.length, component.componentHashes);
+    }
+&nbsp;
+    /// @dev Returns component base URI.
+    /// @return base URI string.
+    function _baseURI() internal view override returns (string memory) {
+        return _BASEURI;
+    }
+&nbsp;
+    /// @dev Returns component base URI.
+    /// @return base URI string.
+    function getBaseURI() public view returns (string memory) {
+        return _baseURI();
+    }
+&nbsp;
+    /// @dev Sets component base URI.
+    /// @param bURI base URI string.
+    function setBaseURI(string memory bURI) public onlyOwner {
+        _BASEURI = bURI;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri May 20 2022 20:27:12 GMT+0100 (British Summer Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

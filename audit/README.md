@@ -2,7 +2,7 @@
 The review has been performed based on the contract code in the following repository:<br>
 `https://github.com/valory-xyz/onchain-protocol` <br>
 commit: `1947cb00ce26bb24d13110a90b370d8f73d6afd1` <br>
-Documentation: [docs/](../docs/) folder with updates from 20.05.22 <br>
+Documentation: [docs/](https://github.com/valory-xyz/onchain-protocol/blob/main/docs) folder with updates from 20.05.22 <br>
 
 ## Objectives
 Verifying that the system has been implemented as intended and does not have unexpected edge cases.
@@ -10,7 +10,7 @@ Identifying possible well-known vulnerabilities in smart contracts.
 Particular attention is paid to preventing attacks that can lead to the loss of system / user funds.
 
 ## Audit analysis
-Audit analysis with various frameworks. [analysis/](analysis/) Update: 20.05.22
+Audit analysis with various frameworks. [analysis/](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/analysis) Update: 20.05.22
 
 ### Security issues
 Security suggestion and proposal patch: Change `Depository.deposit() / create()` function
@@ -19,7 +19,7 @@ there would be an additional parameter of "maximum slippage" and the actual stat
 `|actual_reserve0/actual_reserver1 - reserve0/reserve1| < max_slippage` (or another alternative way). 
 Tracking TWAP for all possible pair is unrealistic in terms of complexity and gas cost.
 
-[slither/](analysis/slither_full.txt) 
+[slither/](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/analysis/slither_full.txt) 
 
 Please note that all the external and audited contracts are not considered.
 
@@ -48,7 +48,7 @@ General considerations for reference:
 - Consider splitting contracts as some of them are too big to deploy.
 
 ### Test coverage
-Result of `npx hardhat coverage`: [hardhat-coverage](./hardhat-coverage/index.html).
+Result of `npx hardhat coverage`: [hardhat-coverage](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/hardhat-coverage/index.html).
 
 
 ## Assessment of readiness for external audit
@@ -64,7 +64,7 @@ Add to fill in all coverage tests.
 Resolved.
 
 #### 4. Describe what your product does, who uses it, and how.
-Constantly updated in [docs/](../docs/).
+Constantly updated in [docs/](https://github.com/valory-xyz/onchain-protocol/blob/main/docs).
 
 #### 5. Add comments in-line with the code.
 Make sure all functions have natspec comments. Some in-line comments will be added as well. However, the majority of the code is well commented

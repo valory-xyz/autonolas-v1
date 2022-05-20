@@ -1,0 +1,809 @@
+'npx hardhat compile --force' running
+Compiled 113 Solidity files successfully
+
+Solidity 0.8.14 is not fully supported yet. You can still use Hardhat, but some features, like stack traces, might not work correctly.
+
+Learn more at https://hardhat.org/reference/solidity-support
+
+@uniswap/v2-periphery/contracts/UniswapV2Router02.sol:12:1: Warning: Contract code size exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+contract UniswapV2Router02 is IUniswapV2Router02 {
+^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IWETH.sol
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:23:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                       ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:35:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                                   ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:22:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                      ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:39:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                                       ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:27:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                           ^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:41:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                         ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:53:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                                     ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:24:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                        ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:39:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                                       ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:36:24:
+   |
+36 |     function delegates(address account) external view virtual override returns (address)
+   |                        ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:42:23:
+   |
+42 |     function delegate(address delegatee) external virtual override
+   |                       ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:28:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                            ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:47:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                               ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:62:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                              ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:78:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                              ^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:87:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                       ^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:98:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                                  ^^^^^^^^^
+
+
+Warning: Contract code size is 24918 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+ --> contracts/test/TestServiceRegistry.sol:8:1:
+  |
+8 | contract TestServiceRegistry is ServiceRegistry {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
+
+
+UniswapV2Factory:
++------------------------------+-------------------------------------------------+------+--------+
+|             Name             |                       Type                      | Slot | Offset |
++------------------------------+-------------------------------------------------+------+--------+
+|    UniswapV2Factory.feeTo    |                     address                     |  0   |   0    |
+| UniswapV2Factory.feeToSetter |                     address                     |  1   |   0    |
+|   UniswapV2Factory.getPair   | mapping(address => mapping(address => address)) |  2   |   0    |
+|  UniswapV2Factory.allPairs   |                    address[]                    |  3   |   0    |
++------------------------------+-------------------------------------------------+------+--------+
+
+UniswapV2Pair:
++------------------------------------+-------------------------------------------------+------+--------+
+|                Name                |                       Type                      | Slot | Offset |
++------------------------------------+-------------------------------------------------+------+--------+
+|     UniswapV2ERC20.totalSupply     |                     uint256                     |  0   |   0    |
+|      UniswapV2ERC20.balanceOf      |           mapping(address => uint256)           |  1   |   0    |
+|      UniswapV2ERC20.allowance      | mapping(address => mapping(address => uint256)) |  2   |   0    |
+|  UniswapV2ERC20.DOMAIN_SEPARATOR   |                     bytes32                     |  3   |   0    |
+|       UniswapV2ERC20.nonces        |           mapping(address => uint256)           |  4   |   0    |
+|       UniswapV2Pair.factory        |                     address                     |  5   |   0    |
+|        UniswapV2Pair.token0        |                     address                     |  6   |   0    |
+|        UniswapV2Pair.token1        |                     address                     |  7   |   0    |
+|       UniswapV2Pair.reserve0       |                     uint112                     |  8   |   0    |
+|       UniswapV2Pair.reserve1       |                     uint112                     |  8   |   14   |
+|  UniswapV2Pair.blockTimestampLast  |                      uint32                     |  8   |   28   |
+| UniswapV2Pair.price0CumulativeLast |                     uint256                     |  9   |   0    |
+| UniswapV2Pair.price1CumulativeLast |                     uint256                     |  10  |   0    |
+|        UniswapV2Pair.kLast         |                     uint256                     |  11  |   0    |
+|       UniswapV2Pair.unlocked       |                     uint256                     |  12  |   0    |
++------------------------------------+-------------------------------------------------+------+--------+
+
+IERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Callee:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Math:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+SafeMath:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+UQ112x112:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+WETH9:
++-----------------+-------------------------------------------------+------+--------+
+|       Name      |                       Type                      | Slot | Offset |
++-----------------+-------------------------------------------------+------+--------+
+|    WETH9.name   |                      string                     |  0   |   0    |
+|   WETH9.symbol  |                      string                     |  1   |   0    |
+|  WETH9.decimals |                      uint8                      |  2   |   0    |
+| WETH9.balanceOf |           mapping(address => uint256)           |  3   |   0    |
+| WETH9.allowance | mapping(address => mapping(address => uint256)) |  4   |   0    |
++-----------------+-------------------------------------------------+------+--------+
+
+TransferHelper:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Factory:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Pair:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+UniswapV2Router02:
++---------------------------+---------+------+--------+
+|            Name           |   Type  | Slot | Offset |
++---------------------------+---------+------+--------+
+| UniswapV2Router02.factory | address |  0   |   0    |
+|   UniswapV2Router02.WETH  | address |  1   |   0    |
++---------------------------+---------+------+--------+
+
+IERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IWETH:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+SafeMath:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+UniswapV2Library:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IProxy:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+GnosisSafeProxy:
++---------------------------+---------+------+--------+
+|            Name           |   Type  | Slot | Offset |
++---------------------------+---------+------+--------+
+| GnosisSafeProxy.singleton | address |  0   |   0    |
++---------------------------+---------+------+--------+
+
+GnosisSafeProxyFactory:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IProxyCreationCallback:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+GnosisSafeMultisig:
++-------------------------------------------+---------+------+--------+
+|                    Name                   |   Type  | Slot | Offset |
++-------------------------------------------+---------+------+--------+
+|      GnosisSafeMultisig.gnosisSafeL2      | address |  0   |   0    |
+| GnosisSafeMultisig.gnosisSafeProxyFactory | address |  1   |   0    |
++-------------------------------------------+---------+------+--------+
+
+GnosisSafeL2:
++---------------------------------------+-------------------------------------------------+------+--------+
+|                  Name                 |                       Type                      | Slot | Offset |
++---------------------------------------+-------------------------------------------------+------+--------+
+|          Singleton.singleton          |                     address                     |  0   |   0    |
+|         ModuleManager.modules         |           mapping(address => address)           |  1   |   0    |
+|          OwnerManager.owners          |           mapping(address => address)           |  2   |   0    |
+|        OwnerManager.ownerCount        |                     uint256                     |  3   |   0    |
+|         OwnerManager.threshold        |                     uint256                     |  4   |   0    |
+|            GnosisSafe.nonce           |                     uint256                     |  5   |   0    |
+| GnosisSafe._deprecatedDomainSeparator |                     bytes32                     |  6   |   0    |
+|       GnosisSafe.signedMessages       |           mapping(bytes32 => uint256)           |  7   |   0    |
+|       GnosisSafe.approvedHashes       | mapping(address => mapping(bytes32 => uint256)) |  8   |   0    |
++---------------------------------------+-------------------------------------------------+------+--------+
+
+Guard:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Enum:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+GnosisSafeMath:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+ISignatureValidator:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+SafeERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Address:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Counters:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Strings:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Timers:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+ECDSA:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+SafeCast:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+DoubleEndedQueue:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+Babylonian:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+BitMath:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+FixedPoint:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+FullMath:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+TransferHelper:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Callee:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2ERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Factory:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Pair:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IERC20:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IUniswapV2Router02:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IWETH:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+GovernorBravoOLA:
++----------------------------------------------+----------------------------------------------------------------+------+--------+
+|                     Name                     |                              Type                              | Slot | Offset |
++----------------------------------------------+----------------------------------------------------------------+------+--------+
+|       EIP712._CACHED_DOMAIN_SEPARATOR        |                            bytes32                             |  0   |   0    |
+|           EIP712._CACHED_CHAIN_ID            |                            uint256                             |  1   |   0    |
+|             EIP712._CACHED_THIS              |                            address                             |  2   |   0    |
+|             EIP712._HASHED_NAME              |                            bytes32                             |  2   |   20   |
+|            EIP712._HASHED_VERSION            |                            bytes32                             |  2   |   24   |
+|              EIP712._TYPE_HASH               |                            bytes32                             |  2   |   28   |
+|                Governor._name                |                             string                             |  3   |   0    |
+|             Governor._proposals              |           mapping(uint256 => Governor.ProposalCore)            |  4   |   0    |
+|           Governor._governanceCall           |                 DoubleEndedQueue.Bytes32Deque                  |  5   |   0    |
+|        GovernorSettings._votingDelay         |                            uint256                             |  7   |   0    |
+|        GovernorSettings._votingPeriod        |                            uint256                             |  8   |   0    |
+|     GovernorSettings._proposalThreshold      |                            uint256                             |  9   |   0    |
+| GovernorCompatibilityBravo._proposalDetails  | mapping(uint256 => GovernorCompatibilityBravo.ProposalDetails) |  10  |   0    |
+|             GovernorVotes.token              |                             IVotes                             |  11  |   0    |
+| GovernorVotesQuorumFraction._quorumNumerator |                            uint256                             |  12  |   0    |
+|      GovernorTimelockControl._timelock       |                       TimelockController                       |  13  |   0    |
+|     GovernorTimelockControl._timelockIds     |                  mapping(uint256 => bytes32)                   |  14  |   0    |
++----------------------------------------------+----------------------------------------------------------------+------+--------+
+
+Timelock:
++--------------------------------+--------------------------------------------+------+--------+
+|              Name              |                    Type                    | Slot | Offset |
++--------------------------------+--------------------------------------------+------+--------+
+|      AccessControl._roles      | mapping(bytes32 => AccessControl.RoleData) |  0   |   0    |
+| TimelockController._timestamps |        mapping(bytes32 => uint256)         |  1   |   0    |
+|  TimelockController._minDelay  |                  uint256                   |  2   |   0    |
++--------------------------------+--------------------------------------------+------+--------+
+
+VotingEscrow:
++--------------------------------+--------------------------------------------+------+--------+
+|              Name              |                    Type                    | Slot | Offset |
++--------------------------------+--------------------------------------------+------+--------+
+|    ReentrancyGuard._status     |                  uint256                   |  0   |   0    |
+|       VotingEscrow.token       |                  address                   |  1   |   0    |
+|      VotingEscrow.supply       |                  uint256                   |  2   |   0    |
+| VotingEscrow.mapLockedBalances |     mapping(address => LockedBalance)      |  3   |   0    |
+|  VotingEscrow.totalNumPoints   |                  uint256                   |  4   |   0    |
+|  VotingEscrow.mapSupplyPoints  |  mapping(uint256 => IStructs.PointVoting)  |  5   |   0    |
+|   VotingEscrow.mapUserPoints   | mapping(address => IStructs.PointVoting[]) |  6   |   0    |
+|  VotingEscrow.mapSlopeChanges  |         mapping(uint256 => int128)         |  7   |   0    |
+|     VotingEscrow.decimals      |                   uint8                    |  8   |   0    |
+|       VotingEscrow.name        |                   string                   |  9   |   0    |
+|      VotingEscrow.symbol       |                   string                   |  10  |   0    |
++--------------------------------+--------------------------------------------+------+--------+
+
+IDispenser:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IMultisig:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IOLA:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IRegistry:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IService:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+ITokenomics:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+ITreasury:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+IVotingEscrow:
++------+------+------+--------+
+| Name | Type | Slot | Offset |
++------+------+------+--------+
++------+------+------+--------+
+
+AgentRegistry:
++------------------------------------+-------------------------------------------------+------+--------+
+|                Name                |                       Type                      | Slot | Offset |
++------------------------------------+-------------------------------------------------+------+--------+
+|            ERC721._name            |                      string                     |  0   |   0    |
+|           ERC721._symbol           |                      string                     |  1   |   0    |
+|           ERC721._owners           |           mapping(uint256 => address)           |  2   |   0    |
+|          ERC721._balances          |           mapping(address => uint256)           |  3   |   0    |
+|       ERC721._tokenApprovals       |           mapping(uint256 => address)           |  4   |   0    |
+|     ERC721._operatorApprovals      |   mapping(address => mapping(address => bool))  |  5   |   0    |
+|   ERC721Enumerable._ownedTokens    | mapping(address => mapping(uint256 => uint256)) |  6   |   0    |
+| ERC721Enumerable._ownedTokensIndex |           mapping(uint256 => uint256)           |  7   |   0    |
+|    ERC721Enumerable._allTokens     |                    uint256[]                    |  8   |   0    |
+|  ERC721Enumerable._allTokensIndex  |           mapping(uint256 => uint256)           |  9   |   0    |
+|           Ownable._owner           |                     address                     |  10  |   0    |
+|      ReentrancyGuard._status       |                     uint256                     |  11  |   0    |
+|  AgentRegistry.componentRegistry   |                     address                     |  12  |   0    |
+|       AgentRegistry._BASEURI       |                      string                     |  13  |   0    |
+|      AgentRegistry._tokenIds       |                     uint256                     |  14  |   0    |
+|       AgentRegistry._manager       |                     address                     |  15  |   0    |
+|   AgentRegistry._mapTokenIdAgent   |     mapping(uint256 => AgentRegistry.Agent)     |  16  |   0    |
+|   AgentRegistry._mapHashTokenId    |           mapping(bytes32 => uint256)           |  17  |   0    |
++------------------------------------+-------------------------------------------------+------+--------+
+
+ComponentRegistry:
++----------------------------------------+-------------------------------------------------+------+--------+
+|                  Name                  |                       Type                      | Slot | Offset |
++----------------------------------------+-------------------------------------------------+------+--------+
+|              ERC721._name              |                      string                     |  0   |   0    |
+|             ERC721._symbol             |                      string                     |  1   |   0    |
+|             ERC721._owners             |           mapping(uint256 => address)           |  2   |   0    |
+|            ERC721._balances            |           mapping(address => uint256)           |  3   |   0    |
+|         ERC721._tokenApprovals         |           mapping(uint256 => address)           |  4   |   0    |
+|       ERC721._operatorApprovals        |   mapping(address => mapping(address => bool))  |  5   |   0    |
+|     ERC721Enumerable._ownedTokens      | mapping(address => mapping(uint256 => uint256)) |  6   |   0    |
+|   ERC721Enumerable._ownedTokensIndex   |           mapping(uint256 => uint256)           |  7   |   0    |
+|      ERC721Enumerable._allTokens       |                    uint256[]                    |  8   |   0    |
+|    ERC721Enumerable._allTokensIndex    |           mapping(uint256 => uint256)           |  9   |   0    |
+|             Ownable._owner             |                     address                     |  10  |   0    |
+|        ReentrancyGuard._status         |                     uint256                     |  11  |   0    |
+|       ComponentRegistry._BASEURI       |                      string                     |  12  |   0    |
+|      ComponentRegistry._tokenIds       |                     uint256                     |  13  |   0    |
+|       ComponentRegistry._manager       |                     address                     |  14  |   0    |
+| ComponentRegistry._mapTokenIdComponent | mapping(uint256 => ComponentRegistry.Component) |  15  |   0    |
+|   ComponentRegistry._mapHashTokenId    |           mapping(bytes32 => uint256)           |  16  |   0    |
++----------------------------------------+-------------------------------------------------+------+--------+
+
+RegistriesManager:
++-------------------------------------+---------+------+--------+
+|                 Name                |   Type  | Slot | Offset |
++-------------------------------------+---------+------+--------+
+|            Ownable._owner           | address |  0   |   0    |
+|           Pausable._paused          |   bool  |  0   |   20   |
+| RegistriesManager.componentRegistry | address |  1   |   0    |
+|   RegistriesManager.agentRegistry   | address |  2   |   0    |
+|      RegistriesManager._mintFee     | uint256 |  3   |   0    |
++-------------------------------------+---------+------+--------+
+
+ServiceManager:
++--------------------------------+---------+------+--------+
+|              Name              |   Type  | Slot | Offset |
++--------------------------------+---------+------+--------+
+|         Ownable._owner         | address |  0   |   0    |
+|        Pausable._paused        |   bool  |  0   |   20   |
+| ServiceManager.serviceRegistry | address |  1   |   0    |
+|    ServiceManager.treasury     | address |  2   |   0    |
++--------------------------------+---------+------+--------+
+
+ERC20Token:
++--------------------+-------------------------------------------------+------+--------+
+|        Name        |                       Type                      | Slot | Offset |
++--------------------+-------------------------------------------------+------+--------+
+|  ERC20._balances   |           mapping(address => uint256)           |  0   |   0    |
+| ERC20._allowances  | mapping(address => mapping(address => uint256)) |  1   |   0    |
+| ERC20._totalSupply |                     uint256                     |  2   |   0    |
+|    ERC20._name     |                      string                     |  3   |   0    |
+|   ERC20._symbol    |                      string                     |  4   |   0    |
+|   Ownable._owner   |                     address                     |  5   |   0    |
++--------------------+-------------------------------------------------+------+--------+
+
+TestServiceRegistry:
++--------------------------------------------+-------------------------------------------------+------+--------+
+|                    Name                    |                       Type                      | Slot | Offset |
++--------------------------------------------+-------------------------------------------------+------+--------+
+|               Ownable._owner               |                     address                     |  0   |   0    |
+|                ERC721._name                |                      string                     |  1   |   0    |
+|               ERC721._symbol               |                      string                     |  2   |   0    |
+|               ERC721._owners               |           mapping(uint256 => address)           |  3   |   0    |
+|              ERC721._balances              |           mapping(address => uint256)           |  4   |   0    |
+|           ERC721._tokenApprovals           |           mapping(uint256 => address)           |  5   |   0    |
+|         ERC721._operatorApprovals          |   mapping(address => mapping(address => bool))  |  6   |   0    |
+|       ERC721Enumerable._ownedTokens        | mapping(address => mapping(uint256 => uint256)) |  7   |   0    |
+|     ERC721Enumerable._ownedTokensIndex     |           mapping(uint256 => uint256)           |  8   |   0    |
+|        ERC721Enumerable._allTokens         |                    uint256[]                    |  9   |   0    |
+|      ERC721Enumerable._allTokensIndex      |           mapping(uint256 => uint256)           |  10  |   0    |
+|          ReentrancyGuard._status           |                     uint256                     |  11  |   0    |
+|       ServiceRegistry.agentRegistry        |                     address                     |  12  |   0    |
+|        ServiceRegistry._serviceIds         |                     uint256                     |  13  |   0    |
+|        ServiceRegistry.slashedFunds        |                     uint256                     |  14  |   0    |
+|          ServiceRegistry._manager          |                     address                     |  15  |   0    |
+|        ServiceRegistry._mapServices        |   mapping(uint256 => ServiceRegistry.Service)   |  16  |   0    |
+| ServiceRegistry._mapAgentInstanceOperators |           mapping(address => address)           |  17  |   0    |
+| ServiceRegistry._mapServiceIdSetComponents |          mapping(uint256 => uint256[])          |  18  |   0    |
+|   ServiceRegistry._mapServiceIdSetAgents   |          mapping(uint256 => uint256[])          |  19  |   0    |
+|        ServiceRegistry.mapMultisigs        |             mapping(address => bool)            |  20  |   0    |
+|     TestServiceRegistry._controlValue      |                     uint256                     |  21  |   0    |
++--------------------------------------------+-------------------------------------------------+------+--------+
+
+Depository:
++-----------------------------+------------------------------------------+------+--------+
+|             Name            |                   Type                   | Slot | Offset |
++-----------------------------+------------------------------------------+------+--------+
+|        Ownable._owner       |                 address                  |  0   |   0    |
+|        Depository.ola       |                 address                  |  1   |   0    |
+|     Depository.treasury     |                 address                  |  2   |   0    |
+|    Depository.tokenomics    |                 address                  |  3   |   0    |
+|   Depository.mapUserBonds   |  mapping(address => Depository.Bond[])   |  4   |   0    |
+| Depository.mapTokenProducts | mapping(address => Depository.Product[]) |  5   |   0    |
++-----------------------------+------------------------------------------+------+--------+
+
+Dispenser:
++-------------------------------+-----------------------------+------+--------+
+|              Name             |             Type            | Slot | Offset |
++-------------------------------+-----------------------------+------+--------+
+|         Ownable._owner        |           address           |  0   |   0    |
+|        Pausable._paused       |             bool            |  0   |   20   |
+|    ReentrancyGuard._status    |           uint256           |  1   |   0    |
+|         Dispenser.ola         |           address           |  2   |   0    |
+|      Dispenser.tokenomics     |           address           |  3   |   0    |
+| Dispenser.mapLastRewardEpochs | mapping(address => uint256) |  4   |   0    |
++-------------------------------+-----------------------------+------+--------+
+
+OLA:
++----------------------------------------------+-------------------------------------------------+------+--------+
+|                     Name                     |                       Type                      | Slot | Offset |
++----------------------------------------------+-------------------------------------------------+------+--------+
+|                Ownable._owner                |                     address                     |  0   |   0    |
+|               ERC20._balances                |           mapping(address => uint256)           |  1   |   0    |
+|              ERC20._allowances               | mapping(address => mapping(address => uint256)) |  2   |   0    |
+|              ERC20._totalSupply              |                     uint256                     |  3   |   0    |
+|                 ERC20._name                  |                      string                     |  4   |   0    |
+|                ERC20._symbol                 |                      string                     |  5   |   0    |
+|       EIP712._CACHED_DOMAIN_SEPARATOR        |                     bytes32                     |  6   |   0    |
+|           EIP712._CACHED_CHAIN_ID            |                     uint256                     |  7   |   0    |
+|             EIP712._CACHED_THIS              |                     address                     |  8   |   0    |
+|             EIP712._HASHED_NAME              |                     bytes32                     |  8   |   20   |
+|            EIP712._HASHED_VERSION            |                     bytes32                     |  8   |   24   |
+|              EIP712._TYPE_HASH               |                     bytes32                     |  8   |   28   |
+|             ERC20Permit._nonces              |       mapping(address => Counters.Counter)      |  9   |   0    |
+| ERC20Permit._PERMIT_TYPEHASH_DEPRECATED_SLOT |                     bytes32                     |  10  |   0    |
+|                OLA.timeLaunch                |                     uint256                     |  11  |   0    |
+|                  OLA.minter                  |                     address                     |  12  |   0    |
++----------------------------------------------+-------------------------------------------------+------+--------+
+
+Tokenomics:
++-----------------------------------+---------------------------------------------+------+--------+
+|                Name               |                     Type                    | Slot | Offset |
++-----------------------------------+---------------------------------------------+------+--------+
+|           Ownable._owner          |                   address                   |  0   |   0    |
+|           Tokenomics.ola          |                   address                   |  1   |   0    |
+|        Tokenomics.treasury        |                   address                   |  2   |   0    |
+|       Tokenomics.depository       |                   address                   |  3   |   0    |
+|        Tokenomics.dispenser       |                   address                   |  4   |   0    |
+|           Tokenomics.ve           |                   address                   |  5   |   0    |
+|        Tokenomics.epochLen        |                   uint256                   |  6   |   0    |
+|      Tokenomics.epochCounter      |                   uint256                   |  7   |   0    |
+|      Tokenomics.blockTimeETH      |                   uint256                   |  8   |   0    |
+|         Tokenomics.maxBond        |                   uint256                   |  9   |   0    |
+|       Tokenomics.epsilonRate      |                   uint256                   |  10  |   0    |
+|       Tokenomics.ucfcWeight       |                   uint256                   |  11  |   0    |
+|       Tokenomics.ucfaWeight       |                   uint256                   |  12  |   0    |
+|     Tokenomics.componentWeight    |                   uint256                   |  13  |   0    |
+|       Tokenomics.agentWeight      |                   uint256                   |  14  |   0    |
+|     Tokenomics.devsPerCapital     |                   uint256                   |  15  |   0    |
+|      Tokenomics.decimalsUnit      |                   uint256                   |  16  |   0    |
+| Tokenomics.epochServiceRevenueETH |                   uint256                   |  17  |   0    |
+|   Tokenomics.donationBalanceETH   |                   uint256                   |  18  |   0    |
+|     Tokenomics.stakerFraction     |                   uint256                   |  19  |   0    |
+|    Tokenomics.componentFraction   |                   uint256                   |  20  |   0    |
+|      Tokenomics.agentFraction     |                   uint256                   |  21  |   0    |
+|   Tokenomics.topUpOwnerFraction   |                   uint256                   |  22  |   0    |
+|   Tokenomics.topUpStakerFraction  |                   uint256                   |  23  |   0    |
+|      Tokenomics.bondPerEpoch      |                   uint256                   |  24  |   0    |
+|      Tokenomics.effectiveBond     |                   uint256                   |  25  |   0    |
+|     Tokenomics.bondAutoControl    |                     bool                    |  26  |   0    |
+|    Tokenomics.componentRegistry   |                   address                   |  26  |   1    |
+|      Tokenomics.agentRegistry     |                   address                   |  27  |   0    |
+|     Tokenomics.serviceRegistry    |                   address                   |  28  |   0    |
+|      Tokenomics.inflationCaps     |                  uint256[]                  |  29  |   0    |
+|   Tokenomics.protocolServiceIds   |                  uint256[]                  |  30  |   0    |
+|    Tokenomics.mapEpochEconomics   | mapping(uint256 => IStructs.PointEcomonics) |  31  |   0    |
+|      Tokenomics.mapComponents     |           mapping(uint256 => bool)          |  32  |   0    |
+|        Tokenomics.mapAgents       |           mapping(uint256 => bool)          |  33  |   0    |
+|        Tokenomics.mapOwners       |           mapping(address => bool)          |  34  |   0    |
+|    Tokenomics.mapServiceAmounts   |         mapping(uint256 => uint256)         |  35  |   0    |
+|     Tokenomics.mapOwnerRewards    |         mapping(address => uint256)         |  36  |   0    |
+|     Tokenomics.mapOwnerTopUps     |         mapping(address => uint256)         |  37  |   0    |
+|    Tokenomics._mapServiceOwners   |           mapping(address => bool)          |  38  |   0    |
++-----------------------------------+---------------------------------------------+------+--------+
+
+Treasury:
++--------------------------+----------------------------------------+------+--------+
+|           Name           |                  Type                  | Slot | Offset |
++--------------------------+----------------------------------------+------+--------+
+|      Ownable._owner      |                address                 |  0   |   0    |
+| ReentrancyGuard._status  |                uint256                 |  1   |   0    |
+|       Treasury.ola       |                address                 |  2   |   0    |
+|   Treasury.depository    |                address                 |  3   |   0    |
+|    Treasury.dispenser    |                address                 |  4   |   0    |
+|   Treasury.tokenomics    |                address                 |  5   |   0    |
+| Treasury.ETHFromServices |                uint256                 |  6   |   0    |
+|    Treasury.ETHOwned     |                uint256                 |  7   |   0    |
+|  Treasury.tokenRegistry  |               address[]                |  8   |   0    |
+|    Treasury.mapTokens    | mapping(address => Treasury.TokenInfo) |  9   |   0    |
++--------------------------+----------------------------------------+------+--------+
+
+. analyzed (126 contracts)

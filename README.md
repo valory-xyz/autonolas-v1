@@ -91,6 +91,9 @@ Run the code with its deployment on the node:
 npx hardhat node
 ```
 
+### Internal audit
+The audit is provided internally as development matures. The latest audit report can be found here: [audit](https://github.com/valory-xyz/onchain-protocol/blob/main/audit).
+
 ### Linters
 - [`ESLint`](https://eslint.org) is used for JS code.
 - [`solhint`](https://github.com/protofire/solhint) is used for Solidity linting.

@@ -1,0 +1,2649 @@
+'npx hardhat compile --force' running
+Compiled 113 Solidity files successfully
+
+Solidity 0.8.14 is not fully supported yet. You can still use Hardhat, but some features, like stack traces, might not work correctly.
+
+Learn more at https://hardhat.org/reference/solidity-support
+
+@uniswap/v2-periphery/contracts/UniswapV2Router02.sol:12:1: Warning: Contract code size exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+contract UniswapV2Router02 is IUniswapV2Router02 {
+^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IWETH.sol
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:23:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                       ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:35:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                                   ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:22:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                      ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:39:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                                       ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:27:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                           ^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:41:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                         ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:53:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                                     ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:24:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                        ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:39:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                                       ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:36:24:
+   |
+36 |     function delegates(address account) external view virtual override returns (address)
+   |                        ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:42:23:
+   |
+42 |     function delegate(address delegatee) external virtual override
+   |                       ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:28:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                            ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:47:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                               ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:62:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                              ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:78:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                              ^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:87:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                       ^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:98:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                                  ^^^^^^^^^
+
+
+Warning: Contract code size is 24918 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+ --> contracts/test/TestServiceRegistry.sol:8:1:
+  |
+8 | contract TestServiceRegistry is ServiceRegistry {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
+
+[94m
++ Contract UniswapV2ERC20
+[0m[94m  - From IUniswapV2ERC20
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[94m  - From UniswapV2ERC20
+[0m[95m    - _approve(address,address,uint256) (private)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (private)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - constructor() (public)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract UniswapV2Factory (Most derived contract)
+[0m[94m  - From IUniswapV2Factory
+[0m[92m    - allPairs(uint256) (external)
+[0m[92m    - feeTo() (external)
+[0m[92m    - feeToSetter() (external)
+[0m[92m    - getPair(address,address) (external)
+[0m[94m  - From UniswapV2Factory
+[0m[92m    - allPairsLength() (external)
+[0m[92m    - constructor(address) (public)
+[0m[92m    - createPair(address,address) (external)
+[0m[92m    - setFeeTo(address) (external)
+[0m[92m    - setFeeToSetter(address) (external)
+[0m[94m
++ Contract UniswapV2Pair (Most derived contract)
+[0m[94m  - From UniswapV2ERC20
+[0m[95m    - _approve(address,address,uint256) (private)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (private)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IUniswapV2ERC20
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[94m  - From IUniswapV2Pair
+[0m[92m    - MINIMUM_LIQUIDITY() (external)
+[0m[92m    - factory() (external)
+[0m[92m    - kLast() (external)
+[0m[92m    - price0CumulativeLast() (external)
+[0m[92m    - price1CumulativeLast() (external)
+[0m[92m    - token0() (external)
+[0m[92m    - token1() (external)
+[0m[94m  - From UniswapV2Pair
+[0m[95m    - _mintFee(uint112,uint112) (private)
+[0m[95m    - _safeTransfer(address,address,uint256) (private)
+[0m[95m    - _update(uint256,uint256,uint112,uint112) (private)
+[0m[92m    - burn(address) (external)
+[0m[92m    - constructor() (public)
+[0m[92m    - getReserves() (public)
+[0m[92m    - initialize(address,address) (external)
+[0m[92m    - mint(address) (external)
+[0m[92m    - skim(address) (external)
+[0m[92m    - swap(uint256,uint256,address,bytes) (external)
+[0m[92m    - sync() (external)
+[0m[94m
++ Contract IERC20 (Most derived contract)
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Callee (Most derived contract)
+[0m[94m  - From IUniswapV2Callee
+[0m[92m    - uniswapV2Call(address,uint256,uint256,bytes) (external)
+[0m[94m
++ Contract IUniswapV2ERC20
+[0m[94m  - From IUniswapV2ERC20
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Factory
+[0m[94m  - From IUniswapV2Factory
+[0m[92m    - allPairs(uint256) (external)
+[0m[92m    - allPairsLength() (external)
+[0m[92m    - createPair(address,address) (external)
+[0m[92m    - feeTo() (external)
+[0m[92m    - feeToSetter() (external)
+[0m[92m    - getPair(address,address) (external)
+[0m[92m    - setFeeTo(address) (external)
+[0m[92m    - setFeeToSetter(address) (external)
+[0m[94m
++ Contract IUniswapV2Pair
+[0m[94m  - From IUniswapV2Pair
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - MINIMUM_LIQUIDITY() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - burn(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getReserves() (external)
+[0m[92m    - initialize(address,address) (external)
+[0m[92m    - kLast() (external)
+[0m[92m    - mint(address) (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - price0CumulativeLast() (external)
+[0m[92m    - price1CumulativeLast() (external)
+[0m[92m    - skim(address) (external)
+[0m[92m    - swap(uint256,uint256,address,bytes) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - sync() (external)
+[0m[92m    - token0() (external)
+[0m[92m    - token1() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract Math (Most derived contract)
+[0m[94m  - From Math
+[0m[95m    - min(uint256,uint256) (internal)
+[0m[95m    - sqrt(uint256) (internal)
+[0m[94m
++ Contract SafeMath (Most derived contract)
+[0m[94m  - From SafeMath
+[0m[95m    - add(uint256,uint256) (internal)
+[0m[95m    - mul(uint256,uint256) (internal)
+[0m[95m    - sub(uint256,uint256) (internal)
+[0m[94m
++ Contract UQ112x112 (Most derived contract)
+[0m[94m  - From UQ112x112
+[0m[95m    - encode(uint112) (internal)
+[0m[95m    - uqdiv(uint224,uint112) (internal)
+[0m[94m
++ Contract WETH9 (Most derived contract)
+[0m[94m  - From WETH9
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - deposit() (public)
+[0m[92m    - fallback() (external)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[92m    - withdraw(uint256) (public)
+[0m[94m
++ Contract TransferHelper (Most derived contract)
+[0m[94m  - From TransferHelper
+[0m[95m    - safeApprove(address,address,uint256) (internal)
+[0m[95m    - safeTransfer(address,address,uint256) (internal)
+[0m[95m    - safeTransferETH(address,uint256) (internal)
+[0m[95m    - safeTransferFrom(address,address,address,uint256) (internal)
+[0m[94m
++ Contract IUniswapV2Factory (Most derived contract)
+[0m[94m  - From IUniswapV2Factory
+[0m[92m    - allPairs(uint256) (external)
+[0m[92m    - allPairsLength() (external)
+[0m[92m    - createPair(address,address) (external)
+[0m[92m    - feeTo() (external)
+[0m[92m    - feeToSetter() (external)
+[0m[92m    - getPair(address,address) (external)
+[0m[92m    - setFeeTo(address) (external)
+[0m[92m    - setFeeToSetter(address) (external)
+[0m[94m
++ Contract IUniswapV2Pair (Most derived contract)
+[0m[94m  - From IUniswapV2Pair
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - MINIMUM_LIQUIDITY() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - burn(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getReserves() (external)
+[0m[92m    - initialize(address,address) (external)
+[0m[92m    - kLast() (external)
+[0m[92m    - mint(address) (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - price0CumulativeLast() (external)
+[0m[92m    - price1CumulativeLast() (external)
+[0m[92m    - skim(address) (external)
+[0m[92m    - swap(uint256,uint256,address,bytes) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - sync() (external)
+[0m[92m    - token0() (external)
+[0m[92m    - token1() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract UniswapV2Router02 (Most derived contract)
+[0m[94m  - From IUniswapV2Router01
+[0m[92m    - WETH() (external)
+[0m[92m    - factory() (external)
+[0m[94m  - From UniswapV2Router02
+[0m[95m    - _addLiquidity(address,address,uint256,uint256,uint256,uint256) (internal)
+[0m[95m    - _swap(uint256[],address[],address) (internal)
+[0m[95m    - _swapSupportingFeeOnTransferTokens(address[],address) (internal)
+[0m[92m    - addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - addLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - constructor(address,address) (public)
+[0m[92m    - getAmountIn(uint256,uint256,uint256) (public)
+[0m[92m    - getAmountOut(uint256,uint256,uint256) (public)
+[0m[92m    - getAmountsIn(uint256,address[]) (public)
+[0m[92m    - getAmountsOut(uint256,address[]) (public)
+[0m[92m    - quote(uint256,uint256,uint256) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (public)
+[0m[92m    - removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) (public)
+[0m[92m    - removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256) (public)
+[0m[92m    - removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapETHForExactTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m
++ Contract IERC20 (Most derived contract)
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Router01
+[0m[94m  - From IUniswapV2Router01
+[0m[92m    - WETH() (external)
+[0m[92m    - addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - addLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getAmountIn(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountOut(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountsIn(uint256,address[]) (external)
+[0m[92m    - getAmountsOut(uint256,address[]) (external)
+[0m[92m    - quote(uint256,uint256,uint256) (external)
+[0m[92m    - removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapETHForExactTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Router02
+[0m[94m  - From IUniswapV2Router01
+[0m[92m    - WETH() (external)
+[0m[92m    - addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - addLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getAmountIn(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountOut(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountsIn(uint256,address[]) (external)
+[0m[92m    - getAmountsOut(uint256,address[]) (external)
+[0m[92m    - quote(uint256,uint256,uint256) (external)
+[0m[92m    - removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapETHForExactTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m  - From IUniswapV2Router02
+[0m[92m    - removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m
++ Contract IWETH (Most derived contract)
+[0m[94m  - From IWETH
+[0m[92m    - deposit() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - withdraw(uint256) (external)
+[0m[94m
++ Contract SafeMath (Most derived contract)
+[0m[94m  - From SafeMath
+[0m[95m    - add(uint256,uint256) (internal)
+[0m[95m    - mul(uint256,uint256) (internal)
+[0m[95m    - sub(uint256,uint256) (internal)
+[0m[94m
++ Contract UniswapV2Library (Most derived contract)
+[0m[94m  - From UniswapV2Library
+[0m[95m    - getAmountIn(uint256,uint256,uint256) (internal)
+[0m[95m    - getAmountOut(uint256,uint256,uint256) (internal)
+[0m[95m    - getAmountsIn(address,uint256,address[]) (internal)
+[0m[95m    - getAmountsOut(address,uint256,address[]) (internal)
+[0m[95m    - getReserves(address,address,address) (internal)
+[0m[95m    - pairFor(address,address,address) (internal)
+[0m[95m    - quote(uint256,uint256,uint256) (internal)
+[0m[95m    - sortTokens(address,address) (internal)
+[0m[94m
++ Contract IProxy (Upgradeable Proxy) (Most derived contract)
+[0m[94m  - From IProxy
+[0m[92m    - masterCopy() (external)
+[0m[94m
++ Contract GnosisSafeProxy (Upgradeable Proxy) (Most derived contract)
+[0m[94m  - From GnosisSafeProxy
+[0m[92m    - constructor(address) (public)
+[0m[92m    - fallback() (external)
+[0m[94m
++ Contract GnosisSafeProxyFactory (Upgradeable Proxy) (Most derived contract)
+[0m[94m  - From GnosisSafeProxyFactory
+[0m[92m    - calculateCreateProxyWithNonceAddress(address,bytes,uint256) (external)
+[0m[92m    - createProxy(address,bytes) (public)
+[0m[92m    - createProxyWithCallback(address,bytes,uint256,IProxyCreationCallback) (public)
+[0m[92m    - createProxyWithNonce(address,bytes,uint256) (public)
+[0m[95m    - deployProxyWithNonce(address,bytes,uint256) (internal)
+[0m[92m    - proxyCreationCode() (public)
+[0m[92m    - proxyRuntimeCode() (public)
+[0m[94m
++ Contract IProxyCreationCallback (Upgradeable Proxy) (Most derived contract)
+[0m[94m  - From IProxyCreationCallback
+[0m[92m    - proxyCreated(GnosisSafeProxy,address,bytes,uint256) (external)
+[0m[94m
++ Contract GnosisSafeMultisig (Most derived contract)
+[0m[94m  - From GnosisSafeMultisig
+[0m[95m    - _parseData(bytes) (internal)
+[0m[92m    - constructor(address,address) (public)
+[0m[92m    - create(address[],uint256,bytes) (external)
+[0m[94m
++ Contract GnosisSafe
+[0m[94m  - From GuardManager
+[0m[95m    - getGuard() (internal)
+[0m[92m    - setGuard(address) (external)
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From StorageAccessible
+[0m[92m    - getStorageAt(uint256,uint256) (public)
+[0m[92m    - simulateAndRevert(address,bytes) (external)
+[0m[94m  - From FallbackManager
+[0m[92m    - fallback() (external)
+[0m[95m    - internalSetFallbackHandler(address) (internal)
+[0m[92m    - setFallbackHandler(address) (public)
+[0m[94m  - From SecuredTokenTransfer
+[0m[95m    - transferToken(address,address,uint256) (internal)
+[0m[94m  - From SignatureDecoder
+[0m[95m    - signatureSplit(bytes,uint256) (internal)
+[0m[94m  - From OwnerManager
+[0m[92m    - addOwnerWithThreshold(address,uint256) (public)
+[0m[92m    - changeThreshold(uint256) (public)
+[0m[92m    - getOwners() (public)
+[0m[92m    - getThreshold() (public)
+[0m[92m    - isOwner(address) (public)
+[0m[92m    - removeOwner(address,address,uint256) (public)
+[0m[95m    - setupOwners(address[],uint256) (internal)
+[0m[92m    - swapOwner(address,address,address) (public)
+[0m[94m  - From ModuleManager
+[0m[92m    - disableModule(address,address) (public)
+[0m[92m    - enableModule(address) (public)
+[0m[92m    - execTransactionFromModule(address,uint256,bytes,Enum.Operation) (public)
+[0m[92m    - execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) (public)
+[0m[92m    - getModulesPaginated(address,uint256) (external)
+[0m[92m    - isModuleEnabled(address) (public)
+[0m[95m    - setupModules(address,bytes) (internal)
+[0m[94m  - From Executor
+[0m[95m    - execute(address,uint256,bytes,Enum.Operation,uint256) (internal)
+[0m[94m  - From EtherPaymentFallback
+[0m[92m    - receive() (external)
+[0m[94m  - From GnosisSafe
+[0m[92m    - approveHash(bytes32) (external)
+[0m[92m    - checkNSignatures(bytes32,bytes,bytes,uint256) (public)
+[0m[92m    - checkSignatures(bytes32,bytes,bytes) (public)
+[0m[92m    - constructor() (public)
+[0m[92m    - domainSeparator() (public)
+[0m[92m    - encodeTransactionData(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) (public)
+[0m[92m    - execTransaction(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,bytes) (public)
+[0m[92m    - getChainId() (public)
+[0m[92m    - getTransactionHash(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) (public)
+[0m[95m    - handlePayment(uint256,uint256,uint256,address,address) (private)
+[0m[92m    - requiredTxGas(address,uint256,bytes,Enum.Operation) (external)
+[0m[92m    - setup(address[],uint256,address,bytes,address,address,uint256,address) (external)
+[0m[94m
++ Contract GnosisSafeL2 (Most derived contract)
+[0m[94m  - From GnosisSafe
+[0m[92m    - approveHash(bytes32) (external)
+[0m[92m    - checkNSignatures(bytes32,bytes,bytes,uint256) (public)
+[0m[92m    - checkSignatures(bytes32,bytes,bytes) (public)
+[0m[92m    - constructor() (public)
+[0m[92m    - domainSeparator() (public)
+[0m[92m    - encodeTransactionData(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) (public)
+[0m[92m    - getChainId() (public)
+[0m[92m    - getTransactionHash(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) (public)
+[0m[95m    - handlePayment(uint256,uint256,uint256,address,address) (private)
+[0m[92m    - requiredTxGas(address,uint256,bytes,Enum.Operation) (external)
+[0m[92m    - setup(address[],uint256,address,bytes,address,address,uint256,address) (external)
+[0m[94m  - From GuardManager
+[0m[95m    - getGuard() (internal)
+[0m[92m    - setGuard(address) (external)
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From StorageAccessible
+[0m[92m    - getStorageAt(uint256,uint256) (public)
+[0m[92m    - simulateAndRevert(address,bytes) (external)
+[0m[94m  - From FallbackManager
+[0m[92m    - fallback() (external)
+[0m[95m    - internalSetFallbackHandler(address) (internal)
+[0m[92m    - setFallbackHandler(address) (public)
+[0m[94m  - From SecuredTokenTransfer
+[0m[95m    - transferToken(address,address,uint256) (internal)
+[0m[94m  - From SignatureDecoder
+[0m[95m    - signatureSplit(bytes,uint256) (internal)
+[0m[94m  - From OwnerManager
+[0m[92m    - addOwnerWithThreshold(address,uint256) (public)
+[0m[92m    - changeThreshold(uint256) (public)
+[0m[92m    - getOwners() (public)
+[0m[92m    - getThreshold() (public)
+[0m[92m    - isOwner(address) (public)
+[0m[92m    - removeOwner(address,address,uint256) (public)
+[0m[95m    - setupOwners(address[],uint256) (internal)
+[0m[92m    - swapOwner(address,address,address) (public)
+[0m[94m  - From ModuleManager
+[0m[92m    - disableModule(address,address) (public)
+[0m[92m    - enableModule(address) (public)
+[0m[92m    - execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) (public)
+[0m[92m    - getModulesPaginated(address,uint256) (external)
+[0m[92m    - isModuleEnabled(address) (public)
+[0m[95m    - setupModules(address,bytes) (internal)
+[0m[94m  - From Executor
+[0m[95m    - execute(address,uint256,bytes,Enum.Operation,uint256) (internal)
+[0m[94m  - From EtherPaymentFallback
+[0m[92m    - receive() (external)
+[0m[94m  - From GnosisSafeL2
+[0m[92m    - execTransaction(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,bytes) (public)
+[0m[92m    - execTransactionFromModule(address,uint256,bytes,Enum.Operation) (public)
+[0m[94m
++ Contract Executor
+[0m[94m  - From Executor
+[0m[95m    - execute(address,uint256,bytes,Enum.Operation,uint256) (internal)
+[0m[94m
++ Contract FallbackManager
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From FallbackManager
+[0m[92m    - fallback() (external)
+[0m[95m    - internalSetFallbackHandler(address) (internal)
+[0m[92m    - setFallbackHandler(address) (public)
+[0m[94m
++ Contract Guard (Most derived contract)
+[0m[94m  - From Guard
+[0m[92m    - checkAfterExecution(bytes32,bool) (external)
+[0m[92m    - checkTransaction(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,bytes,address) (external)
+[0m[94m
++ Contract GuardManager
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From GuardManager
+[0m[95m    - getGuard() (internal)
+[0m[92m    - setGuard(address) (external)
+[0m[94m
++ Contract ModuleManager
+[0m[94m  - From Executor
+[0m[95m    - execute(address,uint256,bytes,Enum.Operation,uint256) (internal)
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From ModuleManager
+[0m[92m    - disableModule(address,address) (public)
+[0m[92m    - enableModule(address) (public)
+[0m[92m    - execTransactionFromModule(address,uint256,bytes,Enum.Operation) (public)
+[0m[92m    - execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) (public)
+[0m[92m    - getModulesPaginated(address,uint256) (external)
+[0m[92m    - isModuleEnabled(address) (public)
+[0m[95m    - setupModules(address,bytes) (internal)
+[0m[94m
++ Contract OwnerManager
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m  - From OwnerManager
+[0m[92m    - addOwnerWithThreshold(address,uint256) (public)
+[0m[92m    - changeThreshold(uint256) (public)
+[0m[92m    - getOwners() (public)
+[0m[92m    - getThreshold() (public)
+[0m[92m    - isOwner(address) (public)
+[0m[92m    - removeOwner(address,address,uint256) (public)
+[0m[95m    - setupOwners(address[],uint256) (internal)
+[0m[92m    - swapOwner(address,address,address) (public)
+[0m[94m
++ Contract Enum (Most derived contract)
+[0m[94m
++ Contract EtherPaymentFallback
+[0m[94m  - From EtherPaymentFallback
+[0m[92m    - receive() (external)
+[0m[94m
++ Contract SecuredTokenTransfer
+[0m[94m  - From SecuredTokenTransfer
+[0m[95m    - transferToken(address,address,uint256) (internal)
+[0m[94m
++ Contract SelfAuthorized
+[0m[94m  - From SelfAuthorized
+[0m[95m    - requireSelfCall() (private)
+[0m[94m
++ Contract SignatureDecoder
+[0m[94m  - From SignatureDecoder
+[0m[95m    - signatureSplit(bytes,uint256) (internal)
+[0m[94m
++ Contract Singleton
+[0m[94m
++ Contract StorageAccessible
+[0m[94m  - From StorageAccessible
+[0m[92m    - getStorageAt(uint256,uint256) (public)
+[0m[92m    - simulateAndRevert(address,bytes) (external)
+[0m[94m
++ Contract GnosisSafeMath (Most derived contract)
+[0m[94m  - From GnosisSafeMath
+[0m[95m    - add(uint256,uint256) (internal)
+[0m[95m    - max(uint256,uint256) (internal)
+[0m[95m    - mul(uint256,uint256) (internal)
+[0m[95m    - sub(uint256,uint256) (internal)
+[0m[94m
++ Contract ISignatureValidatorConstants
+[0m[94m
++ Contract ISignatureValidator (Most derived contract)
+[0m[94m  - From ISignatureValidator
+[0m[92m    - isValidSignature(bytes,bytes) (public)
+[0m[94m
++ Contract AccessControl
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From AccessControl
+[0m[95m    - _checkRole(bytes32) (internal)
+[0m[95m    - _checkRole(bytes32,address) (internal)
+[0m[95m    - _grantRole(bytes32,address) (internal)
+[0m[95m    - _revokeRole(bytes32,address) (internal)
+[0m[95m    - _setRoleAdmin(bytes32,bytes32) (internal)
+[0m[95m    - _setupRole(bytes32,address) (internal)
+[0m[92m    - getRoleAdmin(bytes32) (public)
+[0m[92m    - grantRole(bytes32,address) (public)
+[0m[92m    - hasRole(bytes32,address) (public)
+[0m[92m    - renounceRole(bytes32,address) (public)
+[0m[92m    - revokeRole(bytes32,address) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[94m
++ Contract IAccessControl
+[0m[94m  - From IAccessControl
+[0m[92m    - getRoleAdmin(bytes32) (external)
+[0m[92m    - grantRole(bytes32,address) (external)
+[0m[92m    - hasRole(bytes32,address) (external)
+[0m[92m    - renounceRole(bytes32,address) (external)
+[0m[92m    - revokeRole(bytes32,address) (external)
+[0m[94m
++ Contract Ownable
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m
++ Contract Governor
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - version() (public)
+[0m[94m
++ Contract IGovernor
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - version() (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m
++ Contract TimelockController
+[0m[94m  - From AccessControl
+[0m[95m    - _checkRole(bytes32) (internal)
+[0m[95m    - _checkRole(bytes32,address) (internal)
+[0m[95m    - _grantRole(bytes32,address) (internal)
+[0m[95m    - _revokeRole(bytes32,address) (internal)
+[0m[95m    - _setRoleAdmin(bytes32,bytes32) (internal)
+[0m[95m    - _setupRole(bytes32,address) (internal)
+[0m[92m    - getRoleAdmin(bytes32) (public)
+[0m[92m    - grantRole(bytes32,address) (public)
+[0m[92m    - hasRole(bytes32,address) (public)
+[0m[92m    - renounceRole(bytes32,address) (public)
+[0m[92m    - revokeRole(bytes32,address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From TimelockController
+[0m[95m    - _afterCall(bytes32) (private)
+[0m[95m    - _beforeCall(bytes32,bytes32) (private)
+[0m[95m    - _call(bytes32,uint256,address,uint256,bytes) (private)
+[0m[95m    - _schedule(bytes32,uint256) (private)
+[0m[92m    - cancel(bytes32) (public)
+[0m[92m    - constructor(uint256,address[],address[]) (public)
+[0m[92m    - execute(address,uint256,bytes,bytes32,bytes32) (public)
+[0m[92m    - executeBatch(address[],uint256[],bytes[],bytes32,bytes32) (public)
+[0m[92m    - getMinDelay() (public)
+[0m[92m    - getTimestamp(bytes32) (public)
+[0m[92m    - hashOperation(address,uint256,bytes,bytes32,bytes32) (public)
+[0m[92m    - hashOperationBatch(address[],uint256[],bytes[],bytes32,bytes32) (public)
+[0m[92m    - isOperation(bytes32) (public)
+[0m[92m    - isOperationDone(bytes32) (public)
+[0m[92m    - isOperationPending(bytes32) (public)
+[0m[92m    - isOperationReady(bytes32) (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - schedule(address,uint256,bytes,bytes32,bytes32,uint256) (public)
+[0m[92m    - scheduleBatch(address[],uint256[],bytes[],bytes32,bytes32,uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - updateDelay(uint256) (external)
+[0m[94m
++ Contract GovernorCompatibilityBravo
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - version() (public)
+[0m[94m  - From IGovernor
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From IGovernorTimelock
+[0m[92m    - proposalEta(uint256) (public)
+[0m[92m    - queue(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - timelock() (public)
+[0m[94m  - From GovernorCompatibilityBravo
+[0m[92m    - COUNTING_MODE() (public)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _encodeCalldata(string[],bytes[]) (private)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _storeProposal(address,address[],uint256[],string[],bytes[],string) (private)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - cancel(uint256) (public)
+[0m[92m    - execute(uint256) (public)
+[0m[92m    - getActions(uint256) (public)
+[0m[92m    - getReceipt(uint256,address) (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - proposals(uint256) (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - propose(address[],uint256[],string[],bytes[],string) (public)
+[0m[92m    - queue(uint256) (public)
+[0m[92m    - quorumVotes() (public)
+[0m[94m
++ Contract IGovernorCompatibilityBravo
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - version() (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IGovernorCompatibilityBravo
+[0m[92m    - cancel(uint256) (public)
+[0m[92m    - execute(uint256) (public)
+[0m[92m    - getActions(uint256) (public)
+[0m[92m    - getReceipt(uint256,address) (public)
+[0m[92m    - proposals(uint256) (public)
+[0m[92m    - propose(address[],uint256[],string[],bytes[],string) (public)
+[0m[92m    - queue(uint256) (public)
+[0m[92m    - quorumVotes() (public)
+[0m[94m
++ Contract GovernorSettings
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - version() (public)
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From GovernorSettings
+[0m[95m    - _setProposalThreshold(uint256) (internal)
+[0m[95m    - _setVotingDelay(uint256) (internal)
+[0m[95m    - _setVotingPeriod(uint256) (internal)
+[0m[95m    - constructor(uint256,uint256,uint256) (internal)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - setProposalThreshold(uint256) (public)
+[0m[92m    - setVotingDelay(uint256) (public)
+[0m[92m    - setVotingPeriod(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m
++ Contract GovernorTimelockControl
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - version() (public)
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From GovernorTimelockControl
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _updateTimelock(TimelockController) (private)
+[0m[95m    - constructor(TimelockController) (internal)
+[0m[92m    - proposalEta(uint256) (public)
+[0m[92m    - queue(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - timelock() (public)
+[0m[92m    - updateTimelock(TimelockController) (external)
+[0m[94m
++ Contract GovernorVotes
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - version() (public)
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From GovernorVotes
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - constructor(IVotes) (internal)
+[0m[94m
++ Contract GovernorVotesQuorumFraction
+[0m[94m  - From GovernorVotes
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - constructor(IVotes) (internal)
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - version() (public)
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From GovernorVotesQuorumFraction
+[0m[95m    - _updateQuorumNumerator(uint256) (internal)
+[0m[95m    - constructor(uint256) (internal)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - quorumDenominator() (public)
+[0m[92m    - quorumNumerator() (public)
+[0m[92m    - updateQuorumNumerator(uint256) (external)
+[0m[94m
++ Contract IGovernorTimelock
+[0m[94m  - From IGovernor
+[0m[92m    - COUNTING_MODE() (public)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - version() (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IGovernorTimelock
+[0m[92m    - proposalEta(uint256) (public)
+[0m[92m    - queue(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - timelock() (public)
+[0m[94m
++ Contract IVotes
+[0m[94m  - From IVotes
+[0m[92m    - delegate(address) (external)
+[0m[92m    - delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - delegates(address) (external)
+[0m[92m    - getPastTotalSupply(uint256) (external)
+[0m[92m    - getPastVotes(address,uint256) (external)
+[0m[92m    - getVotes(address) (external)
+[0m[94m
++ Contract Pausable
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Pausable
+[0m[95m    - _pause() (internal)
+[0m[95m    - _unpause() (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - paused() (public)
+[0m[94m
++ Contract ReentrancyGuard
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m
++ Contract IERC1155Receiver
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IERC1155Receiver
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (external)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (external)
+[0m[94m
++ Contract ERC20
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC20
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,address,uint256) (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _spendAllowance(address,address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - allowance(address,address) (public)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - decimals() (public)
+[0m[92m    - decreaseAllowance(address,uint256) (public)
+[0m[92m    - increaseAllowance(address,uint256) (public)
+[0m[92m    - name() (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m
++ Contract IERC20
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract ERC20Burnable
+[0m[94m  - From ERC20
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,address,uint256) (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _spendAllowance(address,address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - allowance(address,address) (public)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - decimals() (public)
+[0m[92m    - decreaseAllowance(address,uint256) (public)
+[0m[92m    - increaseAllowance(address,uint256) (public)
+[0m[92m    - name() (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC20Burnable
+[0m[92m    - burn(uint256) (public)
+[0m[92m    - burnFrom(address,uint256) (public)
+[0m[94m
++ Contract IERC20Metadata
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IERC20Metadata
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[94m
++ Contract ERC20Permit
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From ERC20
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,address,uint256) (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _spendAllowance(address,address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - allowance(address,address) (public)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - decimals() (public)
+[0m[92m    - decreaseAllowance(address,uint256) (public)
+[0m[92m    - increaseAllowance(address,uint256) (public)
+[0m[92m    - name() (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC20Permit
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[95m    - _useNonce(address) (internal)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - nonces(address) (public)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (public)
+[0m[94m
++ Contract IERC20Permit
+[0m[94m  - From IERC20Permit
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[94m
++ Contract SafeERC20 (Most derived contract)
+[0m[94m  - From SafeERC20
+[0m[95m    - _callOptionalReturn(IERC20,bytes) (private)
+[0m[95m    - safeApprove(IERC20,address,uint256) (internal)
+[0m[95m    - safeDecreaseAllowance(IERC20,address,uint256) (internal)
+[0m[95m    - safeIncreaseAllowance(IERC20,address,uint256) (internal)
+[0m[95m    - safeTransfer(IERC20,address,uint256) (internal)
+[0m[95m    - safeTransferFrom(IERC20,address,address,uint256) (internal)
+[0m[94m
++ Contract ERC721
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m
++ Contract IERC721
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IERC721
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - getApproved(uint256) (external)
+[0m[92m    - isApprovedForAll(address,address) (external)
+[0m[92m    - ownerOf(uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (external)
+[0m[92m    - setApprovalForAll(address,bool) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IERC721Receiver
+[0m[94m  - From IERC721Receiver
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (external)
+[0m[94m
++ Contract ERC721Enumerable
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC721Enumerable
+[0m[95m    - _addTokenToAllTokensEnumeration(uint256) (private)
+[0m[95m    - _addTokenToOwnerEnumeration(address,uint256) (private)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _removeTokenFromAllTokensEnumeration(uint256) (private)
+[0m[95m    - _removeTokenFromOwnerEnumeration(address,uint256) (private)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - tokenByIndex(uint256) (public)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (public)
+[0m[92m    - totalSupply() (public)
+[0m[94m
++ Contract IERC721Enumerable
+[0m[94m  - From IERC721
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - getApproved(uint256) (external)
+[0m[92m    - isApprovedForAll(address,address) (external)
+[0m[92m    - ownerOf(uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (external)
+[0m[92m    - setApprovalForAll(address,bool) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IERC721Enumerable
+[0m[92m    - tokenByIndex(uint256) (external)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (external)
+[0m[92m    - totalSupply() (external)
+[0m[94m
++ Contract IERC721Metadata
+[0m[94m  - From IERC721
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - getApproved(uint256) (external)
+[0m[92m    - isApprovedForAll(address,address) (external)
+[0m[92m    - ownerOf(uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (external)
+[0m[92m    - setApprovalForAll(address,bool) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IERC721Metadata
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - tokenURI(uint256) (external)
+[0m[94m
++ Contract Address (Most derived contract)
+[0m[94m  - From Address
+[0m[95m    - functionCall(address,bytes) (internal)
+[0m[95m    - functionCall(address,bytes,string) (internal)
+[0m[95m    - functionCallWithValue(address,bytes,uint256) (internal)
+[0m[95m    - functionCallWithValue(address,bytes,uint256,string) (internal)
+[0m[95m    - functionDelegateCall(address,bytes) (internal)
+[0m[95m    - functionDelegateCall(address,bytes,string) (internal)
+[0m[95m    - functionStaticCall(address,bytes) (internal)
+[0m[95m    - functionStaticCall(address,bytes,string) (internal)
+[0m[95m    - isContract(address) (internal)
+[0m[95m    - sendValue(address,uint256) (internal)
+[0m[95m    - verifyCallResult(bool,bytes,string) (internal)
+[0m[94m
++ Contract Context
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m
++ Contract Counters (Most derived contract)
+[0m[94m  - From Counters
+[0m[95m    - current(Counters.Counter) (internal)
+[0m[95m    - decrement(Counters.Counter) (internal)
+[0m[95m    - increment(Counters.Counter) (internal)
+[0m[95m    - reset(Counters.Counter) (internal)
+[0m[94m
++ Contract Strings (Most derived contract)
+[0m[94m  - From Strings
+[0m[95m    - toHexString(uint256) (internal)
+[0m[95m    - toHexString(uint256,uint256) (internal)
+[0m[95m    - toString(uint256) (internal)
+[0m[94m
++ Contract Timers (Most derived contract)
+[0m[94m  - From Timers
+[0m[95m    - getDeadline(Timers.BlockNumber) (internal)
+[0m[95m    - getDeadline(Timers.Timestamp) (internal)
+[0m[95m    - isExpired(Timers.BlockNumber) (internal)
+[0m[95m    - isExpired(Timers.Timestamp) (internal)
+[0m[95m    - isPending(Timers.BlockNumber) (internal)
+[0m[95m    - isPending(Timers.Timestamp) (internal)
+[0m[95m    - isStarted(Timers.BlockNumber) (internal)
+[0m[95m    - isStarted(Timers.Timestamp) (internal)
+[0m[95m    - isUnset(Timers.BlockNumber) (internal)
+[0m[95m    - isUnset(Timers.Timestamp) (internal)
+[0m[95m    - reset(Timers.BlockNumber) (internal)
+[0m[95m    - reset(Timers.Timestamp) (internal)
+[0m[95m    - setDeadline(Timers.BlockNumber,uint64) (internal)
+[0m[95m    - setDeadline(Timers.Timestamp,uint64) (internal)
+[0m[94m
++ Contract ECDSA (Most derived contract)
+[0m[94m  - From ECDSA
+[0m[95m    - _throwError(ECDSA.RecoverError) (private)
+[0m[95m    - recover(bytes32,bytes) (internal)
+[0m[95m    - recover(bytes32,bytes32,bytes32) (internal)
+[0m[95m    - recover(bytes32,uint8,bytes32,bytes32) (internal)
+[0m[95m    - toEthSignedMessageHash(bytes) (internal)
+[0m[95m    - toEthSignedMessageHash(bytes32) (internal)
+[0m[95m    - toTypedDataHash(bytes32,bytes32) (internal)
+[0m[95m    - tryRecover(bytes32,bytes) (internal)
+[0m[95m    - tryRecover(bytes32,bytes32,bytes32) (internal)
+[0m[95m    - tryRecover(bytes32,uint8,bytes32,bytes32) (internal)
+[0m[94m
++ Contract EIP712
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m
++ Contract ERC165
+[0m[94m  - From ERC165
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[94m
++ Contract IERC165
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m
++ Contract SafeCast (Most derived contract)
+[0m[94m  - From SafeCast
+[0m[95m    - toInt128(int256) (internal)
+[0m[95m    - toInt16(int256) (internal)
+[0m[95m    - toInt256(uint256) (internal)
+[0m[95m    - toInt32(int256) (internal)
+[0m[95m    - toInt64(int256) (internal)
+[0m[95m    - toInt8(int256) (internal)
+[0m[95m    - toUint128(uint256) (internal)
+[0m[95m    - toUint16(uint256) (internal)
+[0m[95m    - toUint224(uint256) (internal)
+[0m[95m    - toUint256(int256) (internal)
+[0m[95m    - toUint32(uint256) (internal)
+[0m[95m    - toUint64(uint256) (internal)
+[0m[95m    - toUint8(uint256) (internal)
+[0m[95m    - toUint96(uint256) (internal)
+[0m[94m
++ Contract DoubleEndedQueue (Most derived contract)
+[0m[94m  - From DoubleEndedQueue
+[0m[95m    - at(DoubleEndedQueue.Bytes32Deque,uint256) (internal)
+[0m[95m    - back(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - clear(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - empty(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - front(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - length(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - popBack(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - popFront(DoubleEndedQueue.Bytes32Deque) (internal)
+[0m[95m    - pushBack(DoubleEndedQueue.Bytes32Deque,bytes32) (internal)
+[0m[95m    - pushFront(DoubleEndedQueue.Bytes32Deque,bytes32) (internal)
+[0m[94m
++ Contract Babylonian (Most derived contract)
+[0m[94m  - From Babylonian
+[0m[95m    - sqrt(uint256) (internal)
+[0m[94m
++ Contract BitMath (Most derived contract)
+[0m[94m  - From BitMath
+[0m[95m    - leastSignificantBit(uint256) (internal)
+[0m[95m    - mostSignificantBit(uint256) (internal)
+[0m[94m
++ Contract FixedPoint (Most derived contract)
+[0m[94m  - From FixedPoint
+[0m[95m    - decode(FixedPoint.uq112x112) (internal)
+[0m[95m    - decode144(FixedPoint.uq144x112) (internal)
+[0m[95m    - divuq(FixedPoint.uq112x112,FixedPoint.uq112x112) (internal)
+[0m[95m    - encode(uint112) (internal)
+[0m[95m    - encode144(uint144) (internal)
+[0m[95m    - fraction(uint256,uint256) (internal)
+[0m[95m    - mul(FixedPoint.uq112x112,uint256) (internal)
+[0m[95m    - muli(FixedPoint.uq112x112,int256) (internal)
+[0m[95m    - muluq(FixedPoint.uq112x112,FixedPoint.uq112x112) (internal)
+[0m[95m    - reciprocal(FixedPoint.uq112x112) (internal)
+[0m[95m    - sqrt(FixedPoint.uq112x112) (internal)
+[0m[94m
++ Contract FullMath (Most derived contract)
+[0m[94m  - From FullMath
+[0m[95m    - fullDiv(uint256,uint256,uint256) (private)
+[0m[95m    - fullMul(uint256,uint256) (internal)
+[0m[95m    - mulDiv(uint256,uint256,uint256) (internal)
+[0m[94m
++ Contract TransferHelper (Most derived contract)
+[0m[94m  - From TransferHelper
+[0m[95m    - safeApprove(address,address,uint256) (internal)
+[0m[95m    - safeTransfer(address,address,uint256) (internal)
+[0m[95m    - safeTransferETH(address,uint256) (internal)
+[0m[95m    - safeTransferFrom(address,address,address,uint256) (internal)
+[0m[94m
++ Contract IERC20 (Most derived contract)
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Callee (Most derived contract)
+[0m[94m  - From IUniswapV2Callee
+[0m[92m    - uniswapV2Call(address,uint256,uint256,bytes) (external)
+[0m[94m
++ Contract IUniswapV2ERC20 (Most derived contract)
+[0m[94m  - From IUniswapV2ERC20
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Factory (Most derived contract)
+[0m[94m  - From IUniswapV2Factory
+[0m[92m    - allPairs(uint256) (external)
+[0m[92m    - allPairsLength() (external)
+[0m[92m    - createPair(address,address) (external)
+[0m[92m    - feeTo() (external)
+[0m[92m    - feeToSetter() (external)
+[0m[92m    - getPair(address,address) (external)
+[0m[92m    - setFeeTo(address) (external)
+[0m[92m    - setFeeToSetter(address) (external)
+[0m[94m
++ Contract IUniswapV2Pair (Most derived contract)
+[0m[94m  - From IUniswapV2Pair
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[92m    - MINIMUM_LIQUIDITY() (external)
+[0m[92m    - PERMIT_TYPEHASH() (external)
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - burn(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getReserves() (external)
+[0m[92m    - initialize(address,address) (external)
+[0m[92m    - kLast() (external)
+[0m[92m    - mint(address) (external)
+[0m[92m    - name() (external)
+[0m[92m    - nonces(address) (external)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - price0CumulativeLast() (external)
+[0m[92m    - price1CumulativeLast() (external)
+[0m[92m    - skim(address) (external)
+[0m[92m    - swap(uint256,uint256,address,bytes) (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - sync() (external)
+[0m[92m    - token0() (external)
+[0m[92m    - token1() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IERC20 (Most derived contract)
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - decimals() (external)
+[0m[92m    - name() (external)
+[0m[92m    - symbol() (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Router01
+[0m[94m  - From IUniswapV2Router01
+[0m[92m    - WETH() (external)
+[0m[92m    - addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - addLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getAmountIn(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountOut(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountsIn(uint256,address[]) (external)
+[0m[92m    - getAmountsOut(uint256,address[]) (external)
+[0m[92m    - quote(uint256,uint256,uint256) (external)
+[0m[92m    - removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapETHForExactTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m
++ Contract IUniswapV2Router02 (Most derived contract)
+[0m[94m  - From IUniswapV2Router01
+[0m[92m    - WETH() (external)
+[0m[92m    - addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - addLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - factory() (external)
+[0m[92m    - getAmountIn(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountOut(uint256,uint256,uint256) (external)
+[0m[92m    - getAmountsIn(uint256,address[]) (external)
+[0m[92m    - getAmountsOut(uint256,address[]) (external)
+[0m[92m    - quote(uint256,uint256,uint256) (external)
+[0m[92m    - removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapETHForExactTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactETHForTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactETH(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapTokensForExactTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m  - From IUniswapV2Router02
+[0m[92m    - removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256) (external)
+[0m[92m    - removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32) (external)
+[0m[92m    - swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[92m    - swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256) (external)
+[0m[94m
++ Contract IWETH (Most derived contract)
+[0m[94m  - From IWETH
+[0m[92m    - deposit() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - withdraw(uint256) (external)
+[0m[94m
++ Contract ERC20VotesNonTransferable
+[0m[94m  - From IERC20
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - totalSupply() (external)
+[0m[94m  - From IVotes
+[0m[92m    - getPastTotalSupply(uint256) (external)
+[0m[92m    - getPastVotes(address,uint256) (external)
+[0m[92m    - getVotes(address) (external)
+[0m[94m  - From ERC20VotesNonTransferable
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - delegate(address) (external)
+[0m[92m    - delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - delegates(address) (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m
++ Contract GovernorBravoOLA (Most derived contract)
+[0m[94m  - From GovernorTimelockControl
+[0m[95m    - _updateTimelock(TimelockController) (private)
+[0m[95m    - constructor(TimelockController) (internal)
+[0m[92m    - proposalEta(uint256) (public)
+[0m[92m    - queue(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - timelock() (public)
+[0m[92m    - updateTimelock(TimelockController) (external)
+[0m[94m  - From Governor
+[0m[95m    - _afterExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _beforeExecute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string) (internal)
+[0m[95m    - _castVote(uint256,address,uint8,string,bytes) (internal)
+[0m[95m    - _defaultParams() (internal)
+[0m[92m    - castVote(uint256,uint8) (public)
+[0m[92m    - castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (public)
+[0m[92m    - castVoteWithReason(uint256,uint8,string) (public)
+[0m[92m    - castVoteWithReasonAndParams(uint256,uint8,string,bytes) (public)
+[0m[92m    - castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (public)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - execute(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - getVotes(address,uint256) (public)
+[0m[92m    - getVotesWithParams(address,uint256,bytes) (public)
+[0m[92m    - hashProposal(address[],uint256[],bytes[],bytes32) (public)
+[0m[92m    - name() (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - proposalDeadline(uint256) (public)
+[0m[92m    - proposalSnapshot(uint256) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - relay(address,uint256,bytes) (external)
+[0m[92m    - version() (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From GovernorVotesQuorumFraction
+[0m[95m    - _updateQuorumNumerator(uint256) (internal)
+[0m[95m    - constructor(uint256) (internal)
+[0m[92m    - quorum(uint256) (public)
+[0m[92m    - quorumDenominator() (public)
+[0m[92m    - quorumNumerator() (public)
+[0m[92m    - updateQuorumNumerator(uint256) (external)
+[0m[94m  - From GovernorVotes
+[0m[95m    - _getVotes(address,uint256,bytes) (internal)
+[0m[95m    - constructor(IVotes) (internal)
+[0m[94m  - From GovernorCompatibilityBravo
+[0m[92m    - COUNTING_MODE() (public)
+[0m[95m    - _countVote(uint256,address,uint8,uint256,bytes) (internal)
+[0m[95m    - _encodeCalldata(string[],bytes[]) (private)
+[0m[95m    - _quorumReached(uint256) (internal)
+[0m[95m    - _storeProposal(address,address[],uint256[],string[],bytes[],string) (private)
+[0m[95m    - _voteSucceeded(uint256) (internal)
+[0m[92m    - cancel(uint256) (public)
+[0m[92m    - execute(uint256) (public)
+[0m[92m    - getActions(uint256) (public)
+[0m[92m    - getReceipt(uint256,address) (public)
+[0m[92m    - hasVoted(uint256,address) (public)
+[0m[92m    - proposals(uint256) (public)
+[0m[92m    - propose(address[],uint256[],string[],bytes[],string) (public)
+[0m[92m    - queue(uint256) (public)
+[0m[92m    - quorumVotes() (public)
+[0m[94m  - From GovernorSettings
+[0m[95m    - _setProposalThreshold(uint256) (internal)
+[0m[95m    - _setVotingDelay(uint256) (internal)
+[0m[95m    - _setVotingPeriod(uint256) (internal)
+[0m[95m    - constructor(uint256,uint256,uint256) (internal)
+[0m[92m    - setProposalThreshold(uint256) (public)
+[0m[92m    - setVotingDelay(uint256) (public)
+[0m[92m    - setVotingPeriod(uint256) (public)
+[0m[92m    - votingDelay() (public)
+[0m[92m    - votingPeriod() (public)
+[0m[94m  - From GovernorBravoOLA
+[0m[95m    - _cancel(address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _execute(uint256,address[],uint256[],bytes[],bytes32) (internal)
+[0m[95m    - _executor() (internal)
+[0m[92m    - constructor(IVotes,TimelockController,uint256,uint256,uint256,uint256) (public)
+[0m[92m    - proposalThreshold() (public)
+[0m[92m    - propose(address[],uint256[],bytes[],string) (public)
+[0m[92m    - state(uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[94m
++ Contract Timelock (Most derived contract)
+[0m[94m  - From TimelockController
+[0m[95m    - _afterCall(bytes32) (private)
+[0m[95m    - _beforeCall(bytes32,bytes32) (private)
+[0m[95m    - _call(bytes32,uint256,address,uint256,bytes) (private)
+[0m[95m    - _schedule(bytes32,uint256) (private)
+[0m[92m    - cancel(bytes32) (public)
+[0m[92m    - execute(address,uint256,bytes,bytes32,bytes32) (public)
+[0m[92m    - executeBatch(address[],uint256[],bytes[],bytes32,bytes32) (public)
+[0m[92m    - getMinDelay() (public)
+[0m[92m    - getTimestamp(bytes32) (public)
+[0m[92m    - hashOperation(address,uint256,bytes,bytes32,bytes32) (public)
+[0m[92m    - hashOperationBatch(address[],uint256[],bytes[],bytes32,bytes32) (public)
+[0m[92m    - isOperation(bytes32) (public)
+[0m[92m    - isOperationDone(bytes32) (public)
+[0m[92m    - isOperationPending(bytes32) (public)
+[0m[92m    - isOperationReady(bytes32) (public)
+[0m[92m    - onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (public)
+[0m[92m    - onERC1155Received(address,address,uint256,uint256,bytes) (public)
+[0m[92m    - onERC721Received(address,address,uint256,bytes) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - schedule(address,uint256,bytes,bytes32,bytes32,uint256) (public)
+[0m[92m    - scheduleBatch(address[],uint256[],bytes[],bytes32,bytes32,uint256) (public)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - updateDelay(uint256) (external)
+[0m[94m  - From AccessControl
+[0m[95m    - _checkRole(bytes32) (internal)
+[0m[95m    - _checkRole(bytes32,address) (internal)
+[0m[95m    - _grantRole(bytes32,address) (internal)
+[0m[95m    - _revokeRole(bytes32,address) (internal)
+[0m[95m    - _setRoleAdmin(bytes32,bytes32) (internal)
+[0m[95m    - _setupRole(bytes32,address) (internal)
+[0m[92m    - getRoleAdmin(bytes32) (public)
+[0m[92m    - grantRole(bytes32,address) (public)
+[0m[92m    - hasRole(bytes32,address) (public)
+[0m[92m    - renounceRole(bytes32,address) (public)
+[0m[92m    - revokeRole(bytes32,address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Timelock
+[0m[92m    - constructor(uint256,address[],address[]) (public)
+[0m[94m
++ Contract VotingEscrow (Most derived contract)
+[0m[94m  - From ERC20VotesNonTransferable
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - delegate(address) (external)
+[0m[92m    - delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32) (external)
+[0m[92m    - delegates(address) (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From VotingEscrow
+[0m[95m    - _balanceOfLocked(address,uint256) (internal)
+[0m[95m    - _checkpoint(address,LockedBalance,LockedBalance) (internal)
+[0m[95m    - _depositFor(address,uint256,uint256,LockedBalance,VotingEscrow.DepositType) (internal)
+[0m[95m    - _findPointByBlock(uint256,address) (internal)
+[0m[95m    - _getBlockTime(uint256) (internal)
+[0m[95m    - _supplyLockedAt(IStructs.PointVoting,uint256) (internal)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - balanceOfAt(address,uint256) (external)
+[0m[92m    - checkpoint() (external)
+[0m[92m    - constructor(address,string,string) (public)
+[0m[92m    - createLock(uint256,uint256) (external)
+[0m[92m    - depositFor(address,uint256) (external)
+[0m[92m    - getLastUserPoint(address) (external)
+[0m[92m    - getNumUserPoints(address) (external)
+[0m[92m    - getPastTotalSupply(uint256) (public)
+[0m[92m    - getPastVotes(address,uint256) (public)
+[0m[92m    - getUserPoint(address,uint256) (external)
+[0m[92m    - getVotes(address) (public)
+[0m[92m    - increaseAmount(uint256) (external)
+[0m[92m    - increaseUnlockTime(uint256) (external)
+[0m[92m    - lockedEnd(address) (external)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - totalSupplyAt(uint256) (external)
+[0m[92m    - totalSupplyLocked() (public)
+[0m[92m    - totalSupplyLockedAtT(uint256) (public)
+[0m[92m    - withdraw() (external)
+[0m[94m
++ Contract IDispenser (Most derived contract)
+[0m[94m  - From IDispenser
+[0m[92m    - distributeRewards(uint256,uint256) (external)
+[0m[92m    - isPaused() (external)
+[0m[94m
++ Contract IErrors
+[0m[94m
++ Contract IMultisig (Most derived contract)
+[0m[94m  - From IMultisig
+[0m[92m    - create(address[],uint256,bytes) (external)
+[0m[94m
++ Contract IOLA (Most derived contract)
+[0m[94m  - From IERC20
+[0m[92m    - allowance(address,address) (external)
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - totalSupply() (external)
+[0m[92m    - transfer(address,uint256) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IOLA
+[0m[92m    - decimals() (external)
+[0m[92m    - inflationControl(uint256) (external)
+[0m[92m    - inflationRemainder() (external)
+[0m[92m    - mint(address,uint256) (external)
+[0m[92m    - timeLaunch() (external)
+[0m[94m
++ Contract IRegistry (Most derived contract)
+[0m[94m  - From IERC721Enumerable
+[0m[92m    - tokenByIndex(uint256) (external)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (external)
+[0m[92m    - totalSupply() (external)
+[0m[94m  - From IERC721
+[0m[92m    - approve(address,uint256) (external)
+[0m[92m    - balanceOf(address) (external)
+[0m[92m    - getApproved(uint256) (external)
+[0m[92m    - isApprovedForAll(address,address) (external)
+[0m[92m    - ownerOf(uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256) (external)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (external)
+[0m[92m    - setApprovalForAll(address,bool) (external)
+[0m[92m    - transferFrom(address,address,uint256) (external)
+[0m[94m  - From IERC165
+[0m[92m    - supportsInterface(bytes4) (external)
+[0m[94m  - From IRegistry
+[0m[92m    - create(address,address,IStructs.Multihash,string,uint256[]) (external)
+[0m[92m    - exists(uint256) (external)
+[0m[92m    - getBaseURI() (external)
+[0m[92m    - getDependencies(uint256) (external)
+[0m[92m    - getHashes(uint256) (external)
+[0m[92m    - getInfo(uint256) (external)
+[0m[92m    - setBaseURI(string) (external)
+[0m[92m    - updateHash(address,uint256,IStructs.Multihash) (external)
+[0m[94m
++ Contract IService (Most derived contract)
+[0m[94m  - From IService
+[0m[92m    - activateRegistration(address,uint256) (external)
+[0m[92m    - createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (external)
+[0m[92m    - deploy(address,uint256,address,bytes) (external)
+[0m[92m    - destroy(address,uint256) (external)
+[0m[92m    - exists(uint256) (external)
+[0m[92m    - getAgentIdsOfServiceId(uint256) (external)
+[0m[92m    - getComponentIdsOfServiceId(uint256) (external)
+[0m[92m    - getServiceIdsCreatedWithAgentId(uint256) (external)
+[0m[92m    - getServiceIdsCreatedWithComponentId(uint256) (external)
+[0m[92m    - registerAgents(address,uint256,address[],uint256[]) (external)
+[0m[92m    - terminate(address,uint256) (external)
+[0m[92m    - unbond(address,uint256) (external)
+[0m[92m    - update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256) (external)
+[0m[94m
++ Contract IStructs
+[0m[94m
++ Contract ITokenomics (Most derived contract)
+[0m[94m  - From ITokenomics
+[0m[92m    - accountOwnerRewards(address) (external)
+[0m[92m    - allowedNewBond(uint256) (external)
+[0m[92m    - calculatePayoutFromLP(address,uint256) (external)
+[0m[92m    - calculateStakingRewards(address,uint256) (external)
+[0m[92m    - checkpoint() (external)
+[0m[92m    - effectiveBond() (external)
+[0m[92m    - epochLen() (external)
+[0m[92m    - getCurrentEpoch() (external)
+[0m[92m    - getDF(uint256) (external)
+[0m[92m    - getExchangeAmountOLA(address,uint256) (external)
+[0m[92m    - getLastPoint() (external)
+[0m[92m    - getPoint(uint256) (external)
+[0m[92m    - getProfitableAgents() (external)
+[0m[92m    - getProfitableComponents() (external)
+[0m[92m    - isAllowedMint(uint256) (external)
+[0m[92m    - trackServicesETHRevenue(uint256[],uint256[]) (external)
+[0m[92m    - usedBond(uint256) (external)
+[0m[94m
++ Contract ITreasury (Most derived contract)
+[0m[94m  - From ITreasury
+[0m[92m    - allocateRewards() (external)
+[0m[92m    - checkPair(address) (external)
+[0m[92m    - depositETHFromServices(uint256[],uint256[]) (external)
+[0m[92m    - depositTokenForOLA(uint256,address,uint256) (external)
+[0m[92m    - disableToken(address) (external)
+[0m[92m    - enableToken(address) (external)
+[0m[92m    - isEnabled(address) (external)
+[0m[92m    - requestFunds(uint256) (external)
+[0m[92m    - withdraw(uint256,address) (external)
+[0m[94m
++ Contract IVotingEscrow (Most derived contract)
+[0m[94m  - From IVotingEscrow
+[0m[92m    - balanceOfAt(address,uint256) (external)
+[0m[92m    - totalSupplyAt(uint256) (external)
+[0m[94m
++ Contract AgentRegistry (Most derived contract)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC721Enumerable
+[0m[95m    - _addTokenToAllTokensEnumeration(uint256) (private)
+[0m[95m    - _addTokenToOwnerEnumeration(address,uint256) (private)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _removeTokenFromAllTokensEnumeration(uint256) (private)
+[0m[95m    - _removeTokenFromOwnerEnumeration(address,uint256) (private)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - tokenByIndex(uint256) (public)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (public)
+[0m[92m    - totalSupply() (public)
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From AgentRegistry
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _setAgentInfo(uint256,address,IStructs.Multihash,string,uint256[]) (private)
+[0m[92m    - changeManager(address) (public)
+[0m[92m    - constructor(string,string,string,address) (public)
+[0m[92m    - create(address,address,IStructs.Multihash,string,uint256[]) (external)
+[0m[92m    - exists(uint256) (public)
+[0m[92m    - getBaseURI() (public)
+[0m[92m    - getDependencies(uint256) (public)
+[0m[92m    - getHashes(uint256) (public)
+[0m[92m    - getInfo(uint256) (public)
+[0m[92m    - setBaseURI(string) (public)
+[0m[92m    - updateHash(address,uint256,IStructs.Multihash) (external)
+[0m[94m
++ Contract ComponentRegistry (Most derived contract)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC721Enumerable
+[0m[95m    - _addTokenToAllTokensEnumeration(uint256) (private)
+[0m[95m    - _addTokenToOwnerEnumeration(address,uint256) (private)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _removeTokenFromAllTokensEnumeration(uint256) (private)
+[0m[95m    - _removeTokenFromOwnerEnumeration(address,uint256) (private)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - tokenByIndex(uint256) (public)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (public)
+[0m[92m    - totalSupply() (public)
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From ComponentRegistry
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _setComponentInfo(uint256,address,IStructs.Multihash,string,uint256[]) (private)
+[0m[92m    - changeManager(address) (public)
+[0m[92m    - constructor(string,string,string) (public)
+[0m[92m    - create(address,address,IStructs.Multihash,string,uint256[]) (external)
+[0m[92m    - exists(uint256) (public)
+[0m[92m    - getBaseURI() (public)
+[0m[92m    - getDependencies(uint256) (public)
+[0m[92m    - getHashes(uint256) (public)
+[0m[92m    - getInfo(uint256) (public)
+[0m[92m    - setBaseURI(string) (public)
+[0m[92m    - updateHash(address,uint256,IStructs.Multihash) (external)
+[0m[94m
++ Contract RegistriesManager (Most derived contract)
+[0m[94m  - From Pausable
+[0m[95m    - _pause() (internal)
+[0m[95m    - _unpause() (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - paused() (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From RegistriesManager
+[0m[92m    - constructor(address,address) (public)
+[0m[92m    - mintAgent(address,address,IStructs.Multihash,string,uint256[]) (external)
+[0m[92m    - mintComponent(address,address,IStructs.Multihash,string,uint256[]) (external)
+[0m[92m    - pause() (external)
+[0m[92m    - unpause() (external)
+[0m[92m    - updateAgentHash(uint256,IStructs.Multihash) (external)
+[0m[92m    - updateComponentHash(uint256,IStructs.Multihash) (external)
+[0m[94m
++ Contract ServiceManager (Most derived contract)
+[0m[94m  - From Pausable
+[0m[95m    - _pause() (internal)
+[0m[95m    - _unpause() (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - paused() (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From ServiceManager
+[0m[92m    - changeTreasury(address) (external)
+[0m[92m    - constructor(address,address) (public)
+[0m[92m    - fallback() (external)
+[0m[92m    - pause() (external)
+[0m[92m    - receive() (external)
+[0m[92m    - serviceActivateRegistration(uint256) (external)
+[0m[92m    - serviceCreate(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (external)
+[0m[92m    - serviceDeploy(uint256,address,bytes) (external)
+[0m[92m    - serviceDestroy(uint256) (external)
+[0m[92m    - serviceRegisterAgents(uint256,address[],uint256[]) (external)
+[0m[92m    - serviceReward(uint256) (external)
+[0m[92m    - serviceTerminate(uint256) (external)
+[0m[92m    - serviceUnbond(uint256) (external)
+[0m[92m    - serviceUpdate(string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256) (external)
+[0m[92m    - unpause() (external)
+[0m[94m
++ Contract ServiceRegistry
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From ERC721Enumerable
+[0m[95m    - _addTokenToAllTokensEnumeration(uint256) (private)
+[0m[95m    - _addTokenToOwnerEnumeration(address,uint256) (private)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _removeTokenFromAllTokensEnumeration(uint256) (private)
+[0m[95m    - _removeTokenFromOwnerEnumeration(address,uint256) (private)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - tokenByIndex(uint256) (public)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (public)
+[0m[92m    - totalSupply() (public)
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From ServiceRegistry
+[0m[95m    - _getAgentInstances(ServiceRegistry.Service) (private)
+[0m[95m    - _initialChecks(string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[]) (private)
+[0m[95m    - _setServiceData(ServiceRegistry.Service,string,string,uint256,uint256[],IStructs.AgentParams[],uint256) (private)
+[0m[95m    - _updateServiceComponentAgentConnection(uint256) (private)
+[0m[92m    - activateRegistration(address,uint256) (external)
+[0m[92m    - changeManager(address) (public)
+[0m[92m    - changeMultisigPermission(address,bool) (public)
+[0m[92m    - constructor(string,string,address) (public)
+[0m[92m    - createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (external)
+[0m[92m    - deploy(address,uint256,address,bytes) (external)
+[0m[92m    - destroy(address,uint256) (external)
+[0m[92m    - exists(uint256) (public)
+[0m[92m    - fallback() (external)
+[0m[92m    - getAgentIdsOfServiceId(uint256) (external)
+[0m[92m    - getComponentIdsOfServiceId(uint256) (external)
+[0m[92m    - getConfigHashes(uint256) (public)
+[0m[92m    - getInstancesForAgentId(uint256,uint256) (public)
+[0m[92m    - getOperatorBalance(address,uint256) (public)
+[0m[92m    - getServiceInfo(uint256) (public)
+[0m[92m    - getServiceState(uint256) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - registerAgents(address,uint256,address[],uint256[]) (external)
+[0m[92m    - slash(address[],uint256[],uint256) (public)
+[0m[92m    - terminate(address,uint256) (external)
+[0m[92m    - unbond(address,uint256) (external)
+[0m[92m    - update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256) (external)
+[0m[94m
++ Contract ERC20Token (Most derived contract)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC20
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,address,uint256) (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _spendAllowance(address,address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - allowance(address,address) (public)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - decimals() (public)
+[0m[92m    - decreaseAllowance(address,uint256) (public)
+[0m[92m    - increaseAllowance(address,uint256) (public)
+[0m[92m    - name() (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From ERC20Token
+[0m[92m    - constructor() (public)
+[0m[92m    - mint(address,uint256) (public)
+[0m[94m
++ Contract TestServiceRegistry (Most derived contract)
+[0m[94m  - From ServiceRegistry
+[0m[95m    - _getAgentInstances(ServiceRegistry.Service) (private)
+[0m[95m    - _initialChecks(string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[]) (private)
+[0m[95m    - _setServiceData(ServiceRegistry.Service,string,string,uint256,uint256[],IStructs.AgentParams[],uint256) (private)
+[0m[95m    - _updateServiceComponentAgentConnection(uint256) (private)
+[0m[92m    - activateRegistration(address,uint256) (external)
+[0m[92m    - changeManager(address) (public)
+[0m[92m    - changeMultisigPermission(address,bool) (public)
+[0m[92m    - createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (external)
+[0m[92m    - deploy(address,uint256,address,bytes) (external)
+[0m[92m    - destroy(address,uint256) (external)
+[0m[92m    - exists(uint256) (public)
+[0m[92m    - fallback() (external)
+[0m[92m    - getAgentIdsOfServiceId(uint256) (external)
+[0m[92m    - getComponentIdsOfServiceId(uint256) (external)
+[0m[92m    - getConfigHashes(uint256) (public)
+[0m[92m    - getInstancesForAgentId(uint256,uint256) (public)
+[0m[92m    - getOperatorBalance(address,uint256) (public)
+[0m[92m    - getServiceInfo(uint256) (public)
+[0m[92m    - getServiceState(uint256) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - registerAgents(address,uint256,address[],uint256[]) (external)
+[0m[92m    - slash(address[],uint256[],uint256) (public)
+[0m[92m    - terminate(address,uint256) (external)
+[0m[92m    - unbond(address,uint256) (external)
+[0m[92m    - update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256) (external)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From ERC721Enumerable
+[0m[95m    - _addTokenToAllTokensEnumeration(uint256) (private)
+[0m[95m    - _addTokenToOwnerEnumeration(address,uint256) (private)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _removeTokenFromAllTokensEnumeration(uint256) (private)
+[0m[95m    - _removeTokenFromOwnerEnumeration(address,uint256) (private)
+[0m[92m    - supportsInterface(bytes4) (public)
+[0m[92m    - tokenByIndex(uint256) (public)
+[0m[92m    - tokenOfOwnerByIndex(address,uint256) (public)
+[0m[92m    - totalSupply() (public)
+[0m[94m  - From ERC721
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,uint256) (internal)
+[0m[95m    - _baseURI() (internal)
+[0m[95m    - _burn(uint256) (internal)
+[0m[95m    - _checkOnERC721Received(address,address,uint256,bytes) (private)
+[0m[95m    - _exists(uint256) (internal)
+[0m[95m    - _isApprovedOrOwner(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256) (internal)
+[0m[95m    - _safeMint(address,uint256,bytes) (internal)
+[0m[95m    - _safeTransfer(address,address,uint256,bytes) (internal)
+[0m[95m    - _setApprovalForAll(address,address,bool) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - constructor(string,string) (public)
+[0m[92m    - getApproved(uint256) (public)
+[0m[92m    - isApprovedForAll(address,address) (public)
+[0m[92m    - name() (public)
+[0m[92m    - ownerOf(uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256) (public)
+[0m[92m    - safeTransferFrom(address,address,uint256,bytes) (public)
+[0m[92m    - setApprovalForAll(address,bool) (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - tokenURI(uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From TestServiceRegistry
+[0m[92m    - constructor(string,string,address) (public)
+[0m[92m    - createCheckSafe(address[],uint256,address,bytes) (public)
+[0m[92m    - executeByGovernor(uint256) (external)
+[0m[92m    - getControlValue() (public)
+[0m[94m
++ Contract Depository (Most derived contract)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Depository
+[0m[92m    - changeManagers(address,address) (external)
+[0m[92m    - close(address,uint256) (external)
+[0m[92m    - constructor(address,address,address) (public)
+[0m[92m    - create(address,uint256,uint256) (external)
+[0m[92m    - deposit(address,uint256,uint256,address) (external)
+[0m[92m    - getActiveProductsForToken(address) (external)
+[0m[92m    - getBondStatus(address,uint256) (public)
+[0m[92m    - getPendingBonds(address) (public)
+[0m[92m    - getProduct(address,uint256) (public)
+[0m[92m    - isActive(address,uint256) (public)
+[0m[92m    - redeem(address,uint256[]) (public)
+[0m[92m    - redeemAll(address) (external)
+[0m[94m
++ Contract Dispenser (Most derived contract)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From Pausable
+[0m[95m    - _pause() (internal)
+[0m[95m    - _unpause() (internal)
+[0m[92m    - paused() (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Dispenser
+[0m[92m    - changeTokenomics(address) (external)
+[0m[92m    - constructor(address,address) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - withdrawOwnerRewards() (external)
+[0m[92m    - withdrawStakingRewards() (external)
+[0m[94m
++ Contract OLA (Most derived contract)
+[0m[94m  - From ERC20Permit
+[0m[92m    - DOMAIN_SEPARATOR() (external)
+[0m[95m    - _useNonce(address) (internal)
+[0m[95m    - constructor(string) (internal)
+[0m[92m    - nonces(address) (public)
+[0m[92m    - permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (public)
+[0m[94m  - From EIP712
+[0m[95m    - _buildDomainSeparator(bytes32,bytes32,bytes32) (private)
+[0m[95m    - _domainSeparatorV4() (internal)
+[0m[95m    - _hashTypedDataV4(bytes32) (internal)
+[0m[95m    - constructor(string,string) (internal)
+[0m[94m  - From ERC20
+[0m[95m    - _afterTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _approve(address,address,uint256) (internal)
+[0m[95m    - _beforeTokenTransfer(address,address,uint256) (internal)
+[0m[95m    - _burn(address,uint256) (internal)
+[0m[95m    - _mint(address,uint256) (internal)
+[0m[95m    - _spendAllowance(address,address,uint256) (internal)
+[0m[95m    - _transfer(address,address,uint256) (internal)
+[0m[92m    - allowance(address,address) (public)
+[0m[92m    - approve(address,uint256) (public)
+[0m[92m    - balanceOf(address) (public)
+[0m[92m    - decimals() (public)
+[0m[92m    - decreaseAllowance(address,uint256) (public)
+[0m[92m    - increaseAllowance(address,uint256) (public)
+[0m[92m    - name() (public)
+[0m[92m    - symbol() (public)
+[0m[92m    - totalSupply() (public)
+[0m[92m    - transfer(address,uint256) (public)
+[0m[92m    - transferFrom(address,address,uint256) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From ERC20Burnable
+[0m[92m    - burn(uint256) (public)
+[0m[92m    - burnFrom(address,uint256) (public)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From OLA
+[0m[92m    - changeMinter(address) (external)
+[0m[92m    - constructor(uint256,address) (public)
+[0m[92m    - inflationControl(uint256) (public)
+[0m[92m    - inflationRemainder() (public)
+[0m[92m    - mint(address,uint256) (public)
+[0m[94m
++ Contract Tokenomics (Most derived contract)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[95m    - constructor() (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Tokenomics
+[0m[95m    - _add(FixedPoint.uq112x112,FixedPoint.uq112x112) (private)
+[0m[95m    - _adjustMaxBond(uint256) (internal)
+[0m[95m    - _calculatePayoutFromLP(address,uint256,uint256) (internal)
+[0m[95m    - _calculateUnitTokenomics(address,uint256,uint256) (private)
+[0m[95m    - _checkpoint() (internal)
+[0m[95m    - _clearEpochData() (internal)
+[0m[92m    - _getInflationRemainderForYear() (public)
+[0m[92m    - accountOwnerRewards(address) (external)
+[0m[92m    - allowedNewBond(uint256) (external)
+[0m[92m    - calculatePayoutFromLP(address,uint256) (external)
+[0m[92m    - calculateStakingRewards(address,uint256) (external)
+[0m[92m    - changeManagers(address,address,address,address) (external)
+[0m[92m    - changeRewardFraction(uint256,uint256,uint256,uint256,uint256) (external)
+[0m[92m    - changeServiceOwnerWhiteList(address[],bool[]) (external)
+[0m[92m    - changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool) (external)
+[0m[92m    - checkpoint() (external)
+[0m[92m    - constructor(address,address,address,address,address,uint256,address,address,address) (public)
+[0m[95m    - getAmountOut(uint256,uint256,uint256) (internal)
+[0m[92m    - getCurrentEpoch() (external)
+[0m[92m    - getDF(uint256) (external)
+[0m[92m    - getLastPoint() (external)
+[0m[92m    - getOwnerRewards(address) (external)
+[0m[92m    - getPoint(uint256) (public)
+[0m[92m    - getTopUpPerEpoch() (public)
+[0m[92m    - getUCF(uint256) (external)
+[0m[92m    - isAllowedMint(uint256) (public)
+[0m[92m    - trackServicesETHRevenue(uint256[],uint256[]) (public)
+[0m[92m    - usedBond(uint256) (external)
+[0m[94m
++ Contract Treasury (Most derived contract)
+[0m[94m  - From ReentrancyGuard
+[0m[95m    - constructor() (internal)
+[0m[94m  - From Ownable
+[0m[95m    - _transferOwnership(address) (internal)
+[0m[92m    - owner() (public)
+[0m[92m    - renounceOwnership() (public)
+[0m[92m    - transferOwnership(address) (public)
+[0m[94m  - From Context
+[0m[95m    - _msgData() (internal)
+[0m[95m    - _msgSender() (internal)
+[0m[94m  - From Treasury
+[0m[95m    - _rebalanceETH(uint256) (internal)
+[0m[95m    - _sendFundsToDispenser(uint256,uint256) (internal)
+[0m[92m    - allocateRewards() (external)
+[0m[92m    - changeManagers(address,address,address) (external)
+[0m[92m    - checkPair(address) (public)
+[0m[92m    - constructor(address,address,address,address) (public)
+[0m[92m    - depositETHFromServices(uint256[],uint256[]) (external)
+[0m[92m    - depositTokenForOLA(uint256,address,uint256) (external)
+[0m[92m    - disableToken(address) (external)
+[0m[92m    - enableToken(address) (external)
+[0m[92m    - isEnabled(address) (public)
+[0m[92m    - receive() (external)
+[0m[92m    - withdraw(address,uint256,address,bool) (external)
+[0m
+. analyzed (126 contracts)

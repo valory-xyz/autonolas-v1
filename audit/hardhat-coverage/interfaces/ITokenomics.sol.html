@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for interfaces/ITokenomics.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">interfaces/</a> ITokenomics.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/0</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.14;
+&nbsp;
+import "./IStructs.sol";
+&nbsp;
+/// @dev Interface for tokenomics management.
+interface ITokenomics is IStructs {
+    /// @dev Gets the current epoch number.
+    /// @return Current epoch number.
+    function getCurrentEpoch() external view returns (uint256);
+&nbsp;
+    /// @dev Gets effective bond (bond left).
+    /// @return Effective bond.
+    function effectiveBond() external pure returns (uint256);
+&nbsp;
+    function epochLen() external view returns (uint256);
+    function getDF(uint256 epoch) external view returns (uint256 df);
+    function getPoint(uint256 epoch) external view returns (PointEcomonics memory _PE);
+    function getLastPoint() external view returns (PointEcomonics memory _PE);
+    function calculatePayoutFromLP(address token, uint256 tokenAmount) external returns (uint256 amountOLA);
+    function trackServicesETHRevenue(uint256[] memory serviceIds, uint256[] memory amounts) external
+        returns (uint256 revenueETH, uint256 donationETH);
+    function checkpoint() external;
+    function getExchangeAmountOLA(address token, uint256 tokenAmount) external returns (uint256 amount);
+    function getProfitableComponents() external view returns (address[] memory profitableComponents, uint256[] memory ucfcs);
+    function getProfitableAgents() external view returns (address[] memory profitableAgents, uint256[] memory ucfcs);
+    function usedBond(uint256 payout) external;
+    function allowedNewBond(uint256 amount) external returns(bool);
+&nbsp;
+    /// @dev Gets the component / agent owner reward and zeros the record of it being written off.
+    /// @param account Account address.
+    /// @return reward Reward amount.
+    /// @return topUp Top-up amount.
+    function accountOwnerRewards(address account) external returns (uint256 reward, uint256 topUp);
+&nbsp;
+    /// @dev Calculates staking rewards.
+    /// @param account Account address.
+    /// @param startEpochNumber Epoch number at which the reward starts being calculated.
+    /// @return reward Reward amount up to the last possible epoch.
+    /// @return topUp Top-up amount up to the last possible epoch.
+    /// @return endEpochNumber Epoch number where the reward calculation will start the next time.
+    function calculateStakingRewards(address account, uint256 startEpochNumber) external view
+        returns (uint256 reward, uint256 topUp, uint256 endEpochNumber);
+&nbsp;
+    /// @dev Checks for the OLA minting ability WRT the inflation schedule.
+    /// @param amount Amount of requested OLA tokens to mint.
+    /// @return True if the mint is allowed.
+    function isAllowedMint(uint256 amount) external returns (bool);
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri May 20 2022 20:27:12 GMT+0100 (British Summer Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

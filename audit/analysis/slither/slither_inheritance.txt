@@ -1,0 +1,874 @@
+'npx hardhat compile --force' running
+Compiled 113 Solidity files successfully
+
+Solidity 0.8.14 is not fully supported yet. You can still use Hardhat, but some features, like stack traces, might not work correctly.
+
+Learn more at https://hardhat.org/reference/solidity-support
+
+@uniswap/v2-periphery/contracts/UniswapV2Router02.sol:12:1: Warning: Contract code size exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+contract UniswapV2Router02 is IUniswapV2Router02 {
+^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IWETH.sol
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:23:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                       ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:35:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                                   ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:22:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                      ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:39:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                                       ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:27:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                           ^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:41:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                         ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:53:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                                     ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:24:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                        ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:39:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                                       ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:36:24:
+   |
+36 |     function delegates(address account) external view virtual override returns (address)
+   |                        ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:42:23:
+   |
+42 |     function delegate(address delegatee) external virtual override
+   |                       ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:28:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                            ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:47:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                               ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:62:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                              ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:78:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                              ^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:87:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                       ^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:98:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                                  ^^^^^^^^^
+
+
+Warning: Contract code size is 24918 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+ --> contracts/test/TestServiceRegistry.sol:8:1:
+  |
+8 | contract TestServiceRegistry is ServiceRegistry {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
+
+Inheritance
+[94mChild_Contract -> [0m[92mImmediate_Base_Contracts[0m[92m [Not_Immediate_Base_Contracts][0m[94m
++ UniswapV2ERC20
+[0m -> [92mIUniswapV2ERC20[0m
+[94m
++ UniswapV2Factory
+[0m -> [92mIUniswapV2Factory[0m
+[94m
++ UniswapV2Pair
+[0m -> [92mIUniswapV2Pair, UniswapV2ERC20[0m
+, [[92mIUniswapV2ERC20[0m]
+[94m
++ IERC20
+[0m[94m
++ IUniswapV2Callee
+[0m[94m
++ IUniswapV2ERC20
+[0m[94m
++ IUniswapV2Factory
+[0m[94m
++ IUniswapV2Pair
+[0m[94m
++ Math
+[0m[94m
++ SafeMath
+[0m[94m
++ UQ112x112
+[0m[94m
++ WETH9
+[0m[94m
++ TransferHelper
+[0m[94m
++ IUniswapV2Factory
+[0m[94m
++ IUniswapV2Pair
+[0m[94m
++ UniswapV2Router02
+[0m -> [92mIUniswapV2Router02[0m
+, [[92mIUniswapV2Router01[0m]
+[94m
++ IERC20
+[0m[94m
++ IUniswapV2Router01
+[0m[94m
++ IUniswapV2Router02
+[0m -> [92mIUniswapV2Router01[0m
+[94m
++ IWETH
+[0m[94m
++ SafeMath
+[0m[94m
++ UniswapV2Library
+[0m[94m
++ IProxy
+[0m[94m
++ GnosisSafeProxy
+[0m[94m
++ GnosisSafeProxyFactory
+[0m[94m
++ IProxyCreationCallback
+[0m[94m
++ GnosisSafeMultisig
+[0m[94m
++ GnosisSafe
+[0m -> [92mEtherPaymentFallback, Singleton, ModuleManager, OwnerManager, SignatureDecoder, SecuredTokenTransfer, ISignatureValidatorConstants, FallbackManager, StorageAccessible, GuardManager[0m
+, [[92mExecutor, SelfAuthorized[0m]
+[94m
++ GnosisSafeL2
+[0m -> [92mGnosisSafe[0m
+, [[92mGuardManager, StorageAccessible, FallbackManager, ISignatureValidatorConstants, SecuredTokenTransfer, SignatureDecoder, OwnerManager, ModuleManager, Executor, SelfAuthorized, Singleton, EtherPaymentFallback[0m]
+[94m
++ Executor
+[0m[94m
++ FallbackManager
+[0m -> [92mSelfAuthorized[0m
+[94m
++ Guard
+[0m[94m
++ GuardManager
+[0m -> [92mSelfAuthorized[0m
+[94m
++ ModuleManager
+[0m -> [92mSelfAuthorized, Executor[0m
+[94m
++ OwnerManager
+[0m -> [92mSelfAuthorized[0m
+[94m
++ Enum
+[0m[94m
++ EtherPaymentFallback
+[0m[94m
++ SecuredTokenTransfer
+[0m[94m
++ SelfAuthorized
+[0m[94m
++ SignatureDecoder
+[0m[94m
++ Singleton
+[0m[94m
++ StorageAccessible
+[0m[94m
++ GnosisSafeMath
+[0m[94m
++ ISignatureValidatorConstants
+[0m[94m
++ ISignatureValidator
+[0m -> [92mISignatureValidatorConstants[0m
+[94m
++ AccessControl
+[0m -> [92mContext, IAccessControl, ERC165[0m
+, [[92mIERC165[0m]
+[94m
++ IAccessControl
+[0m[94m
++ Ownable
+[0m -> [92mContext[0m
+[94m
++ Governor
+[0m -> [92mContext, ERC165, EIP712, IGovernor, IERC721Receiver, IERC1155Receiver[0m
+, [[92mIERC165[0m]
+[94m
++ IGovernor
+[0m -> [92mIERC165[0m
+[94m
++ TimelockController
+[0m -> [92mAccessControl, IERC721Receiver, IERC1155Receiver[0m
+, [[92mERC165, IERC165, IAccessControl, Context[0m]
+[94m
++ GovernorCompatibilityBravo
+[0m -> [92mIGovernorTimelock, IGovernorCompatibilityBravo, Governor[0m
+, [[92mIERC1155Receiver, IERC721Receiver, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ IGovernorCompatibilityBravo
+[0m -> [92mIGovernor[0m
+, [[92mIERC165[0m]
+[94m
++ GovernorSettings
+[0m -> [92mGovernor[0m
+, [[92mIERC1155Receiver, IERC721Receiver, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ GovernorTimelockControl
+[0m -> [92mIGovernorTimelock, Governor[0m
+, [[92mIERC1155Receiver, IERC721Receiver, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ GovernorVotes
+[0m -> [92mGovernor[0m
+, [[92mIERC1155Receiver, IERC721Receiver, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ GovernorVotesQuorumFraction
+[0m -> [92mGovernorVotes[0m
+, [[92mGovernor, IERC1155Receiver, IERC721Receiver, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ IGovernorTimelock
+[0m -> [92mIGovernor[0m
+, [[92mIERC165[0m]
+[94m
++ IVotes
+[0m[94m
++ Pausable
+[0m -> [92mContext[0m
+[94m
++ ReentrancyGuard
+[0m[94m
++ IERC1155Receiver
+[0m -> [92mIERC165[0m
+[94m
++ ERC20
+[0m -> [92mContext, IERC20, IERC20Metadata[0m
+[94m
++ IERC20
+[0m[94m
++ ERC20Burnable
+[0m -> [92mContext, ERC20[0m
+, [[92mIERC20Metadata, IERC20[0m]
+[94m
++ IERC20Metadata
+[0m -> [92mIERC20[0m
+[94m
++ ERC20Permit
+[0m -> [92mERC20, IERC20Permit, EIP712[0m
+, [[92mIERC20Metadata, IERC20, Context[0m]
+[94m
++ IERC20Permit
+[0m[94m
++ SafeERC20
+[0m[94m
++ ERC721
+[0m -> [92mContext, ERC165, IERC721, IERC721Metadata[0m
+, [[92mIERC165[0m]
+[94m
++ IERC721
+[0m -> [92mIERC165[0m
+[94m
++ IERC721Receiver
+[0m[94m
++ ERC721Enumerable
+[0m -> [92mERC721, IERC721Enumerable[0m
+, [[92mIERC721Metadata, IERC721, ERC165, IERC165, Context[0m]
+[94m
++ IERC721Enumerable
+[0m -> [92mIERC721[0m
+, [[92mIERC165[0m]
+[94m
++ IERC721Metadata
+[0m -> [92mIERC721[0m
+, [[92mIERC165[0m]
+[94m
++ Address
+[0m[94m
++ Context
+[0m[94m
++ Counters
+[0m[94m
++ Strings
+[0m[94m
++ Timers
+[0m[94m
++ ECDSA
+[0m[94m
++ EIP712
+[0m[94m
++ ERC165
+[0m -> [92mIERC165[0m
+[94m
++ IERC165
+[0m[94m
++ SafeCast
+[0m[94m
++ DoubleEndedQueue
+[0m[94m
++ Babylonian
+[0m[94m
++ BitMath
+[0m[94m
++ FixedPoint
+[0m[94m
++ FullMath
+[0m[94m
++ TransferHelper
+[0m[94m
++ IERC20
+[0m[94m
++ IUniswapV2Callee
+[0m[94m
++ IUniswapV2ERC20
+[0m[94m
++ IUniswapV2Factory
+[0m[94m
++ IUniswapV2Pair
+[0m[94m
++ IERC20
+[0m[94m
++ IUniswapV2Router01
+[0m[94m
++ IUniswapV2Router02
+[0m -> [92mIUniswapV2Router01[0m
+[94m
++ IWETH
+[0m[94m
++ ERC20VotesNonTransferable
+[0m -> [92mIErrors, IVotes, IERC20[0m
+[94m
++ GovernorBravoOLA
+[0m -> [92mGovernor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl[0m
+, [[92mIERC1155Receiver, IERC721Receiver, IGovernorCompatibilityBravo, IGovernorTimelock, IGovernor, EIP712, ERC165, IERC165, Context[0m]
+[94m
++ Timelock
+[0m -> [92mTimelockController[0m
+, [[92mIERC1155Receiver, IERC721Receiver, AccessControl, ERC165, IERC165, IAccessControl, Context[0m]
+[94m
++ VotingEscrow
+[0m -> [92mIStructs, ReentrancyGuard, ERC20VotesNonTransferable[0m
+, [[92mIERC20, IVotes, IErrors[0m]
+[94m
++ IDispenser
+[0m[94m
++ IErrors
+[0m[94m
++ IMultisig
+[0m[94m
++ IOLA
+[0m -> [92mIERC20[0m
+[94m
++ IRegistry
+[0m -> [92mIStructs, IERC721Enumerable[0m
+, [[92mIERC721, IERC165[0m]
+[94m
++ IService
+[0m -> [92mIStructs[0m
+[94m
++ IStructs
+[0m[94m
++ ITokenomics
+[0m -> [92mIStructs[0m
+[94m
++ ITreasury
+[0m[94m
++ IVotingEscrow
+[0m[94m
++ AgentRegistry
+[0m -> [92mIErrors, IStructs, ERC721Enumerable, Ownable, ReentrancyGuard[0m
+, [[92mIERC721Enumerable, ERC721, IERC721Metadata, IERC721, ERC165, IERC165, Context[0m]
+[94m
++ ComponentRegistry
+[0m -> [92mIErrors, IStructs, ERC721Enumerable, Ownable, ReentrancyGuard[0m
+, [[92mIERC721Enumerable, ERC721, IERC721Metadata, IERC721, ERC165, IERC165, Context[0m]
+[94m
++ RegistriesManager
+[0m -> [92mIStructs, Ownable, Pausable[0m
+, [[92mContext[0m]
+[94m
++ ServiceManager
+[0m -> [92mIErrors, IStructs, Ownable, Pausable[0m
+, [[92mContext[0m]
+[94m
++ ServiceRegistry
+[0m -> [92mIErrors, IStructs, Ownable, ERC721Enumerable, ReentrancyGuard[0m
+, [[92mIERC721Enumerable, ERC721, IERC721Metadata, IERC721, ERC165, IERC165, Context[0m]
+[94m
++ ERC20Token
+[0m -> [92mERC20, Ownable[0m
+, [[92mIERC20Metadata, IERC20, Context[0m]
+[94m
++ TestServiceRegistry
+[0m -> [92mServiceRegistry[0m
+, [[92mReentrancyGuard, ERC721Enumerable, IERC721Enumerable, ERC721, IERC721Metadata, IERC721, ERC165, IERC165, Ownable, Context, IStructs, IErrors[0m]
+[94m
++ Depository
+[0m -> [92mIErrors, Ownable[0m
+, [[92mContext[0m]
+[94m
++ Dispenser
+[0m -> [92mIStructs, IErrors, Ownable, Pausable, ReentrancyGuard[0m
+, [[92mContext[0m]
+[94m
++ OLA
+[0m -> [92mIErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit[0m
+, [[92mEIP712, IERC20Permit, IERC20Metadata, IERC20, Context[0m]
+[94m
++ Tokenomics
+[0m -> [92mIErrors, IStructs, Ownable[0m
+, [[92mContext[0m]
+[94m
++ Treasury
+[0m -> [92mIErrors, IStructs, Ownable, ReentrancyGuard[0m
+, [[92mContext[0m]
+[92m
+
+Base_Contract -> [0m[94mImmediate_Child_Contracts[0m
+[94m [Not_Immediate_Child_Contracts][0m
+[92m
++ UniswapV2ERC20[0m
+ -> [94mUniswapV2Pair[0m
+[92m
++ UniswapV2Factory[0m
+[92m
++ UniswapV2Pair[0m
+[92m
++ IERC20[0m
+[92m
++ IUniswapV2Callee[0m
+[92m
++ IUniswapV2ERC20[0m
+ -> [94mUniswapV2ERC20[0m
+, [[94mUniswapV2Pair[0m]
+[92m
++ IUniswapV2Factory[0m
+ -> [94mUniswapV2Factory[0m
+[92m
++ IUniswapV2Pair[0m
+ -> [94mUniswapV2Pair[0m
+[92m
++ Math[0m
+[92m
++ SafeMath[0m
+[92m
++ UQ112x112[0m
+[92m
++ WETH9[0m
+[92m
++ TransferHelper[0m
+[92m
++ IUniswapV2Factory[0m
+[92m
++ IUniswapV2Pair[0m
+[92m
++ UniswapV2Router02[0m
+[92m
++ IERC20[0m
+[92m
++ IUniswapV2Router01[0m
+ -> [94mIUniswapV2Router02[0m
+, [[94mUniswapV2Router02[0m]
+[92m
++ IUniswapV2Router02[0m
+ -> [94mUniswapV2Router02[0m
+[92m
++ IWETH[0m
+[92m
++ SafeMath[0m
+[92m
++ UniswapV2Library[0m
+[92m
++ IProxy[0m
+[92m
++ GnosisSafeProxy[0m
+[92m
++ GnosisSafeProxyFactory[0m
+[92m
++ IProxyCreationCallback[0m
+[92m
++ GnosisSafeMultisig[0m
+[92m
++ GnosisSafe[0m
+ -> [94mGnosisSafeL2[0m
+[92m
++ GnosisSafeL2[0m
+[92m
++ Executor[0m
+ -> [94mModuleManager[0m
+, [[94mGnosisSafe, GnosisSafeL2[0m]
+[92m
++ FallbackManager[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ Guard[0m
+[92m
++ GuardManager[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ ModuleManager[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ OwnerManager[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ Enum[0m
+[92m
++ EtherPaymentFallback[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ SecuredTokenTransfer[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ SelfAuthorized[0m
+ -> [94mFallbackManager, GuardManager, ModuleManager, OwnerManager[0m
+, [[94mGnosisSafe, GnosisSafeL2[0m]
+[92m
++ SignatureDecoder[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ Singleton[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ StorageAccessible[0m
+ -> [94mGnosisSafe[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ GnosisSafeMath[0m
+[92m
++ ISignatureValidatorConstants[0m
+ -> [94mGnosisSafe, ISignatureValidator[0m
+, [[94mGnosisSafeL2[0m]
+[92m
++ ISignatureValidator[0m
+[92m
++ AccessControl[0m
+ -> [94mTimelockController[0m
+, [[94mTimelock[0m]
+[92m
++ IAccessControl[0m
+ -> [94mAccessControl[0m
+, [[94mTimelockController, Timelock[0m]
+[92m
++ Ownable[0m
+ -> [94mAgentRegistry, ComponentRegistry, RegistriesManager, ServiceManager, ServiceRegistry, ERC20Token, Depository, Dispenser, OLA, Tokenomics, Treasury[0m
+, [[94mTestServiceRegistry[0m]
+[92m
++ Governor[0m
+ -> [94mGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorBravoOLA[0m
+, [[94mGovernorVotesQuorumFraction[0m]
+[92m
++ IGovernor[0m
+ -> [94mGovernor, IGovernorCompatibilityBravo, IGovernorTimelock[0m
+, [[94mGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, GovernorBravoOLA[0m]
+[92m
++ TimelockController[0m
+ -> [94mTimelock[0m
+[92m
++ GovernorCompatibilityBravo[0m
+ -> [94mGovernorBravoOLA[0m
+[92m
++ IGovernorCompatibilityBravo[0m
+ -> [94mGovernorCompatibilityBravo[0m
+, [[94mGovernorBravoOLA[0m]
+[92m
++ GovernorSettings[0m
+ -> [94mGovernorBravoOLA[0m
+[92m
++ GovernorTimelockControl[0m
+ -> [94mGovernorBravoOLA[0m
+[92m
++ GovernorVotes[0m
+ -> [94mGovernorVotesQuorumFraction, GovernorBravoOLA[0m
+[92m
++ GovernorVotesQuorumFraction[0m
+ -> [94mGovernorBravoOLA[0m
+[92m
++ IGovernorTimelock[0m
+ -> [94mGovernorCompatibilityBravo, GovernorTimelockControl[0m
+, [[94mGovernorBravoOLA[0m]
+[92m
++ IVotes[0m
+ -> [94mERC20VotesNonTransferable[0m
+, [[94mVotingEscrow[0m]
+[92m
++ Pausable[0m
+ -> [94mRegistriesManager, ServiceManager, Dispenser[0m
+[92m
++ ReentrancyGuard[0m
+ -> [94mVotingEscrow, AgentRegistry, ComponentRegistry, ServiceRegistry, Dispenser, Treasury[0m
+, [[94mTestServiceRegistry[0m]
+[92m
++ IERC1155Receiver[0m
+ -> [94mGovernor, TimelockController[0m
+, [[94mGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, GovernorBravoOLA, Timelock[0m]
+[92m
++ ERC20[0m
+ -> [94mERC20Burnable, ERC20Permit, ERC20Token, OLA[0m
+[92m
++ IERC20[0m
+ -> [94mERC20, IERC20Metadata, ERC20VotesNonTransferable, IOLA[0m
+, [[94mERC20Burnable, ERC20Permit, VotingEscrow, ERC20Token, OLA[0m]
+[92m
++ ERC20Burnable[0m
+ -> [94mOLA[0m
+[92m
++ IERC20Metadata[0m
+ -> [94mERC20[0m
+, [[94mERC20Burnable, ERC20Permit, ERC20Token, OLA[0m]
+[92m
++ ERC20Permit[0m
+ -> [94mOLA[0m
+[92m
++ IERC20Permit[0m
+ -> [94mERC20Permit[0m
+, [[94mOLA[0m]
+[92m
++ SafeERC20[0m
+[92m
++ ERC721[0m
+ -> [94mERC721Enumerable[0m
+, [[94mAgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ IERC721[0m
+ -> [94mERC721, IERC721Enumerable, IERC721Metadata[0m
+, [[94mERC721Enumerable, IRegistry, AgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ IERC721Receiver[0m
+ -> [94mGovernor, TimelockController[0m
+, [[94mGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, GovernorBravoOLA, Timelock[0m]
+[92m
++ ERC721Enumerable[0m
+ -> [94mAgentRegistry, ComponentRegistry, ServiceRegistry[0m
+, [[94mTestServiceRegistry[0m]
+[92m
++ IERC721Enumerable[0m
+ -> [94mERC721Enumerable, IRegistry[0m
+, [[94mAgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ IERC721Metadata[0m
+ -> [94mERC721[0m
+, [[94mERC721Enumerable, AgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ Address[0m
+[92m
++ Context[0m
+ -> [94mAccessControl, Ownable, Governor, Pausable, ERC20, ERC20Burnable, ERC721[0m
+, [[94mTimelockController, GovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, ERC20Permit, ERC721Enumerable, GovernorBravoOLA, Timelock, AgentRegistry, ComponentRegistry, RegistriesManager, ServiceManager, ServiceRegistry, ERC20Token, TestServiceRegistry, Depository, Dispenser, OLA, Tokenomics, Treasury[0m]
+[92m
++ Counters[0m
+[92m
++ Strings[0m
+[92m
++ Timers[0m
+[92m
++ ECDSA[0m
+[92m
++ EIP712[0m
+ -> [94mGovernor, ERC20Permit[0m
+, [[94mGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, GovernorBravoOLA, OLA[0m]
+[92m
++ ERC165[0m
+ -> [94mAccessControl, Governor, ERC721[0m
+, [[94mTimelockController, GovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, ERC721Enumerable, GovernorBravoOLA, Timelock, AgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ IERC165[0m
+ -> [94mIGovernor, IERC1155Receiver, IERC721, ERC165[0m
+, [[94mAccessControl, Governor, TimelockController, GovernorCompatibilityBravo, IGovernorCompatibilityBravo, GovernorSettings, GovernorTimelockControl, GovernorVotes, GovernorVotesQuorumFraction, IGovernorTimelock, ERC721, ERC721Enumerable, IERC721Enumerable, IERC721Metadata, GovernorBravoOLA, Timelock, IRegistry, AgentRegistry, ComponentRegistry, ServiceRegistry, TestServiceRegistry[0m]
+[92m
++ SafeCast[0m
+[92m
++ DoubleEndedQueue[0m
+[92m
++ Babylonian[0m
+[92m
++ BitMath[0m
+[92m
++ FixedPoint[0m
+[92m
++ FullMath[0m
+[92m
++ TransferHelper[0m
+[92m
++ IERC20[0m
+[92m
++ IUniswapV2Callee[0m
+[92m
++ IUniswapV2ERC20[0m
+[92m
++ IUniswapV2Factory[0m
+[92m
++ IUniswapV2Pair[0m
+[92m
++ IERC20[0m
+[92m
++ IUniswapV2Router01[0m
+ -> [94mIUniswapV2Router02[0m
+[92m
++ IUniswapV2Router02[0m
+[92m
++ IWETH[0m
+[92m
++ ERC20VotesNonTransferable[0m
+ -> [94mVotingEscrow[0m
+[92m
++ GovernorBravoOLA[0m
+[92m
++ Timelock[0m
+[92m
++ VotingEscrow[0m
+[92m
++ IDispenser[0m
+[92m
++ IErrors[0m
+ -> [94mERC20VotesNonTransferable, AgentRegistry, ComponentRegistry, ServiceManager, ServiceRegistry, Depository, Dispenser, OLA, Tokenomics, Treasury[0m
+, [[94mVotingEscrow, TestServiceRegistry[0m]
+[92m
++ IMultisig[0m
+[92m
++ IOLA[0m
+[92m
++ IRegistry[0m
+[92m
++ IService[0m
+[92m
++ IStructs[0m
+ -> [94mVotingEscrow, IRegistry, IService, ITokenomics, AgentRegistry, ComponentRegistry, RegistriesManager, ServiceManager, ServiceRegistry, Dispenser, Tokenomics, Treasury[0m
+, [[94mTestServiceRegistry[0m]
+[92m
++ ITokenomics[0m
+[92m
++ ITreasury[0m
+[92m
++ IVotingEscrow[0m
+[92m
++ AgentRegistry[0m
+[92m
++ ComponentRegistry[0m
+[92m
++ RegistriesManager[0m
+[92m
++ ServiceManager[0m
+[92m
++ ServiceRegistry[0m
+ -> [94mTestServiceRegistry[0m
+[92m
++ ERC20Token[0m
+[92m
++ TestServiceRegistry[0m
+[92m
++ Depository[0m
+[92m
++ Dispenser[0m
+[92m
++ OLA[0m
+[92m
++ Tokenomics[0m
+[92m
++ Treasury[0m
+
+. analyzed (126 contracts)

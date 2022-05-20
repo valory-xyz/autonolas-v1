@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for tokenomics/Depository.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">tokenomics/</a> Depository.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">91.55% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>65/71</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">61.54% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>16/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">91.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>11/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">87.65% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>71/81</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.14;
+&nbsp;
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "../interfaces/IErrors.sol";
+import "../interfaces/ITreasury.sol";
+import "../interfaces/ITokenomics.sol";
+&nbsp;
+/// @title Bond Depository - Smart contract for OLA Bond Depository
+/// @author AL
+/// @author Aleksandr Kuperman - &lt;aleksandr.kuperman@valory.xyz&gt;
+contract Depository is IErrors, Ownable {
+    using SafeERC20 for IERC20;
+&nbsp;
+    event CreateBond(uint256 productId, uint256 amountOLA, uint256 tokenAmount);
+    event CreateProduct(address token, uint256 productId, uint256 supply);
+    event TerminateProduct(address token, uint256 productId);
+    event TreasuryUpdated(address treasury);
+    event TokenomicsUpdated(address tokenomics);
+&nbsp;
+    struct Bond {
+        // OLA remaining to be paid out
+        uint256 payout;
+        // Bond creation time
+        uint256 creation;
+        // Bond maturity time
+        uint256 maturity;
+        // Product Id of a bond
+        uint256 productId;
+        // time product was redeemed
+        bool redeemed;
+    }
+&nbsp;
+    struct Product {
+        // Token to accept as a payment
+        address token;
+        // Supply remaining in OLA tokens
+        uint256 supply;
+        // Vesting time in sec
+        uint256 vesting;
+        // Product expiry time (initialization time + vesting time)
+        uint256 expiry;
+        // Number of specified tokens purchased
+        uint256 purchased;
+        // Number of OLA tokens sold
+        uint256 sold;
+    }
+&nbsp;
+    // OLA token address
+    address public immutable ola;
+    // Treasury address
+    address public treasury;
+    // Tokenomics address
+    address public tokenomics;
+    // Mapping of user address =&gt; list of bonds
+    mapping(address =&gt; Bond[]) public mapUserBonds;
+    // Map of token address =&gt; bond products they are present
+    mapping(address =&gt; Product[]) public mapTokenProducts;
+&nbsp;
+    constructor(address _ola, address _treasury, address _tokenomics) {
+        ola = _ola;
+        treasury = _treasury;
+        tokenomics = _tokenomics;
+    }
+&nbsp;
+    /// @dev Changes various managing contract addresses.
+    /// @param _treasury Treasury address.
+    /// @param _tokenomics Tokenomics address.
+<span class="fstat-no" title="function not covered" >    function changeManagers(address _treasury, address _tokenomics) external onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        if (_treasury != address(0)) {</span>
+<span class="cstat-no" title="statement not covered" >            treasury = _treasury</span>;
+<span class="cstat-no" title="statement not covered" >            emit TreasuryUpdated(_treasury);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if (_tokenomics != address(0)) {</span>
+<span class="cstat-no" title="statement not covered" >            tokenomics = _tokenomics</span>;
+<span class="cstat-no" title="statement not covered" >            emit TokenomicsUpdated(_tokenomics);</span>
+        }
+    }
+&nbsp;
+    /// @dev Deposits tokens in exchange for a bond from a specified product.
+    /// @param token Token address.
+    /// @param productId Product Id.
+    /// @param tokenAmount Token amount to deposit for the bond.
+    /// @param user Address of a payout recipient.
+    /// @return payout The amount of OLA tokens due.
+    /// @return expiry Timestamp for payout redemption.
+    /// @return numBonds Number of user bonds.
+    function deposit(address token, uint256 productId, uint256 tokenAmount, address user) external
+        returns (uint256 payout, uint256 expiry, uint256 numBonds)
+    {
+        Product storage product = mapTokenProducts[token][productId];
+        // Check for the correctly provided token in the product
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (token != address(product.token)) {
+            revert WrongTokenAddress(token, address(product.token));
+        }
+&nbsp;
+        // Check for the product expiry
+        uint256 currentTime = uint256(block.timestamp);
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (currentTime &gt; product.expiry) {
+            revert ProductExpired(token, productId, product.expiry, currentTime);
+        }
+&nbsp;
+        // Calculate the payout in OLA tokens based on the LP pair with the discount factor (DF) calculation
+        payout = ITokenomics(tokenomics).calculatePayoutFromLP(token, tokenAmount);
+        
+        // Check for the sufficient supply
+        if (payout &gt; product.supply) {
+            revert ProductSupplyLow(token, productId, payout, product.supply);
+        }
+&nbsp;
+        // Decrease the supply for the amount of payout, increase number of purchased tokens and sold OLA tokens
+        product.supply -= payout;
+        product.purchased += tokenAmount;
+        product.sold += payout;
+&nbsp;
+        numBonds = mapUserBonds[user].length;
+        expiry = product.expiry;
+&nbsp;
+        // Create and add a new bond
+        mapUserBonds[user].push(Bond(payout, uint256(block.timestamp), expiry, productId, false));
+        emit CreateBond(productId, payout, tokenAmount);
+&nbsp;
+        // Take into account this bond in current epoch
+        ITokenomics(tokenomics).usedBond(payout);
+&nbsp;
+        // Uniswap allowance implementation does not revert with the accurate message, check before SafeMath is engaged
+        if (IERC20(product.token).allowance(msg.sender, address(this)) &lt; tokenAmount) {
+            revert InsufficientAllowance(IERC20(product.token).allowance((msg.sender), address(this)), tokenAmount);
+        }
+        // Transfer tokens to the depository
+        IERC20(product.token).safeTransferFrom(msg.sender, address(this), tokenAmount);
+        // Approve treasury for the specified token amount
+        IERC20(product.token).approve(treasury, tokenAmount);
+        // Deposit that token amount to mint OLA tokens in exchange
+        ITreasury(treasury).depositTokenForOLA(tokenAmount, address(product.token), payout);
+    }
+&nbsp;
+    /// @dev Redeem bonds for the user.
+    /// @param user Address of a payout recipient.
+    /// @param indexes Bond indexes to redeem.
+    /// @return payout Total payout sent in OLA tokens.
+    function redeem(address user, uint256[] memory indexes) public returns (uint256 payout) {
+        for (uint256 i = 0; i &lt; indexes.length; i++) {
+            // Get the amount to pay and the maturity status
+            (uint256 pay, bool maturity) = getBondStatus(user, indexes[i]);
+&nbsp;
+            // If matured, mark as redeemed and add to the total payout
+            if (maturity) {
+                mapUserBonds[user][indexes[i]].redeemed = true;
+                payout += pay;
+            }
+        }
+        // No reentrancy risk here since it's the last operation, and originated from the OLA token
+        IERC20(ola).transfer(user, payout);
+    }
+&nbsp;
+    /// @dev Redeems all redeemable products for a user. Best to query off-chain and input in redeem() to save gas.
+    /// @param user Address of the user to redeem all bonds for.
+    /// @return payout Total payout sent in OLA tokens.
+    function redeemAll(address user) external returns (uint256 payout) {
+        payout = redeem(user, getPendingBonds(user));
+    }
+&nbsp;
+    /// @dev Gets indexes of all pending bonds for a user.
+    /// @param user User address to query bonds for.
+    /// @return indexes Pending bond indexes.
+    function getPendingBonds(address user) public view returns (uint256[] memory indexes) {
+        Bond[] memory bonds = mapUserBonds[user];
+&nbsp;
+        // Calculate the number of pending bonds
+        uint numBonds = bonds.length;
+        bool[] memory positions = new bool[](numBonds);
+        uint256 numPendingBonds;
+        for (uint256 i = 0; i &lt; numBonds; i++) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!bonds[i].redeemed &amp;&amp; bonds[i].payout != 0) {
+                positions[i] = true;
+                numPendingBonds++;
+            }
+        }
+&nbsp;
+        // Form the pending bonds index array
+        indexes = new uint256[](numPendingBonds);
+        uint256 numPos;
+        for (uint256 i = 0; i &lt; numBonds; i++) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (positions[i]) {
+                indexes[numPos] = i;
+                ++numPos;
+            }
+        }
+    }
+&nbsp;
+    /// @dev Calculates the maturity and payout to claim for a single bond.
+    /// @param user Address of a payout recipient.
+    /// @param index The user bond index.
+    /// @return payout The payout amount in OLA.
+    /// @return matured True if the payout can be redeemed.
+    function getBondStatus(address user, uint256 index) public view returns (uint256 payout, bool matured) {
+        Bond memory bond = mapUserBonds[user][index];
+        payout = bond.payout;
+        matured = !bond.redeemed &amp;&amp; bond.maturity &lt;= block.timestamp &amp;&amp; bond.payout != 0;
+    }
+&nbsp;
+    /// @dev Creates a new bond product.
+    /// @param token LP token to be deposited for pairs like OLA-DAI, OLA-ETH, etc.
+    /// @param supply Supply in OLA tokens.
+    /// @param vesting Vesting period (in seconds).
+    /// @return productId New bond product Id.
+    function create(address token, uint256 supply, uint256 vesting) external onlyOwner returns (uint256 productId) {
+        // Check if the LP token is enabled and that it is the LP token
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!ITreasury(treasury).isEnabled(token) || !ITreasury(treasury).checkPair(token)) {
+            revert UnauthorizedToken(token);
+        }
+&nbsp;
+        // Check if the bond amount is beyond the limits
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!ITokenomics(tokenomics).allowedNewBond(supply)) {
+            revert AmountLowerThan(ITokenomics(tokenomics).effectiveBond(), supply);
+        }
+&nbsp;
+        // Create a new product
+        productId = mapTokenProducts[token].length;
+        Product memory product = Product(token, supply, vesting, uint256(block.timestamp + vesting), 0, 0);
+        mapTokenProducts[token].push(product);
+&nbsp;
+        emit CreateProduct(token, productId, supply);
+    }
+&nbsp;
+    /// @dev Close a bonding product.
+    /// @param token Specified token.
+    /// @param productId Product Id.
+    function close(address token, uint256 productId) external onlyOwner {
+        mapTokenProducts[token][productId].supply = 0;
+        
+        emit TerminateProduct(token, productId);
+    }
+&nbsp;
+    /// @dev Gets activity information about a given product.
+    /// @param productId Product Id.
+    /// @return status True if
+    function isActive(address token, uint256 productId) public view returns (bool status) {
+        status = (mapTokenProducts[token][productId].supply &gt; 0 &amp;&amp;
+            mapTokenProducts[token][productId].expiry &gt; block.timestamp);
+    }
+&nbsp;
+    /// @dev Gets an array of all active product Ids for a specific token.
+    /// @param token Token address
+    /// @return ids Active product Ids.
+    function getActiveProductsForToken(address token) external view returns (uint256[] memory ids) {
+        // Calculate the number of active products
+        uint numProducts = mapTokenProducts[token].length;
+        bool[] memory positions = new bool[](numProducts);
+        uint256 numActive;
+        for (uint256 i = 0; i &lt; numProducts; i++) {
+            if (isActive(token, i)) {
+                positions[i] = true;
+                ++numActive;
+            }
+        }
+&nbsp;
+        // Form the active products index array
+        ids = new uint256[](numActive);
+        uint256 numPos;
+        for (uint256 i = 0; i &lt; numProducts; i++) {
+            if (positions[i]) {
+                ids[numPos] = i;
+                numPos++;
+            }
+        }
+        return ids;
+    }
+&nbsp;
+    /// @dev Gets the product instance.
+    /// @param token Token address.
+    /// @param productId Product Id.
+    /// @return Product instance.
+    function getProduct(address token, uint256 productId) public view returns (Product memory) {
+        return mapTokenProducts[token][productId];
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri May 20 2022 20:27:12 GMT+0100 (British Summer Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

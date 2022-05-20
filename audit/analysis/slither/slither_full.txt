@@ -1,0 +1,1763 @@
+'npx hardhat compile --force' running
+Compiled 113 Solidity files successfully
+
+Solidity 0.8.14 is not fully supported yet. You can still use Hardhat, but some features, like stack traces, might not work correctly.
+
+Learn more at https://hardhat.org/reference/solidity-support
+
+@uniswap/v2-periphery/contracts/UniswapV2Router02.sol:12:1: Warning: Contract code size exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+contract UniswapV2Router02 is IUniswapV2Router02 {
+^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IERC20.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> @uniswap/v2-periphery/contracts/interfaces/IWETH.sol
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:23:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                       ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:15:35:
+   |
+15 |     function transfer(address to, uint256 amount) external virtual override returns (bool) {
+   |                                   ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:22:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                      ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:20:39:
+   |
+20 |     function approve(address spender, uint256 amount) external virtual override returns (bool) {
+   |                                       ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:27:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                           ^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:41:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                         ^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:25:53:
+   |
+25 |     function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
+   |                                                     ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:24:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                        ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:30:39:
+   |
+30 |     function allowance(address owner, address spender) external view virtual override returns (uint256)
+   |                                       ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:36:24:
+   |
+36 |     function delegates(address account) external view virtual override returns (address)
+   |                        ^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:42:23:
+   |
+42 |     function delegate(address delegatee) external virtual override
+   |                       ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:28:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                            ^^^^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:47:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                               ^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:62:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                              ^^^^^^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:78:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                              ^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:87:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                       ^^^^^^^^^
+
+
+Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> contracts/governance/ERC20VotesNonTransferable.sol:48:98:
+   |
+48 |     function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s)
+   |                                                                                                  ^^^^^^^^^
+
+
+Warning: Contract code size is 24918 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+ --> contracts/test/TestServiceRegistry.sol:8:1:
+  |
+8 | contract TestServiceRegistry is ServiceRegistry {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
+
+[91m
+GnosisSafe.handlePayment(uint256,uint256,uint256,address,address) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#196-213) sends eth to arbitrary user
+	Dangerous calls:
+	- require(bool,string)(receiver.send(payment),GS011) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#208)
+Governor._execute(uint256,address[],uint256[],bytes[],bytes32) (node_modules/@openzeppelin/contracts/governance/Governor.sol#316-328) sends eth to arbitrary user
+	Dangerous calls:
+	- (success,returndata) = targets[i].call{value: values[i]}(calldatas[i]) (node_modules/@openzeppelin/contracts/governance/Governor.sol#325)
+TimelockController._call(bytes32,uint256,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#349-360) sends eth to arbitrary user
+	Dangerous calls:
+	- (success) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#356)
+Dispenser.withdrawOwnerRewards() (contracts/tokenomics/Dispenser.sol#46-60) sends eth to arbitrary user
+	Dangerous calls:
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#52)
+Treasury._sendFundsToDispenser(uint256,uint256) (contracts/tokenomics/Treasury.sol#254-270) sends eth to arbitrary user
+	Dangerous calls:
+	- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#functions-that-send-ether-to-arbitrary-destinations[0m
+[91m
+UniswapV2Pair._update(uint256,uint256,uint112,uint112) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#73-86) uses a weak PRNG: "blockTimestamp = uint32(block.timestamp % 2 ** 32) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#75)" 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#weak-PRNG[0m
+[91m
+IERC20 is re-used:
+	- IERC20 (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#9-82)
+	- IERC20 (node_modules/@uniswap/v2-core/contracts/interfaces/IERC20.sol#3-17)
+	- IERC20 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IERC20.sol#3-17)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#name-reused[0m
+[91m
+UniswapV2Router02.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#103-119) ignores return value by IUniswapV2Pair(pair).transferFrom(msg.sender,pair,liquidity) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#113)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer[0m
+[91m
+Depository.redeem(address,uint256[]) (contracts/tokenomics/Depository.sol#144-157) ignores return value by IERC20(ola).transfer(user,payout) (contracts/tokenomics/Depository.sol#156)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer[0m
+[93m
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#27)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#28)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#29)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#30)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#31)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#32)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#33)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-d /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#23)
+	-r *= 2 - d * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#34)
+FullMath.fullDiv(uint256,uint256,uint256) (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#16-37) performs a multiplication on the result of a division:
+	-l /= pow2 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#24)
+	-l * r (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#35)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) performs a multiplication on the result of a division:
+	-tStep = (lastCheckpoint / WEEK) * WEEK (contracts/governance/VotingEscrow.sol#182)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) performs a multiplication on the result of a division:
+	-block_slope = (1e18 * (block.number - lastPoint.blockNumber)) / (block.timestamp - lastPoint.ts) (contracts/governance/VotingEscrow.sol#177)
+	-lastPoint.blockNumber = initialPoint.blockNumber + (block_slope * (tStep - initialPoint.ts)) / 1e18 (contracts/governance/VotingEscrow.sol#205)
+VotingEscrow.createLock(uint256,uint256) (contracts/governance/VotingEscrow.sol#334-356) performs a multiplication on the result of a division:
+	-unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK (contracts/governance/VotingEscrow.sol#336)
+VotingEscrow.increaseUnlockTime(uint256) (contracts/governance/VotingEscrow.sol#380-401) performs a multiplication on the result of a division:
+	-unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK (contracts/governance/VotingEscrow.sol#382)
+VotingEscrow._supplyLockedAt(IStructs.PointVoting,uint256) (contracts/governance/VotingEscrow.sol#576-597) performs a multiplication on the result of a division:
+	-tStep = (lastPoint.ts / WEEK) * WEEK (contracts/governance/VotingEscrow.sol#577)
+Tokenomics._calculateUnitTokenomics(address,uint256,uint256) (contracts/tokenomics/Tokenomics.sol#357-449) performs a multiplication on the result of a division:
+	-amountOLA = (unitTopUps * ucfuRevs[unitId]) / sumProfits (contracts/tokenomics/Tokenomics.sol#419)
+	-amountOLA = (amountOLA * agentWeight) / (componentWeight + agentWeight) (contracts/tokenomics/Tokenomics.sol#423)
+Tokenomics._calculateUnitTokenomics(address,uint256,uint256) (contracts/tokenomics/Tokenomics.sol#357-449) performs a multiplication on the result of a division:
+	-amountOLA = (amountOLA * componentWeight) / (componentWeight + agentWeight) (contracts/tokenomics/Tokenomics.sol#421)
+	-amountOLA = (amountOLA * agentWeight) / (componentWeight + agentWeight) (contracts/tokenomics/Tokenomics.sol#423)
+Tokenomics._calculatePayoutFromLP(address,uint256,uint256) (contracts/tokenomics/Tokenomics.sol#607-644) performs a multiplication on the result of a division:
+	-amount1 = (amount * balance1) / totalSupply (contracts/tokenomics/Tokenomics.sol#620)
+	-resAmount = (amountOLA * df) / 1e18 (contracts/tokenomics/Tokenomics.sol#638)
+	-amountOLA = amount1 (contracts/tokenomics/Tokenomics.sol#626)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#divide-before-multiply[0m
+[93m
+UniswapV2Pair._safeTransfer(address,address,uint256) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#44-47) uses a dangerous strict equality:
+	- require(bool,string)(success && (data.length == 0 || abi.decode(data,(bool))),UniswapV2: TRANSFER_FAILED) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#46)
+UniswapV2Pair.mint(address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#110-131) uses a dangerous strict equality:
+	- _totalSupply == 0 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#119)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities[0m
+[93m
+TimelockController.isOperationDone(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#155-157) uses a dangerous strict equality:
+	- getTimestamp(id) == _DONE_TIMESTAMP (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#156)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) uses a dangerous strict equality:
+	- newLocked.end == oldLocked.end (contracts/governance/VotingEscrow.sol#157)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) uses a dangerous strict equality:
+	- tStep == block.timestamp (contracts/governance/VotingEscrow.sol#208)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) uses a dangerous strict equality:
+	- newLocked.end == oldLocked.end (contracts/governance/VotingEscrow.sol#243)
+VotingEscrow._supplyLockedAt(IStructs.PointVoting,uint256) (contracts/governance/VotingEscrow.sol#576-597) uses a dangerous strict equality:
+	- tStep == ts (contracts/governance/VotingEscrow.sol#587)
+Tokenomics.getUCF(uint256) (contracts/tokenomics/Tokenomics.sol#741-775) uses a dangerous strict equality:
+	- denominator == 0 (contracts/tokenomics/Tokenomics.sol#758)
+Tokenomics.getUCF(uint256) (contracts/tokenomics/Tokenomics.sol#741-775) uses a dangerous strict equality:
+	- denominator == 0 (contracts/tokenomics/Tokenomics.sol#765)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities[0m
+[93m
+Contract locking ether found:
+	Contract GnosisSafeProxy (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#13-44) has payable functions:
+	 - GnosisSafeProxy.fallback() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#26-43)
+	But does not have a function to withdraw the ether
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#contracts-that-lock-ether[0m
+[93m
+Reentrancy in UniswapV2Pair.burn(address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#134-156):
+	External calls:
+	- _safeTransfer(_token0,to,amount0) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#148)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#149)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	State variables written after the call(s):
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+		- blockTimestampLast = blockTimestamp (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#84)
+	- kLast = uint256(reserve0).mul(reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#154)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+		- reserve0 = uint112(balance0) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#82)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+		- reserve1 = uint112(balance1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#83)
+Reentrancy in UniswapV2Factory.createPair(address,address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#23-38):
+	External calls:
+	- IUniswapV2Pair(pair).initialize(token0,token1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#33)
+	State variables written after the call(s):
+	- getPair[token0][token1] = pair (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#34)
+	- getPair[token1][token0] = pair (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#35)
+Reentrancy in UniswapV2Pair.swap(uint256,uint256,address,bytes) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#159-187):
+	External calls:
+	- _safeTransfer(_token0,to,amount0Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#170)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#171)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- IUniswapV2Callee(to).uniswapV2Call(msg.sender,amount0Out,amount1Out,data) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#172)
+	State variables written after the call(s):
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+		- blockTimestampLast = blockTimestamp (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#84)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+		- reserve0 = uint112(balance0) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#82)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+		- reserve1 = uint112(balance1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#83)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1[0m
+[93m
+Reentrancy in Tokenomics.allowedNewBond(uint256) (contracts/tokenomics/Tokenomics.sol#309-315):
+	External calls:
+	- effectiveBond >= amount && isAllowedMint(amount) (contracts/tokenomics/Tokenomics.sol#310)
+		- timeLaunch = IOLA(ola).timeLaunch() (contracts/tokenomics/Tokenomics.sol#292)
+	State variables written after the call(s):
+	- effectiveBond -= amount (contracts/tokenomics/Tokenomics.sol#311)
+Reentrancy in ServiceRegistry.createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (contracts/registries/ServiceRegistry.sol#245-288):
+	External calls:
+	- _safeMint(owner,serviceId) (contracts/registries/ServiceRegistry.sol#283)
+		- IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,_data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#395-405)
+	State variables written after the call(s):
+	- service.state = ServiceState.PreRegistration (contracts/registries/ServiceRegistry.sol#285)
+Reentrancy in ServiceRegistry.deploy(address,uint256,address,bytes) (contracts/registries/ServiceRegistry.sol#462-494):
+	External calls:
+	- multisig = IMultisig(multisigImplementation).create(agentInstances,service.threshold,data) (contracts/registries/ServiceRegistry.sol#483)
+	State variables written after the call(s):
+	- service.multisig = multisig (contracts/registries/ServiceRegistry.sol#490)
+	- service.state = ServiceState.Deployed (contracts/registries/ServiceRegistry.sol#491)
+Reentrancy in Depository.deposit(address,uint256,uint256,address) (contracts/tokenomics/Depository.sol#90-138):
+	External calls:
+	- payout = ITokenomics(tokenomics).calculatePayoutFromLP(token,tokenAmount) (contracts/tokenomics/Depository.sol#106)
+	State variables written after the call(s):
+	- product.supply -= payout (contracts/tokenomics/Depository.sol#114)
+	- product.purchased += tokenAmount (contracts/tokenomics/Depository.sol#115)
+	- product.sold += payout (contracts/tokenomics/Depository.sol#116)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1[0m
+[93m
+UniswapV2Library.getAmountsOut(address,uint256,address[]).i (node_modules/@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol#66) is a local variable never initialized
+UniswapV2Router02._swapSupportingFeeOnTransferTokens(address[],address).i (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#322) is a local variable never initialized
+UniswapV2Router02._swap(uint256[],address[],address).i (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#213) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables[0m
+[93m
+ServiceRegistry.update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256).size (contracts/registries/ServiceRegistry.sol#322) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).oldDSlope (contracts/governance/VotingEscrow.sol#135) is a local variable never initialized
+Depository.getPendingBonds(address).numPos (contracts/tokenomics/Depository.sol#185) is a local variable never initialized
+ServiceRegistry._updateServiceComponentAgentConnection(uint256).numComponentsCheck (contracts/registries/ServiceRegistry.sol#706) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).newDSlope (contracts/governance/VotingEscrow.sol#136) is a local variable never initialized
+Depository.getPendingBonds(address).numPendingBonds (contracts/tokenomics/Depository.sol#175) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).block_slope (contracts/governance/VotingEscrow.sol#175) is a local variable never initialized
+ServiceRegistry._setServiceData(ServiceRegistry.Service,string,string,uint256,uint256[],IStructs.AgentParams[],uint256).securityDeposit (contracts/registries/ServiceRegistry.sol#210) is a local variable never initialized
+VotingEscrow._depositFor(address,uint256,uint256,LockedBalance,VotingEscrow.DepositType).oldLocked (contracts/governance/VotingEscrow.sol#280) is a local variable never initialized
+Tokenomics._checkpoint().df (contracts/tokenomics/Tokenomics.sol#527) is a local variable never initialized
+Tokenomics._checkpoint().ucfa (contracts/tokenomics/Tokenomics.sol#530) is a local variable never initialized
+VotingEscrow._supplyLockedAt(IStructs.PointVoting,uint256).dSlope (contracts/governance/VotingEscrow.sol#580) is a local variable never initialized
+ServiceRegistry._updateServiceComponentAgentConnection(uint256).minComponent (contracts/registries/ServiceRegistry.sol#698) is a local variable never initialized
+Tokenomics._checkpoint().ucfc (contracts/tokenomics/Tokenomics.sol#529) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).uOld (contracts/governance/VotingEscrow.sol#133) is a local variable never initialized
+Tokenomics.getUCF(uint256).ucfc (contracts/tokenomics/Tokenomics.sol#749) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).dSlope (contracts/governance/VotingEscrow.sol#187) is a local variable never initialized
+Depository.getActiveProductsForToken(address).numPos (contracts/tokenomics/Depository.sol#263) is a local variable never initialized
+Depository.getActiveProductsForToken(address).numActive (contracts/tokenomics/Depository.sol#253) is a local variable never initialized
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance).uNew (contracts/governance/VotingEscrow.sol#134) is a local variable never initialized
+ServiceRegistry._updateServiceComponentAgentConnection(uint256).minIdxComponent (contracts/registries/ServiceRegistry.sol#704) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables[0m
+[93m
+UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#33-60) ignores return value by IUniswapV2Factory(factory).createPair(tokenA,tokenB) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#43)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return[0m
+[93m
+Governor._execute(uint256,address[],uint256[],bytes[],bytes32) (node_modules/@openzeppelin/contracts/governance/Governor.sol#316-328) ignores return value by Address.verifyCallResult(success,returndata,errorMessage) (node_modules/@openzeppelin/contracts/governance/Governor.sol#326)
+Governor.relay(address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#543-549) ignores return value by Address.functionCallWithValue(target,data,value) (node_modules/@openzeppelin/contracts/governance/Governor.sol#548)
+ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#388-409) ignores return value by IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,_data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#395-405)
+ServiceManager.serviceUpdate(string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256) (contracts/registries/ServiceManager.sol#75-87) ignores return value by IService(serviceRegistry).update(msg.sender,name,description,configHash,agentIds,agentParams,threshold,serviceId) (contracts/registries/ServiceManager.sol#85-86)
+Depository.deposit(address,uint256,uint256,address) (contracts/tokenomics/Depository.sol#90-138) ignores return value by IERC20(product.token).approve(treasury,tokenAmount) (contracts/tokenomics/Depository.sol#135)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return[0m
+[92m
+ERC20Permit.constructor(string).name (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#44) shadows:
+	- ERC20.name() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#62-64) (function)
+	- IERC20Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#17) (function)
+GovernorBravoOLA.constructor(IVotes,TimelockController,uint256,uint256,uint256,uint256).timelock (contracts/governance/GovernorBravoOLA.sol#16) shadows:
+	- GovernorTimelockControl.timelock() (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#75-77) (function)
+	- IGovernorTimelock.timelock() (node_modules/@openzeppelin/contracts/governance/extensions/IGovernorTimelock.sol#16) (function)
+AgentRegistry.constructor(string,string,string,address)._name (contracts/registries/AgentRegistry.sol#41) shadows:
+	- ERC721._name (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#24) (state variable)
+AgentRegistry.constructor(string,string,string,address)._symbol (contracts/registries/AgentRegistry.sol#41) shadows:
+	- ERC721._symbol (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#27) (state variable)
+AgentRegistry.create(address,address,IStructs.Multihash,string,uint256[]).owner (contracts/registries/AgentRegistry.sol#100) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+AgentRegistry.updateHash(address,uint256,IStructs.Multihash).owner (contracts/registries/AgentRegistry.sol#142) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+AgentRegistry.getInfo(uint256).owner (contracts/registries/AgentRegistry.sol#169) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ComponentRegistry.constructor(string,string,string)._name (contracts/registries/ComponentRegistry.sol#39) shadows:
+	- ERC721._name (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#24) (state variable)
+ComponentRegistry.constructor(string,string,string)._symbol (contracts/registries/ComponentRegistry.sol#39) shadows:
+	- ERC721._symbol (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#27) (state variable)
+ComponentRegistry.create(address,address,IStructs.Multihash,string,uint256[]).owner (contracts/registries/ComponentRegistry.sol#96) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ComponentRegistry.updateHash(address,uint256,IStructs.Multihash).owner (contracts/registries/ComponentRegistry.sol#137) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ComponentRegistry.getInfo(uint256).owner (contracts/registries/ComponentRegistry.sol#165) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+RegistriesManager.mintAgent(address,address,IStructs.Multihash,string,uint256[]).owner (contracts/registries/RegistriesManager.sol#28) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+RegistriesManager.mintComponent(address,address,IStructs.Multihash,string,uint256[]).owner (contracts/registries/RegistriesManager.sol#53) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceManager.serviceCreate(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256).owner (contracts/registries/ServiceManager.sol#54) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.constructor(string,string,address)._name (contracts/registries/ServiceRegistry.sol#101) shadows:
+	- ERC721._name (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#24) (state variable)
+ServiceRegistry.constructor(string,string,address)._symbol (contracts/registries/ServiceRegistry.sol#101) shadows:
+	- ERC721._symbol (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#27) (state variable)
+ServiceRegistry._initialChecks(string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[]).name (contracts/registries/ServiceRegistry.sol#154) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+ServiceRegistry._setServiceData(ServiceRegistry.Service,string,string,uint256,uint256[],IStructs.AgentParams[],uint256).name (contracts/registries/ServiceRegistry.sol#196) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+ServiceRegistry.createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256).owner (contracts/registries/ServiceRegistry.sol#246) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256).name (contracts/registries/ServiceRegistry.sol#247) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+ServiceRegistry.update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256).owner (contracts/registries/ServiceRegistry.sol#301) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.update(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256,uint256).name (contracts/registries/ServiceRegistry.sol#302) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+ServiceRegistry.activateRegistration(address,uint256).owner (contracts/registries/ServiceRegistry.sol#350) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.deploy(address,uint256,address,bytes).owner (contracts/registries/ServiceRegistry.sol#463) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.terminate(address,uint256).owner (contracts/registries/ServiceRegistry.sol#544) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.destroy(address,uint256).owner (contracts/registries/ServiceRegistry.sol#641) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.getServiceInfo(uint256).owner (contracts/registries/ServiceRegistry.sol#763) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+ServiceRegistry.getServiceInfo(uint256).name (contracts/registries/ServiceRegistry.sol#763) shadows:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81) (function)
+	- IERC721Metadata.name() (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#16) (function)
+ServiceRegistry.onlyServiceOwner(address,uint256).owner (contracts/registries/ServiceRegistry.sol#115) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+TestServiceRegistry.constructor(string,string,address)._name (contracts/test/TestServiceRegistry.sol#11) shadows:
+	- ERC721._name (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#24) (state variable)
+TestServiceRegistry.constructor(string,string,address)._symbol (contracts/test/TestServiceRegistry.sol#11) shadows:
+	- ERC721._symbol (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#27) (state variable)
+OLA.inflationRemainder().totalSupply (contracts/tokenomics/OLA.sol#74) shadows:
+	- ERC20.totalSupply() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#94-96) (function)
+	- IERC20.totalSupply() (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#27) (function)
+Tokenomics.trackServicesETHRevenue(uint256[],uint256[]).owner (contracts/tokenomics/Tokenomics.sol#334) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+Tokenomics._calculateUnitTokenomics(address,uint256,uint256).owner (contracts/tokenomics/Tokenomics.sol#413) shadows:
+	- Ownable.owner() (node_modules/@openzeppelin/contracts/access/Ownable.sol#35-37) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing[0m
+[92m
+AgentRegistry.changeManager(address) (contracts/registries/AgentRegistry.sol#70-72) should emit an event for: 
+	- _manager = newManager (contracts/registries/AgentRegistry.sol#71) 
+ComponentRegistry.changeManager(address) (contracts/registries/ComponentRegistry.sol#66-68) should emit an event for: 
+	- _manager = newManager (contracts/registries/ComponentRegistry.sol#67) 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-access-control[0m
+[92m
+TestServiceRegistry.executeByGovernor(uint256) (contracts/test/TestServiceRegistry.sol#36-38) should emit an event for: 
+	- _controlValue = newValue (contracts/test/TestServiceRegistry.sol#37) 
+Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool) (contracts/tokenomics/Tokenomics.sol#209-232) should emit an event for: 
+	- ucfcWeight = _ucfcWeight (contracts/tokenomics/Tokenomics.sol#221) 
+	- ucfaWeight = _ucfaWeight (contracts/tokenomics/Tokenomics.sol#222) 
+	- componentWeight = _componentWeight (contracts/tokenomics/Tokenomics.sol#223) 
+	- agentWeight = _agentWeight (contracts/tokenomics/Tokenomics.sol#224) 
+	- devsPerCapital = _devsPerCapital (contracts/tokenomics/Tokenomics.sol#225) 
+	- epsilonRate = _epsilonRate (contracts/tokenomics/Tokenomics.sol#226) 
+	- epochLen = _epochLen (contracts/tokenomics/Tokenomics.sol#229) 
+	- blockTimeETH = _blockTimeETH (contracts/tokenomics/Tokenomics.sol#230) 
+Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256) (contracts/tokenomics/Tokenomics.sol#240-263) should emit an event for: 
+	- stakerFraction = _stakerFraction (contracts/tokenomics/Tokenomics.sol#257) 
+	- componentFraction = _componentFraction (contracts/tokenomics/Tokenomics.sol#258) 
+	- agentFraction = _agentFraction (contracts/tokenomics/Tokenomics.sol#259) 
+	- topUpOwnerFraction = _topUpOwnerFraction (contracts/tokenomics/Tokenomics.sol#261) 
+	- topUpStakerFraction = _topUpStakerFraction (contracts/tokenomics/Tokenomics.sol#262) 
+Tokenomics.allowedNewBond(uint256) (contracts/tokenomics/Tokenomics.sol#309-315) should emit an event for: 
+	- effectiveBond -= amount (contracts/tokenomics/Tokenomics.sol#311) 
+Tokenomics.usedBond(uint256) (contracts/tokenomics/Tokenomics.sol#318-320) should emit an event for: 
+	- bondPerEpoch += payout (contracts/tokenomics/Tokenomics.sol#319) 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-arithmetic[0m
+[92m
+UniswapV2Factory.constructor(address)._feeToSetter (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#15) lacks a zero-check on :
+		- feeToSetter = _feeToSetter (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#16)
+UniswapV2Factory.setFeeTo(address)._feeTo (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#40) lacks a zero-check on :
+		- feeTo = _feeTo (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#42)
+UniswapV2Factory.setFeeToSetter(address)._feeToSetter (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#45) lacks a zero-check on :
+		- feeToSetter = _feeToSetter (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#47)
+UniswapV2Pair.initialize(address,address)._token0 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#66) lacks a zero-check on :
+		- token0 = _token0 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#68)
+UniswapV2Pair.initialize(address,address)._token1 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#66) lacks a zero-check on :
+		- token1 = _token1 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#69)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation[0m
+[92m
+UniswapV2Router02.constructor(address,address)._factory (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#23) lacks a zero-check on :
+		- factory = _factory (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#24)
+UniswapV2Router02.constructor(address,address)._WETH (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#23) lacks a zero-check on :
+		- WETH = _WETH (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#25)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation[0m
+[92m
+GnosisSafeMultisig.constructor(address,address)._gnosisSafeL2 (contracts/multisigs/GnosisSafeMultisig.sol#17) lacks a zero-check on :
+		- gnosisSafeL2 = _gnosisSafeL2 (contracts/multisigs/GnosisSafeMultisig.sol#18)
+GnosisSafeMultisig.constructor(address,address)._gnosisSafeProxyFactory (contracts/multisigs/GnosisSafeMultisig.sol#17) lacks a zero-check on :
+		- gnosisSafeProxyFactory = _gnosisSafeProxyFactory (contracts/multisigs/GnosisSafeMultisig.sol#19)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation[0m
+[92m
+VotingEscrow.constructor(address,string,string)._token (contracts/governance/VotingEscrow.sol#89) lacks a zero-check on :
+		- token = _token (contracts/governance/VotingEscrow.sol#91)
+AgentRegistry.constructor(string,string,string,address)._componentRegistry (contracts/registries/AgentRegistry.sol#41) lacks a zero-check on :
+		- componentRegistry = _componentRegistry (contracts/registries/AgentRegistry.sol#44)
+AgentRegistry.changeManager(address).newManager (contracts/registries/AgentRegistry.sol#70) lacks a zero-check on :
+		- _manager = newManager (contracts/registries/AgentRegistry.sol#71)
+ComponentRegistry.changeManager(address).newManager (contracts/registries/ComponentRegistry.sol#66) lacks a zero-check on :
+		- _manager = newManager (contracts/registries/ComponentRegistry.sol#67)
+RegistriesManager.constructor(address,address)._componentRegistry (contracts/registries/RegistriesManager.sol#15) lacks a zero-check on :
+		- componentRegistry = _componentRegistry (contracts/registries/RegistriesManager.sol#16)
+RegistriesManager.constructor(address,address)._agentRegistry (contracts/registries/RegistriesManager.sol#15) lacks a zero-check on :
+		- agentRegistry = _agentRegistry (contracts/registries/RegistriesManager.sol#17)
+ServiceManager.constructor(address,address)._serviceRegistry (contracts/registries/ServiceManager.sol#23) lacks a zero-check on :
+		- serviceRegistry = _serviceRegistry (contracts/registries/ServiceManager.sol#24)
+ServiceManager.constructor(address,address)._treasury (contracts/registries/ServiceManager.sol#23) lacks a zero-check on :
+		- treasury = _treasury (contracts/registries/ServiceManager.sol#25)
+ServiceManager.changeTreasury(address)._treasury (contracts/registries/ServiceManager.sol#40) lacks a zero-check on :
+		- treasury = _treasury (contracts/registries/ServiceManager.sol#41)
+ServiceRegistry.changeManager(address).newManager (contracts/registries/ServiceRegistry.sol#142) lacks a zero-check on :
+		- _manager = newManager (contracts/registries/ServiceRegistry.sol#143)
+ServiceRegistry.unbond(address,uint256).operator (contracts/registries/ServiceRegistry.sol#583) lacks a zero-check on :
+		- (result) = operator.call{value: refund}() (contracts/registries/ServiceRegistry.sol#625)
+Depository.constructor(address,address,address)._ola (contracts/tokenomics/Depository.sol#62) lacks a zero-check on :
+		- ola = _ola (contracts/tokenomics/Depository.sol#63)
+Depository.constructor(address,address,address)._treasury (contracts/tokenomics/Depository.sol#62) lacks a zero-check on :
+		- treasury = _treasury (contracts/tokenomics/Depository.sol#64)
+Depository.constructor(address,address,address)._tokenomics (contracts/tokenomics/Depository.sol#62) lacks a zero-check on :
+		- tokenomics = _tokenomics (contracts/tokenomics/Depository.sol#65)
+Dispenser.constructor(address,address)._ola (contracts/tokenomics/Dispenser.sol#30) lacks a zero-check on :
+		- ola = _ola (contracts/tokenomics/Dispenser.sol#31)
+Dispenser.constructor(address,address)._tokenomics (contracts/tokenomics/Dispenser.sol#30) lacks a zero-check on :
+		- tokenomics = _tokenomics (contracts/tokenomics/Dispenser.sol#32)
+Dispenser.changeTokenomics(address)._tokenomics (contracts/tokenomics/Dispenser.sol#37) lacks a zero-check on :
+		- tokenomics = _tokenomics (contracts/tokenomics/Dispenser.sol#38)
+OLA.constructor(uint256,address)._minter (contracts/tokenomics/OLA.sol#28) lacks a zero-check on :
+		- minter = _minter (contracts/tokenomics/OLA.sol#29)
+OLA.changeMinter(address).newMinter (contracts/tokenomics/OLA.sol#45) lacks a zero-check on :
+		- minter = newMinter (contracts/tokenomics/OLA.sol#46)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._ola (contracts/tokenomics/Tokenomics.sol#117) lacks a zero-check on :
+		- ola = _ola (contracts/tokenomics/Tokenomics.sol#120)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._treasury (contracts/tokenomics/Tokenomics.sol#117) lacks a zero-check on :
+		- treasury = _treasury (contracts/tokenomics/Tokenomics.sol#121)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._depository (contracts/tokenomics/Tokenomics.sol#117) lacks a zero-check on :
+		- depository = _depository (contracts/tokenomics/Tokenomics.sol#122)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._dispenser (contracts/tokenomics/Tokenomics.sol#117) lacks a zero-check on :
+		- dispenser = _dispenser (contracts/tokenomics/Tokenomics.sol#123)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._ve (contracts/tokenomics/Tokenomics.sol#117) lacks a zero-check on :
+		- ve = _ve (contracts/tokenomics/Tokenomics.sol#124)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._componentRegistry (contracts/tokenomics/Tokenomics.sol#118) lacks a zero-check on :
+		- componentRegistry = _componentRegistry (contracts/tokenomics/Tokenomics.sol#126)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._agentRegistry (contracts/tokenomics/Tokenomics.sol#118) lacks a zero-check on :
+		- agentRegistry = _agentRegistry (contracts/tokenomics/Tokenomics.sol#127)
+Tokenomics.constructor(address,address,address,address,address,uint256,address,address,address)._serviceRegistry (contracts/tokenomics/Tokenomics.sol#118) lacks a zero-check on :
+		- serviceRegistry = _serviceRegistry (contracts/tokenomics/Tokenomics.sol#128)
+Treasury.constructor(address,address,address,address)._depository (contracts/tokenomics/Treasury.sol#68) lacks a zero-check on :
+		- depository = _depository (contracts/tokenomics/Treasury.sol#74)
+Treasury.constructor(address,address,address,address)._dispenser (contracts/tokenomics/Treasury.sol#68) lacks a zero-check on :
+		- dispenser = _dispenser (contracts/tokenomics/Treasury.sol#75)
+Treasury.constructor(address,address,address,address)._tokenomics (contracts/tokenomics/Treasury.sol#68) lacks a zero-check on :
+		- tokenomics = _tokenomics (contracts/tokenomics/Treasury.sol#76)
+Treasury.withdraw(address,uint256,address,bool).to (contracts/tokenomics/Treasury.sol#165) lacks a zero-check on :
+		- (success) = to.call{value: tokenAmount}() (contracts/tokenomics/Treasury.sol#178)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation[0m
+[92m
+GnosisSafe.checkNSignatures(bytes32,bytes,bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#240-304) has external calls inside a loop: require(bool,string)(ISignatureValidator(currentOwner).isValidSignature(data,contractSignature) == EIP1271_MAGIC_VALUE,GS024) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#285)
+TimelockController._call(bytes32,uint256,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#349-360) has external calls inside a loop: (success) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#356)
+AgentRegistry.create(address,address,IStructs.Multihash,string,uint256[]) (contracts/registries/AgentRegistry.sol#100-135) has external calls inside a loop: dependencies[iDep] <= lastId || ! IRegistry(componentRegistry).exists(dependencies[iDep]) (contracts/registries/AgentRegistry.sol#122)
+Tokenomics.trackServicesETHRevenue(uint256[],uint256[]) (contracts/tokenomics/Tokenomics.sol#323-350) has external calls inside a loop: ! IService(serviceRegistry).exists(serviceIds[i]) (contracts/tokenomics/Tokenomics.sol#330)
+Tokenomics.trackServicesETHRevenue(uint256[],uint256[]) (contracts/tokenomics/Tokenomics.sol#323-350) has external calls inside a loop: owner = IERC721Enumerable(serviceRegistry).ownerOf(serviceIds[i]) (contracts/tokenomics/Tokenomics.sol#334)
+Tokenomics.calculateStakingRewards(address,uint256) (contracts/tokenomics/Tokenomics.sol#674-702) has external calls inside a loop: balance = IVotingEscrow(ve).balanceOfAt(account,iBlock) (contracts/tokenomics/Tokenomics.sol#688)
+Tokenomics.calculateStakingRewards(address,uint256) (contracts/tokenomics/Tokenomics.sol#674-702) has external calls inside a loop: supply = IVotingEscrow(ve).totalSupplyAt(iBlock) (contracts/tokenomics/Tokenomics.sol#693)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop[0m
+[92m
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).retval (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#395)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#388-409) potentially used before declaration: retval == IERC721Receiver.onERC721Received.selector (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#396)
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).reason (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#397)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#388-409) potentially used before declaration: reason.length == 0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#398)
+Variable 'ERC721._checkOnERC721Received(address,address,uint256,bytes).reason (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#397)' in ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#388-409) potentially used before declaration: revert(uint256,uint256)(32 + reason,mload(uint256)(reason)) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#402)
+Variable 'ECDSA.tryRecover(bytes32,bytes).r (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#62)' in ECDSA.tryRecover(bytes32,bytes) (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#57-86) potentially used before declaration: r = mload(uint256)(signature + 0x20) (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#79)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#pre-declaration-usage-of-local-variables[0m
+[92m
+Reentrancy in UniswapV2Pair.burn(address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#134-156):
+	External calls:
+	- _safeTransfer(_token0,to,amount0) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#148)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#149)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	State variables written after the call(s):
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+		- price0CumulativeLast += uint256(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#79)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+		- price1CumulativeLast += uint256(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#80)
+Reentrancy in UniswapV2Factory.createPair(address,address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#23-38):
+	External calls:
+	- IUniswapV2Pair(pair).initialize(token0,token1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#33)
+	State variables written after the call(s):
+	- allPairs.push(pair) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#36)
+Reentrancy in UniswapV2Pair.swap(uint256,uint256,address,bytes) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#159-187):
+	External calls:
+	- _safeTransfer(_token0,to,amount0Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#170)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#171)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- IUniswapV2Callee(to).uniswapV2Call(msg.sender,amount0Out,amount1Out,data) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#172)
+	State variables written after the call(s):
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+		- price0CumulativeLast += uint256(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#79)
+	- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+		- price1CumulativeLast += uint256(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#80)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2[0m
+[92m
+Reentrancy in Treasury.allocateRewards() (contracts/tokenomics/Treasury.sol#273-285):
+	External calls:
+	- ITokenomics(tokenomics).checkpoint() (contracts/tokenomics/Treasury.sol#275)
+	State variables written after the call(s):
+	- _rebalanceETH(point.treasuryRewards) (contracts/tokenomics/Treasury.sol#279)
+		- ETHFromServices -= amount (contracts/tokenomics/Treasury.sol#246)
+	- _rebalanceETH(point.treasuryRewards) (contracts/tokenomics/Treasury.sol#279)
+		- ETHOwned += amount (contracts/tokenomics/Treasury.sol#247)
+Reentrancy in Depository.create(address,uint256,uint256) (contracts/tokenomics/Depository.sol#210-227):
+	External calls:
+	- ! ITreasury(treasury).isEnabled(token) || ! ITreasury(treasury).checkPair(token) (contracts/tokenomics/Depository.sol#212)
+	- ! ITokenomics(tokenomics).allowedNewBond(supply) (contracts/tokenomics/Depository.sol#217)
+	State variables written after the call(s):
+	- mapTokenProducts[token].push(product) (contracts/tokenomics/Depository.sol#224)
+Reentrancy in ServiceRegistry.deploy(address,uint256,address,bytes) (contracts/registries/ServiceRegistry.sol#462-494):
+	External calls:
+	- multisig = IMultisig(multisigImplementation).create(agentInstances,service.threshold,data) (contracts/registries/ServiceRegistry.sol#483)
+	State variables written after the call(s):
+	- _updateServiceComponentAgentConnection(serviceId) (contracts/registries/ServiceRegistry.sol#488)
+		- _mapServiceIdSetAgents[serviceId] = service.agentIds (contracts/registries/ServiceRegistry.sol#677)
+	- _updateServiceComponentAgentConnection(serviceId) (contracts/registries/ServiceRegistry.sol#488)
+		- _mapServiceIdSetComponents[serviceId] = componentIds (contracts/registries/ServiceRegistry.sol#738)
+Reentrancy in Depository.deposit(address,uint256,uint256,address) (contracts/tokenomics/Depository.sol#90-138):
+	External calls:
+	- payout = ITokenomics(tokenomics).calculatePayoutFromLP(token,tokenAmount) (contracts/tokenomics/Depository.sol#106)
+	State variables written after the call(s):
+	- mapUserBonds[user].push(Bond(payout,uint256(block.timestamp),expiry,productId,false)) (contracts/tokenomics/Depository.sol#122)
+Reentrancy in Treasury.depositETHFromServices(uint256[],uint256[]) (contracts/tokenomics/Treasury.sol#132-158):
+	External calls:
+	- (revenueETH,donationETH) = ITokenomics(tokenomics).trackServicesETHRevenue(serviceIds,amounts) (contracts/tokenomics/Treasury.sol#153)
+	State variables written after the call(s):
+	- ETHFromServices += revenueETH (contracts/tokenomics/Treasury.sol#154)
+	- ETHOwned += donationETH (contracts/tokenomics/Treasury.sol#155)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2[0m
+[92m
+Reentrancy in UniswapV2Pair.burn(address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#134-156):
+	External calls:
+	- _safeTransfer(_token0,to,amount0) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#148)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#149)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	Event emitted after the call(s):
+	- Burn(msg.sender,amount0,amount1,to) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#155)
+	- Sync(reserve0,reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#85)
+		- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#153)
+Reentrancy in UniswapV2Factory.createPair(address,address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#23-38):
+	External calls:
+	- IUniswapV2Pair(pair).initialize(token0,token1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#33)
+	Event emitted after the call(s):
+	- PairCreated(token0,token1,pair,allPairs.length) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#37)
+Reentrancy in UniswapV2Pair.swap(uint256,uint256,address,bytes) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#159-187):
+	External calls:
+	- _safeTransfer(_token0,to,amount0Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#170)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- _safeTransfer(_token1,to,amount1Out) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#171)
+		- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+	- IUniswapV2Callee(to).uniswapV2Call(msg.sender,amount0Out,amount1Out,data) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#172)
+	Event emitted after the call(s):
+	- Swap(msg.sender,amount0In,amount1In,amount0Out,amount1Out,to) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#186)
+	- Sync(reserve0,reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#85)
+		- _update(balance0,balance1,_reserve0,_reserve1) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#185)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3[0m
+[92m
+Reentrancy in TimelockController._call(bytes32,uint256,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#349-360):
+	External calls:
+	- (success) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#356)
+	Event emitted after the call(s):
+	- CallExecuted(id,index,target,value,data) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#359)
+Reentrancy in VotingEscrow._depositFor(address,uint256,uint256,LockedBalance,VotingEscrow.DepositType) (contracts/governance/VotingEscrow.sol#270-302):
+	External calls:
+	- IERC20(token).safeTransferFrom(from,address(this),amount) (contracts/governance/VotingEscrow.sol#297)
+	Event emitted after the call(s):
+	- Deposit(account,amount,lockedBalance.end,depositType,block.timestamp) (contracts/governance/VotingEscrow.sol#300)
+	- Supply(supplyBefore,supplyBefore + amount) (contracts/governance/VotingEscrow.sol#301)
+Reentrancy in Treasury._sendFundsToDispenser(uint256,uint256) (contracts/tokenomics/Treasury.sol#254-270):
+	External calls:
+	- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+	Event emitted after the call(s):
+	- TransferToDispenserETH(amountETH) (contracts/tokenomics/Treasury.sol#259)
+Reentrancy in Treasury._sendFundsToDispenser(uint256,uint256) (contracts/tokenomics/Treasury.sol#254-270):
+	External calls:
+	- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+	- ITokenomics(tokenomics).isAllowedMint(amountOLA) (contracts/tokenomics/Treasury.sol#265)
+	- IOLA(ola).mint(dispenser,amountOLA) (contracts/tokenomics/Treasury.sol#266)
+	External calls sending eth:
+	- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+	Event emitted after the call(s):
+	- TransferToDispenserOLA(amountOLA) (contracts/tokenomics/Treasury.sol#268)
+Reentrancy in Treasury.allocateRewards() (contracts/tokenomics/Treasury.sol#273-285):
+	External calls:
+	- ITokenomics(tokenomics).checkpoint() (contracts/tokenomics/Treasury.sol#275)
+	- _sendFundsToDispenser(rewards,topUps) (contracts/tokenomics/Treasury.sol#284)
+		- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+		- ITokenomics(tokenomics).isAllowedMint(amountOLA) (contracts/tokenomics/Treasury.sol#265)
+		- IOLA(ola).mint(dispenser,amountOLA) (contracts/tokenomics/Treasury.sol#266)
+	External calls sending eth:
+	- _sendFundsToDispenser(rewards,topUps) (contracts/tokenomics/Treasury.sol#284)
+		- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+	Event emitted after the call(s):
+	- TransferToDispenserETH(amountETH) (contracts/tokenomics/Treasury.sol#259)
+		- _sendFundsToDispenser(rewards,topUps) (contracts/tokenomics/Treasury.sol#284)
+	- TransferToDispenserOLA(amountOLA) (contracts/tokenomics/Treasury.sol#268)
+		- _sendFundsToDispenser(rewards,topUps) (contracts/tokenomics/Treasury.sol#284)
+Reentrancy in Depository.create(address,uint256,uint256) (contracts/tokenomics/Depository.sol#210-227):
+	External calls:
+	- ! ITreasury(treasury).isEnabled(token) || ! ITreasury(treasury).checkPair(token) (contracts/tokenomics/Depository.sol#212)
+	- ! ITokenomics(tokenomics).allowedNewBond(supply) (contracts/tokenomics/Depository.sol#217)
+	Event emitted after the call(s):
+	- CreateProduct(token,productId,supply) (contracts/tokenomics/Depository.sol#226)
+Reentrancy in ServiceRegistry.createService(address,string,string,IStructs.Multihash,uint256[],IStructs.AgentParams[],uint256) (contracts/registries/ServiceRegistry.sol#245-288):
+	External calls:
+	- _safeMint(owner,serviceId) (contracts/registries/ServiceRegistry.sol#283)
+		- IERC721Receiver(to).onERC721Received(_msgSender(),from,tokenId,_data) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#395-405)
+	Event emitted after the call(s):
+	- CreateService(owner,name,threshold,serviceId) (contracts/registries/ServiceRegistry.sol#287)
+Reentrancy in ServiceRegistry.deploy(address,uint256,address,bytes) (contracts/registries/ServiceRegistry.sol#462-494):
+	External calls:
+	- multisig = IMultisig(multisigImplementation).create(agentInstances,service.threshold,data) (contracts/registries/ServiceRegistry.sol#483)
+	Event emitted after the call(s):
+	- CreateMultisigWithAgents(serviceId,multisig,agentInstances,service.threshold) (contracts/registries/ServiceRegistry.sol#485)
+	- DeployService(owner,serviceId) (contracts/registries/ServiceRegistry.sol#493)
+Reentrancy in Depository.deposit(address,uint256,uint256,address) (contracts/tokenomics/Depository.sol#90-138):
+	External calls:
+	- payout = ITokenomics(tokenomics).calculatePayoutFromLP(token,tokenAmount) (contracts/tokenomics/Depository.sol#106)
+	Event emitted after the call(s):
+	- CreateBond(productId,payout,tokenAmount) (contracts/tokenomics/Depository.sol#123)
+Reentrancy in Treasury.depositETHFromServices(uint256[],uint256[]) (contracts/tokenomics/Treasury.sol#132-158):
+	External calls:
+	- (revenueETH,donationETH) = ITokenomics(tokenomics).trackServicesETHRevenue(serviceIds,amounts) (contracts/tokenomics/Treasury.sol#153)
+	Event emitted after the call(s):
+	- DepositETHFromServices(amounts,serviceIds,revenueETH,donationETH) (contracts/tokenomics/Treasury.sol#157)
+Reentrancy in Treasury.depositTokenForOLA(uint256,address,uint256) (contracts/tokenomics/Treasury.sol#110-129):
+	External calls:
+	- ITokenomics(tokenomics).isAllowedMint(olaMintAmount) (contracts/tokenomics/Treasury.sol#119)
+	- IOLA(ola).mint(msg.sender,olaMintAmount) (contracts/tokenomics/Treasury.sol#120)
+	- IERC20(token).safeTransferFrom(msg.sender,address(this),tokenAmount) (contracts/tokenomics/Treasury.sol#126)
+	Event emitted after the call(s):
+	- DepositLPFromDepository(token,tokenAmount,olaMintAmount) (contracts/tokenomics/Treasury.sol#128)
+Reentrancy in GnosisSafe.execTransaction(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#111-194):
+	External calls:
+	- Guard(guard).checkTransaction(to,value,data,operation,safeTxGas,baseGas,gasPrice,gasToken,refundReceiver,signatures,msg.sender) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#150-165)
+	External calls sending eth:
+	- payment = handlePayment(gasUsed,baseGas,gasPrice,gasToken,refundReceiver) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#184)
+		- require(bool,string)(receiver.send(payment),GS011) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#208)
+	Event emitted after the call(s):
+	- ExecutionFailure(txHash,payment) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#187)
+	- ExecutionSuccess(txHash,payment) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#186)
+Reentrancy in GovernorTimelockControl.queue(address[],uint256[],bytes[],bytes32) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#90-107):
+	External calls:
+	- _timelock.scheduleBatch(targets,values,calldatas,0,descriptionHash,delay) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#102)
+	Event emitted after the call(s):
+	- ProposalQueued(proposalId,block.timestamp + delay) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#104)
+Reentrancy in ServiceManager.serviceDeploy(uint256,address,bytes) (contracts/registries/ServiceManager.sol#114-122):
+	External calls:
+	- multisig = IService(serviceRegistry).deploy(msg.sender,serviceId,multisigImplementation,data) (contracts/registries/ServiceManager.sol#120)
+	Event emitted after the call(s):
+	- MultisigCreate(multisig) (contracts/registries/ServiceManager.sol#121)
+Reentrancy in ServiceManager.serviceReward(uint256) (contracts/registries/ServiceManager.sol#149-157):
+	External calls:
+	- ITreasury(treasury).depositETHFromServices{value: msg.value}(serviceIds,amounts) (contracts/registries/ServiceManager.sol#155)
+	Event emitted after the call(s):
+	- RewardService(serviceId,msg.value) (contracts/registries/ServiceManager.sol#156)
+Reentrancy in ServiceRegistry.terminate(address,uint256) (contracts/registries/ServiceRegistry.sol#544-576):
+	External calls:
+	- (result) = owner.call{value: refund}() (contracts/registries/ServiceRegistry.sol#567)
+	Event emitted after the call(s):
+	- Refund(owner,refund) (contracts/registries/ServiceRegistry.sol#573)
+	- TerminateService(owner,serviceId) (contracts/registries/ServiceRegistry.sol#574)
+Reentrancy in ServiceRegistry.unbond(address,uint256) (contracts/registries/ServiceRegistry.sol#583-635):
+	External calls:
+	- (result) = operator.call{value: refund}() (contracts/registries/ServiceRegistry.sol#625)
+	Event emitted after the call(s):
+	- OperatorUnbond(operator,serviceId) (contracts/registries/ServiceRegistry.sol#633)
+	- Refund(operator,refund) (contracts/registries/ServiceRegistry.sol#632)
+Reentrancy in Treasury.withdraw(address,uint256,address,bool) (contracts/tokenomics/Treasury.sol#165-187):
+	External calls:
+	- (success) = to.call{value: tokenAmount}() (contracts/tokenomics/Treasury.sol#178)
+	- IERC20(token).safeTransfer(to,tokenAmount) (contracts/tokenomics/Treasury.sol#183)
+	External calls sending eth:
+	- (success) = to.call{value: tokenAmount}() (contracts/tokenomics/Treasury.sol#178)
+	Event emitted after the call(s):
+	- Withdrawal(token,tokenAmount) (contracts/tokenomics/Treasury.sol#186)
+Reentrancy in Dispenser.withdrawOwnerRewards() (contracts/tokenomics/Dispenser.sol#46-60):
+	External calls:
+	- (reward,topUp) = ITokenomics(tokenomics).accountOwnerRewards(msg.sender) (contracts/tokenomics/Dispenser.sol#50)
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#52)
+	External calls sending eth:
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#52)
+	Event emitted after the call(s):
+	- TransferETHFailed(msg.sender,reward) (contracts/tokenomics/Dispenser.sol#54)
+Reentrancy in Dispenser.withdrawStakingRewards() (contracts/tokenomics/Dispenser.sol#65-86):
+	External calls:
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#78)
+	Event emitted after the call(s):
+	- TransferETHFailed(msg.sender,reward) (contracts/tokenomics/Dispenser.sol#80)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3[0m
+[92m
+UniswapV2ERC20.permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#81-93) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(deadline >= block.timestamp,UniswapV2: EXPIRED) (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#82)
+UniswapV2Pair._update(uint256,uint256,uint112,uint112) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#73-86) uses timestamp for comparisons
+	Dangerous comparisons:
+	- timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#77)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp[0m
+[92m
+TimelockController.isOperation(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#133-135) uses timestamp for comparisons
+	Dangerous comparisons:
+	- getTimestamp(id) > 0 (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#134)
+TimelockController.isOperationPending(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#140-142) uses timestamp for comparisons
+	Dangerous comparisons:
+	- getTimestamp(id) > _DONE_TIMESTAMP (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#141)
+TimelockController.isOperationReady(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#147-150) uses timestamp for comparisons
+	Dangerous comparisons:
+	- timestamp > _DONE_TIMESTAMP && timestamp <= block.timestamp (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#149)
+TimelockController.isOperationDone(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#155-157) uses timestamp for comparisons
+	Dangerous comparisons:
+	- getTimestamp(id) == _DONE_TIMESTAMP (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#156)
+TimelockController._beforeCall(bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#331-334) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(predecessor == bytes32(0) || isOperationDone(predecessor),TimelockController: missing dependency) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#333)
+ERC20Permit.permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#49-68) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(block.timestamp <= deadline,ERC20Permit: expired deadline) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#58)
+Timers.isPending(Timers.Timestamp) (node_modules/@openzeppelin/contracts/utils/Timers.sol#34-36) uses timestamp for comparisons
+	Dangerous comparisons:
+	- timer._deadline > block.timestamp (node_modules/@openzeppelin/contracts/utils/Timers.sol#35)
+Timers.isExpired(Timers.Timestamp) (node_modules/@openzeppelin/contracts/utils/Timers.sol#38-40) uses timestamp for comparisons
+	Dangerous comparisons:
+	- isStarted(timer) && timer._deadline <= block.timestamp (node_modules/@openzeppelin/contracts/utils/Timers.sol#39)
+VotingEscrow._checkpoint(address,LockedBalance,LockedBalance) (contracts/governance/VotingEscrow.sol#128-262) uses timestamp for comparisons
+	Dangerous comparisons:
+	- oldLocked.end > block.timestamp && oldLocked.amount > 0 (contracts/governance/VotingEscrow.sol#143)
+	- newLocked.end > block.timestamp && newLocked.amount > 0 (contracts/governance/VotingEscrow.sol#147)
+	- newLocked.end != 0 (contracts/governance/VotingEscrow.sol#156)
+	- newLocked.end == oldLocked.end (contracts/governance/VotingEscrow.sol#157)
+	- block.timestamp > lastPoint.ts (contracts/governance/VotingEscrow.sol#176)
+	- tStep > block.timestamp (contracts/governance/VotingEscrow.sol#188)
+	- lastPoint.bias < 0 (contracts/governance/VotingEscrow.sol#195)
+	- lastPoint.slope < 0 (contracts/governance/VotingEscrow.sol#199)
+	- tStep == block.timestamp (contracts/governance/VotingEscrow.sol#208)
+	- lastPoint.slope < 0 (contracts/governance/VotingEscrow.sol#225)
+	- lastPoint.bias < 0 (contracts/governance/VotingEscrow.sol#228)
+	- oldLocked.end > block.timestamp (contracts/governance/VotingEscrow.sol#240)
+	- newLocked.end == oldLocked.end (contracts/governance/VotingEscrow.sol#243)
+	- newLocked.end > block.timestamp (contracts/governance/VotingEscrow.sol#249)
+	- newLocked.end > oldLocked.end (contracts/governance/VotingEscrow.sol#250)
+VotingEscrow._depositFor(address,uint256,uint256,LockedBalance,VotingEscrow.DepositType) (contracts/governance/VotingEscrow.sol#270-302) uses timestamp for comparisons
+	Dangerous comparisons:
+	- unlockTime != 0 (contracts/governance/VotingEscrow.sol#284)
+VotingEscrow.depositFor(address,uint256) (contracts/governance/VotingEscrow.sol#314-329) uses timestamp for comparisons
+	Dangerous comparisons:
+	- lockedBalance.end <= block.timestamp (contracts/governance/VotingEscrow.sol#325)
+VotingEscrow.createLock(uint256,uint256) (contracts/governance/VotingEscrow.sol#334-356) uses timestamp for comparisons
+	Dangerous comparisons:
+	- unlockTime <= block.timestamp (contracts/governance/VotingEscrow.sol#347)
+	- unlockTime > block.timestamp + MAXTIME (contracts/governance/VotingEscrow.sol#351)
+VotingEscrow.increaseAmount(uint256) (contracts/governance/VotingEscrow.sol#360-376) uses timestamp for comparisons
+	Dangerous comparisons:
+	- lockedBalance.end <= block.timestamp (contracts/governance/VotingEscrow.sol#371)
+VotingEscrow.increaseUnlockTime(uint256) (contracts/governance/VotingEscrow.sol#380-401) uses timestamp for comparisons
+	Dangerous comparisons:
+	- lockedBalance.end <= block.timestamp (contracts/governance/VotingEscrow.sol#388)
+	- unlockTime <= lockedBalance.end (contracts/governance/VotingEscrow.sol#392)
+	- unlockTime > block.timestamp + MAXTIME (contracts/governance/VotingEscrow.sol#396)
+VotingEscrow.withdraw() (contracts/governance/VotingEscrow.sol#404-424) uses timestamp for comparisons
+	Dangerous comparisons:
+	- lockedBalance.end > block.timestamp (contracts/governance/VotingEscrow.sol#406)
+VotingEscrow._findPointByBlock(uint256,address) (contracts/governance/VotingEscrow.sol#431-473) uses timestamp for comparisons
+	Dangerous comparisons:
+	- point.blockNumber <= blockNumber (contracts/governance/VotingEscrow.sol#460)
+VotingEscrow._balanceOfLocked(address,uint256) (contracts/governance/VotingEscrow.sol#479-490) uses timestamp for comparisons
+	Dangerous comparisons:
+	- uPoint.bias > 0 (contracts/governance/VotingEscrow.sol#486)
+VotingEscrow._getBlockTime(uint256) (contracts/governance/VotingEscrow.sol#529-552) uses timestamp for comparisons
+	Dangerous comparisons:
+	- dBlock > 0 (contracts/governance/VotingEscrow.sol#549)
+VotingEscrow._supplyLockedAt(IStructs.PointVoting,uint256) (contracts/governance/VotingEscrow.sol#576-597) uses timestamp for comparisons
+	Dangerous comparisons:
+	- tStep > ts (contracts/governance/VotingEscrow.sol#581)
+	- tStep == ts (contracts/governance/VotingEscrow.sol#587)
+	- lastPoint.bias > 0 (contracts/governance/VotingEscrow.sol#594)
+Depository.deposit(address,uint256,uint256,address) (contracts/tokenomics/Depository.sol#90-138) uses timestamp for comparisons
+	Dangerous comparisons:
+	- currentTime > product.expiry (contracts/tokenomics/Depository.sol#101)
+Depository.getBondStatus(address,uint256) (contracts/tokenomics/Depository.sol#199-203) uses timestamp for comparisons
+	Dangerous comparisons:
+	- matured = ! bond.redeemed && bond.maturity <= block.timestamp && bond.payout != 0 (contracts/tokenomics/Depository.sol#202)
+Depository.isActive(address,uint256) (contracts/tokenomics/Depository.sol#241-244) uses timestamp for comparisons
+	Dangerous comparisons:
+	- status = (mapTokenProducts[token][productId].supply > 0 && mapTokenProducts[token][productId].expiry > block.timestamp) (contracts/tokenomics/Depository.sol#242-243)
+OLA.inflationRemainder() (contracts/tokenomics/OLA.sol#73-91) uses timestamp for comparisons
+	Dangerous comparisons:
+	- numYears < 10 (contracts/tokenomics/OLA.sol#77)
+	- i < numYears (contracts/tokenomics/OLA.sol#85)
+Tokenomics._getInflationRemainderForYear() (contracts/tokenomics/Tokenomics.sol#290-305) uses timestamp for comparisons
+	Dangerous comparisons:
+	- numYears < 10 (contracts/tokenomics/Tokenomics.sol#298)
+Tokenomics._checkpoint() (contracts/tokenomics/Tokenomics.sol#498-585) uses timestamp for comparisons
+	Dangerous comparisons:
+	- fKD > epsilonRate (contracts/tokenomics/Tokenomics.sol#571)
+Tokenomics.calculatePayoutFromLP(address,uint256) (contracts/tokenomics/Tokenomics.sol#591-600) uses timestamp for comparisons
+	Dangerous comparisons:
+	- pe.df > 0 (contracts/tokenomics/Tokenomics.sol#594)
+Tokenomics._calculatePayoutFromLP(address,uint256,uint256) (contracts/tokenomics/Tokenomics.sol#607-644) uses timestamp for comparisons
+	Dangerous comparisons:
+	- resAmount < amountOLA (contracts/tokenomics/Tokenomics.sol#641)
+Tokenomics.calculateStakingRewards(address,uint256) (contracts/tokenomics/Tokenomics.sol#674-702) uses timestamp for comparisons
+	Dangerous comparisons:
+	- balance > 0 (contracts/tokenomics/Tokenomics.sol#691)
+	- supply > 0 (contracts/tokenomics/Tokenomics.sol#696)
+Tokenomics.getDF(uint256) (contracts/tokenomics/Tokenomics.sol#719-727) uses timestamp for comparisons
+	Dangerous comparisons:
+	- pe.df > 0 (contracts/tokenomics/Tokenomics.sol#722)
+Tokenomics._add(FixedPoint.uq112x112,FixedPoint.uq112x112) (contracts/tokenomics/Tokenomics.sol#730-736) uses timestamp for comparisons
+	Dangerous comparisons:
+	- x._x > 0 && y._x > 0 (contracts/tokenomics/Tokenomics.sol#734)
+	- assert(bool)(z > x._x && z > y._x) (contracts/tokenomics/Tokenomics.sol#734)
+Tokenomics.getUCF(uint256) (contracts/tokenomics/Tokenomics.sol#741-775) uses timestamp for comparisons
+	Dangerous comparisons:
+	- denominator > 0 (contracts/tokenomics/Tokenomics.sol#751)
+	- denominator == 0 (contracts/tokenomics/Tokenomics.sol#758)
+	- denominator == 0 (contracts/tokenomics/Tokenomics.sol#765)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp[0m
+[92m
+UniswapV2ERC20.constructor() (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#24-38) uses assembly
+	- INLINE ASM (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#26-28)
+UniswapV2Factory.createPair(address,address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#23-38) uses assembly
+	- INLINE ASM (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#30-32)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage[0m
+[92m
+GnosisSafeProxy.fallback() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#26-43) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#28-42)
+GnosisSafeProxyFactory.createProxy(address,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#15-25) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#19-23)
+GnosisSafeProxyFactory.deployProxyWithNonce(address,bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#42-55) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#51-53)
+GnosisSafeProxyFactory.createProxyWithNonce(address,bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#61-75) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#69-73)
+GnosisSafeMultisig._parseData(bytes) (contracts/multisigs/GnosisSafeMultisig.sol#24-51) uses assembly
+	- INLINE ASM (contracts/multisigs/GnosisSafeMultisig.sol#30-49)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage[0m
+[92m
+GnosisSafe.checkNSignatures(bytes32,bytes,bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#240-304) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#273-275)
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#281-284)
+GnosisSafe.getChainId() (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#340-347) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#343-345)
+Executor.execute(address,uint256,bytes,Enum.Operation,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/base/Executor.sol#8-26) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/Executor.sol#17-19)
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/Executor.sol#22-24)
+FallbackManager.internalSetFallbackHandler(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#14-20) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#17-19)
+FallbackManager.fallback() (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#32-52) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#35-51)
+GuardManager.setGuard(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#34-41) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#37-39)
+GuardManager.getGuard() (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#43-49) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#46-48)
+ModuleManager.execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#80-101) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#88-100)
+ModuleManager.getModulesPaginated(address,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#114-132) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#129-131)
+SecuredTokenTransfer.transferToken(address,address,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/common/SecuredTokenTransfer.sol#11-34) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/common/SecuredTokenTransfer.sol#19-33)
+SignatureDecoder.signatureSplit(bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/common/SignatureDecoder.sol#11-35) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/common/SignatureDecoder.sol#24-34)
+StorageAccessible.getStorageAt(uint256,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#13-23) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#17-20)
+StorageAccessible.simulateAndRevert(address,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#36-46) uses assembly
+	- INLINE ASM (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#38-45)
+ERC721._checkOnERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#388-409) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#401-403)
+Address.verifyCallResult(bool,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#201-221) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/utils/Address.sol#213-216)
+ECDSA.tryRecover(bytes32,bytes) (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#57-86) uses assembly
+	- INLINE ASM (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#67-71)
+	- INLINE ASM (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#78-81)
+Treasury.checkPair(address) (contracts/tokenomics/Treasury.sol#225-240) uses assembly
+	- INLINE ASM (contracts/tokenomics/Treasury.sol#228-238)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage[0m
+[92m
+Different versions of Solidity is used:
+	- Version used: ['=0.5.16', '>=0.4.22<0.6', '>=0.5.0']
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#1)
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#1)
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IERC20.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#1)
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/libraries/Math.sol#1)
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/libraries/SafeMath.sol#1)
+	- =0.5.16 (node_modules/@uniswap/v2-core/contracts/libraries/UQ112x112.sol#1)
+	- >=0.4.22<0.6 (node_modules/canonical-weth/contracts/WETH9.sol#16)
+	- >=0.4.22<0.6 (contracts/test/UniswapFactory.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+[92m
+Different versions of Solidity is used:
+	- Version used: ['=0.6.6', '>=0.5.0', '>=0.6.0', '>=0.6.2', '^0.6.6']
+	- >=0.6.0 (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#3)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#1)
+	- =0.6.6 (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IERC20.sol#1)
+	- >=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#1)
+	- >=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IWETH.sol#1)
+	- =0.6.6 (node_modules/@uniswap/v2-periphery/contracts/libraries/SafeMath.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol#1)
+	- ^0.6.6 (contracts/test/UniswapRouter.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+[92m
+Different versions of Solidity is used:
+	- Version used: ['>=0.7.0<0.9.0', '^0.8.14']
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/IProxyCreationCallback.sol#2)
+	- ^0.8.14 (contracts/multisigs/GnosisSafeMultisig.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+[92m
+Different versions of Solidity is used:
+	- Version used: ['>=0.4.0', '>=0.5.0', '>=0.6.0', '>=0.6.2', '>=0.7.0<0.9.0', '^0.8.0', '^0.8.1', '^0.8.14', '^0.8.4']
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/Executor.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/Enum.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/EtherPaymentFallback.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SecuredTokenTransfer.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SelfAuthorized.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SignatureDecoder.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/Singleton.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/external/GnosisSafeMath.sol#2)
+	- >=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/interfaces/ISignatureValidator.sol#2)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/AccessControl.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/IAccessControl.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/access/Ownable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/Governor.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorSettings.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorVotes.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/IGovernorTimelock.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/governance/utils/IVotes.sol#3)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/security/Pausable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)
+	- ^0.8.1 (node_modules/@openzeppelin/contracts/utils/Address.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Context.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Counters.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Strings.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/Timers.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#4)
+	- ^0.8.0 (node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol#4)
+	- ^0.8.4 (node_modules/@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol#3)
+	- >=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#3)
+	- >=0.5.0 (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#2)
+	- >=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#2)
+	- >=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#2)
+	- >=0.6.0 (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#3)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IERC20.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IERC20.sol#1)
+	- >=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#1)
+	- >=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol#1)
+	- >=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IWETH.sol#1)
+	- ^0.8.14 (contracts/governance/ERC20VotesNonTransferable.sol#4)
+	- ^0.8.14 (contracts/governance/GovernorBravoOLA.sol#2)
+	- ^0.8.14 (contracts/governance/Timelock.sol#2)
+	- ^0.8.14 (contracts/governance/VotingEscrow.sol#2)
+	- ^0.8.14 (contracts/interfaces/IDispenser.sol#2)
+	- ^0.8.14 (contracts/interfaces/IErrors.sol#2)
+	- ^0.8.14 (contracts/interfaces/IMultisig.sol#2)
+	- ^0.8.14 (contracts/interfaces/IOLA.sol#2)
+	- ^0.8.14 (contracts/interfaces/IRegistry.sol#2)
+	- ^0.8.14 (contracts/interfaces/IService.sol#2)
+	- ^0.8.14 (contracts/interfaces/IStructs.sol#2)
+	- ^0.8.14 (contracts/interfaces/ITokenomics.sol#2)
+	- ^0.8.14 (contracts/interfaces/ITreasury.sol#2)
+	- ^0.8.14 (contracts/interfaces/IVotingEscrow.sol#2)
+	- ^0.8.14 (contracts/registries/AgentRegistry.sol#2)
+	- ^0.8.14 (contracts/registries/ComponentRegistry.sol#2)
+	- ^0.8.14 (contracts/registries/RegistriesManager.sol#2)
+	- ^0.8.14 (contracts/registries/ServiceManager.sol#2)
+	- ^0.8.14 (contracts/registries/ServiceRegistry.sol#2)
+	- ^0.8.14 (contracts/test/ERC20Token.sol#2)
+	- ^0.8.14 (contracts/test/TestServiceRegistry.sol#2)
+	- ^0.8.14 (contracts/tokenomics/Depository.sol#2)
+	- ^0.8.14 (contracts/tokenomics/Dispenser.sol#2)
+	- ^0.8.14 (contracts/tokenomics/OLA.sol#2)
+	- ^0.8.14 (contracts/tokenomics/Tokenomics.sol#2)
+	- ^0.8.14 (contracts/tokenomics/Treasury.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+[92m
+ServiceRegistry.slash(address[],uint256[],uint256) (contracts/registries/ServiceRegistry.sol#501-537) has costly operations inside a loop:
+	- slashedFunds += balance (contracts/registries/ServiceRegistry.sol#525)
+ServiceRegistry.slash(address[],uint256[],uint256) (contracts/registries/ServiceRegistry.sol#501-537) has costly operations inside a loop:
+	- slashedFunds += amounts[i] (contracts/registries/ServiceRegistry.sol#528)
+ServiceRegistry.unbond(address,uint256) (contracts/registries/ServiceRegistry.sol#583-635) has costly operations inside a loop:
+	- delete _mapAgentInstanceOperators[agentInstances[i].instance] (contracts/registries/ServiceRegistry.sol#610)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#costly-operations-inside-a-loop[0m
+[92m
+Tokenomics.effectiveBond (contracts/tokenomics/Tokenomics.sol#82) is set pre-construction with a non-constant function or state variable:
+	- maxBond
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#function-initializing-state[0m
+[92m
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IERC20.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#1) allows old versions
+Pragma version>=0.4.22<0.6 (node_modules/canonical-weth/contracts/WETH9.sol#16) is known to contain severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+Pragma version>=0.4.22<0.6 (contracts/test/UniswapFactory.sol#2) is known to contain severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+[92m
+Pragma version>=0.6.0 (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#3) allows old versions
+Pragma version=0.6.6 (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IERC20.sol#1) allows old versions
+Pragma version>=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#1) allows old versions
+Pragma version>=0.6.2 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/interfaces/IWETH.sol#1) allows old versions
+Pragma version=0.6.6 (node_modules/@uniswap/v2-periphery/contracts/libraries/SafeMath.sol#1) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol#1) allows old versions
+Pragma version^0.6.6 (contracts/test/UniswapRouter.sol#2) allows old versions
+solc-0.6.6 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+[92m
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/IProxyCreationCallback.sol#2) is too complex
+Pragma version^0.8.14 (contracts/multisigs/GnosisSafeMultisig.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+solc-0.8.14 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+[92m
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/Executor.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/GuardManager.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/Enum.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/EtherPaymentFallback.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SecuredTokenTransfer.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SelfAuthorized.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/SignatureDecoder.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/Singleton.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/external/GnosisSafeMath.sol#2) is too complex
+Pragma version>=0.7.0<0.9.0 (node_modules/@gnosis.pm/safe-contracts/contracts/interfaces/ISignatureValidator.sol#2) is too complex
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/AccessControl.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/IAccessControl.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/access/Ownable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/Governor.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorSettings.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorVotes.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/extensions/IGovernorTimelock.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/governance/utils/IVotes.sol#3) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/security/Pausable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol#4) allows old versions
+Pragma version^0.8.1 (node_modules/@openzeppelin/contracts/utils/Address.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Context.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Counters.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Strings.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/Timers.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#4) allows old versions
+Pragma version^0.8.0 (node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol#4) allows old versions
+Pragma version>=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#3) allows old versions
+Pragma version>=0.5.0 (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#2) allows old versions
+Pragma version>=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#2) allows old versions
+Pragma version>=0.4.0 (node_modules/@uniswap/lib/contracts/libraries/FullMath.sol#2) allows old versions
+Pragma version^0.8.14 (contracts/governance/ERC20VotesNonTransferable.sol#4) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/governance/GovernorBravoOLA.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/governance/Timelock.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/governance/VotingEscrow.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IDispenser.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IErrors.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IMultisig.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IOLA.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IRegistry.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IService.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IStructs.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/ITokenomics.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/ITreasury.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/interfaces/IVotingEscrow.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/registries/AgentRegistry.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/registries/ComponentRegistry.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/registries/RegistriesManager.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/registries/ServiceManager.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/registries/ServiceRegistry.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/test/ERC20Token.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/test/TestServiceRegistry.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/tokenomics/Depository.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/tokenomics/Dispenser.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/tokenomics/OLA.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/tokenomics/Tokenomics.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Pragma version^0.8.14 (contracts/tokenomics/Treasury.sol#2) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.7
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+[92m
+Low level call in UniswapV2Pair._safeTransfer(address,address,uint256) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#44-47):
+	- (success,data) = token.call(abi.encodeWithSelector(SELECTOR,to,value)) (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#45)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+[92m
+Low level call in TransferHelper.safeApprove(address,address,uint256) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#7-18):
+	- (success,data) = token.call(abi.encodeWithSelector(0x095ea7b3,to,value)) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#13)
+Low level call in TransferHelper.safeTransfer(address,address,uint256) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#20-31):
+	- (success,data) = token.call(abi.encodeWithSelector(0xa9059cbb,to,value)) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#26)
+Low level call in TransferHelper.safeTransferFrom(address,address,address,uint256) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#33-45):
+	- (success,data) = token.call(abi.encodeWithSelector(0x23b872dd,from,to,value)) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#40)
+Low level call in TransferHelper.safeTransferETH(address,uint256) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#47-50):
+	- (success) = to.call{value: value}(new bytes(0)) (node_modules/@uniswap/lib/contracts/libraries/TransferHelper.sol#48)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+[92m
+Low level call in Governor._execute(uint256,address[],uint256[],bytes[],bytes32) (node_modules/@openzeppelin/contracts/governance/Governor.sol#316-328):
+	- (success,returndata) = targets[i].call{value: values[i]}(calldatas[i]) (node_modules/@openzeppelin/contracts/governance/Governor.sol#325)
+Low level call in TimelockController._call(bytes32,uint256,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#349-360):
+	- (success) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#356)
+Low level call in Address.sendValue(address,uint256) (node_modules/@openzeppelin/contracts/utils/Address.sol#60-65):
+	- (success) = recipient.call{value: amount}() (node_modules/@openzeppelin/contracts/utils/Address.sol#63)
+Low level call in Address.functionCallWithValue(address,bytes,uint256,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#128-139):
+	- (success,returndata) = target.call{value: value}(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#137)
+Low level call in Address.functionStaticCall(address,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#157-166):
+	- (success,returndata) = target.staticcall(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#164)
+Low level call in Address.functionDelegateCall(address,bytes,string) (node_modules/@openzeppelin/contracts/utils/Address.sol#184-193):
+	- (success,returndata) = target.delegatecall(data) (node_modules/@openzeppelin/contracts/utils/Address.sol#191)
+Low level call in ServiceRegistry.terminate(address,uint256) (contracts/registries/ServiceRegistry.sol#544-576):
+	- (result) = owner.call{value: refund}() (contracts/registries/ServiceRegistry.sol#567)
+Low level call in ServiceRegistry.unbond(address,uint256) (contracts/registries/ServiceRegistry.sol#583-635):
+	- (result) = operator.call{value: refund}() (contracts/registries/ServiceRegistry.sol#625)
+Low level call in Dispenser.withdrawOwnerRewards() (contracts/tokenomics/Dispenser.sol#46-60):
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#52)
+Low level call in Dispenser.withdrawStakingRewards() (contracts/tokenomics/Dispenser.sol#65-86):
+	- (success,None) = msg.sender.call{value: reward}() (contracts/tokenomics/Dispenser.sol#78)
+Low level call in Treasury.withdraw(address,uint256,address,bool) (contracts/tokenomics/Treasury.sol#165-187):
+	- (success) = to.call{value: tokenAmount}() (contracts/tokenomics/Treasury.sol#178)
+Low level call in Treasury._sendFundsToDispenser(uint256,uint256) (contracts/tokenomics/Treasury.sol#254-270):
+	- (success) = dispenser.call{value: amountETH}() (contracts/tokenomics/Treasury.sol#257)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+[92m
+VotingEscrow (contracts/governance/VotingEscrow.sol#43-639) should inherit from IVotingEscrow (contracts/interfaces/IVotingEscrow.sol#5-16)
+AgentRegistry (contracts/registries/AgentRegistry.sol#12-224) should inherit from IRegistry (contracts/interfaces/IRegistry.sol#8-73)
+ComponentRegistry (contracts/registries/ComponentRegistry.sol#12-220) should inherit from IRegistry (contracts/interfaces/IRegistry.sol#8-73)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-inheritance[0m
+[92m
+Variable UniswapV2ERC20.DOMAIN_SEPARATOR (node_modules/@uniswap/v2-core/contracts/UniswapV2ERC20.sol#16) is not in mixedCase
+Parameter UniswapV2Factory.setFeeTo(address)._feeTo (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#40) is not in mixedCase
+Parameter UniswapV2Factory.setFeeToSetter(address)._feeToSetter (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#45) is not in mixedCase
+Parameter UniswapV2Pair.initialize(address,address)._token0 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#66) is not in mixedCase
+Parameter UniswapV2Pair.initialize(address,address)._token1 (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#66) is not in mixedCase
+Function IUniswapV2ERC20.DOMAIN_SEPARATOR() (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol#18) is not in mixedCase
+Function IUniswapV2ERC20.PERMIT_TYPEHASH() (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol#19) is not in mixedCase
+Function IUniswapV2Pair.DOMAIN_SEPARATOR() (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#18) is not in mixedCase
+Function IUniswapV2Pair.PERMIT_TYPEHASH() (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#19) is not in mixedCase
+Function IUniswapV2Pair.MINIMUM_LIQUIDITY() (node_modules/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol#36) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+[92m
+Variable UniswapV2Router02.WETH (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#16) is not in mixedCase
+Function IUniswapV2Router01.WETH() (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#5) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+[92m
+Parameter GnosisSafeProxyFactory.deployProxyWithNonce(address,bytes,uint256)._singleton (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#43) is not in mixedCase
+Parameter GnosisSafeProxyFactory.createProxyWithNonce(address,bytes,uint256)._singleton (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#62) is not in mixedCase
+Parameter GnosisSafeProxyFactory.createProxyWithCallback(address,bytes,uint256,IProxyCreationCallback)._singleton (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#83) is not in mixedCase
+Parameter GnosisSafeProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)._singleton (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#100) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+[92m
+Parameter GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address)._owners (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#76) is not in mixedCase
+Parameter GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address)._threshold (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#77) is not in mixedCase
+Parameter GnosisSafe.encodeTransactionData(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256)._nonce (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#375) is not in mixedCase
+Parameter GnosisSafe.getTransactionHash(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256)._nonce (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#418) is not in mixedCase
+Parameter OwnerManager.setupOwners(address[],uint256)._owners (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#22) is not in mixedCase
+Parameter OwnerManager.setupOwners(address[],uint256)._threshold (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#22) is not in mixedCase
+Parameter OwnerManager.addOwnerWithThreshold(address,uint256)._threshold (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#51) is not in mixedCase
+Parameter OwnerManager.removeOwner(address,address,uint256)._threshold (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#73) is not in mixedCase
+Parameter OwnerManager.changeThreshold(uint256)._threshold (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#117) is not in mixedCase
+Function IGovernor.COUNTING_MODE() (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#107) is not in mixedCase
+Function GovernorCompatibilityBravo.COUNTING_MODE() (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#48-50) is not in mixedCase
+Function ERC20Permit.DOMAIN_SEPARATOR() (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#81-83) is not in mixedCase
+Variable ERC20Permit._PERMIT_TYPEHASH_DEPRECATED_SLOT (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#37) is not in mixedCase
+Function IERC20Permit.DOMAIN_SEPARATOR() (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol#59) is not in mixedCase
+Parameter ERC721.safeTransferFrom(address,address,uint256,bytes)._data (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#179) is not in mixedCase
+Variable EIP712._CACHED_DOMAIN_SEPARATOR (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#31) is not in mixedCase
+Variable EIP712._CACHED_CHAIN_ID (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#32) is not in mixedCase
+Variable EIP712._CACHED_THIS (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#33) is not in mixedCase
+Variable EIP712._HASHED_NAME (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#35) is not in mixedCase
+Variable EIP712._HASHED_VERSION (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#36) is not in mixedCase
+Variable EIP712._TYPE_HASH (node_modules/@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol#37) is not in mixedCase
+Struct FixedPoint.uq112x112 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#12-14) is not in CapWords
+Struct FixedPoint.uq144x112 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#18-20) is not in CapWords
+Variable AgentRegistry._BASEURI (contracts/registries/AgentRegistry.sol#30) is not in mixedCase
+Variable ComponentRegistry._BASEURI (contracts/registries/ComponentRegistry.sol#28) is not in mixedCase
+Parameter ServiceManager.changeTreasury(address)._treasury (contracts/registries/ServiceManager.sol#40) is not in mixedCase
+Parameter Depository.changeManagers(address,address)._treasury (contracts/tokenomics/Depository.sol#71) is not in mixedCase
+Parameter Depository.changeManagers(address,address)._tokenomics (contracts/tokenomics/Depository.sol#71) is not in mixedCase
+Parameter Dispenser.changeTokenomics(address)._tokenomics (contracts/tokenomics/Dispenser.sol#37) is not in mixedCase
+Constant OLA.oneYear (contracts/tokenomics/OLA.sol#17) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant OLA.tenYearSupplyCap (contracts/tokenomics/OLA.sol#19) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant OLA.maxMintCapFraction (contracts/tokenomics/OLA.sol#21) is not in UPPER_CASE_WITH_UNDERSCORES
+Parameter Tokenomics.changeManagers(address,address,address,address)._treasury (contracts/tokenomics/Tokenomics.sol#173) is not in mixedCase
+Parameter Tokenomics.changeManagers(address,address,address,address)._depository (contracts/tokenomics/Tokenomics.sol#173) is not in mixedCase
+Parameter Tokenomics.changeManagers(address,address,address,address)._dispenser (contracts/tokenomics/Tokenomics.sol#173) is not in mixedCase
+Parameter Tokenomics.changeManagers(address,address,address,address)._ve (contracts/tokenomics/Tokenomics.sol#173) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._ucfcWeight (contracts/tokenomics/Tokenomics.sol#210) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._ucfaWeight (contracts/tokenomics/Tokenomics.sol#211) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._componentWeight (contracts/tokenomics/Tokenomics.sol#212) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._agentWeight (contracts/tokenomics/Tokenomics.sol#213) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._devsPerCapital (contracts/tokenomics/Tokenomics.sol#214) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._epsilonRate (contracts/tokenomics/Tokenomics.sol#215) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._maxBond (contracts/tokenomics/Tokenomics.sol#216) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._epochLen (contracts/tokenomics/Tokenomics.sol#217) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._blockTimeETH (contracts/tokenomics/Tokenomics.sol#218) is not in mixedCase
+Parameter Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._bondAutoControl (contracts/tokenomics/Tokenomics.sol#219) is not in mixedCase
+Parameter Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256)._stakerFraction (contracts/tokenomics/Tokenomics.sol#241) is not in mixedCase
+Parameter Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256)._componentFraction (contracts/tokenomics/Tokenomics.sol#242) is not in mixedCase
+Parameter Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256)._agentFraction (contracts/tokenomics/Tokenomics.sol#243) is not in mixedCase
+Parameter Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256)._topUpOwnerFraction (contracts/tokenomics/Tokenomics.sol#244) is not in mixedCase
+Parameter Tokenomics.changeRewardFraction(uint256,uint256,uint256,uint256,uint256)._topUpStakerFraction (contracts/tokenomics/Tokenomics.sol#245) is not in mixedCase
+Function Tokenomics._getInflationRemainderForYear() (contracts/tokenomics/Tokenomics.sol#290-305) is not in mixedCase
+Parameter Treasury.changeManagers(address,address,address)._depository (contracts/tokenomics/Treasury.sol#91) is not in mixedCase
+Parameter Treasury.changeManagers(address,address,address)._dispenser (contracts/tokenomics/Treasury.sol#91) is not in mixedCase
+Parameter Treasury.changeManagers(address,address,address)._tokenomics (contracts/tokenomics/Treasury.sol#91) is not in mixedCase
+Variable Treasury.ETHFromServices (contracts/tokenomics/Treasury.sol#57) is not in mixedCase
+Variable Treasury.ETHOwned (contracts/tokenomics/Treasury.sol#59) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+[92m
+Reentrancy in WETH9.withdraw(uint256) (node_modules/canonical-weth/contracts/WETH9.sol#38-43):
+	External calls:
+	- msg.sender.transfer(wad) (node_modules/canonical-weth/contracts/WETH9.sol#41)
+	Event emitted after the call(s):
+	- Withdrawal(msg.sender,wad) (node_modules/canonical-weth/contracts/WETH9.sol#42)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4[0m
+[92m
+Reentrancy in GnosisSafe.execTransaction(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#111-194):
+	External calls:
+	- payment = handlePayment(gasUsed,baseGas,gasPrice,gasToken,refundReceiver) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#184)
+		- require(bool,string)(receiver.send(payment),GS011) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#208)
+	Event emitted after the call(s):
+	- ExecutionFailure(txHash,payment) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#187)
+	- ExecutionSuccess(txHash,payment) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#186)
+Reentrancy in GnosisSafe.setup(address[],uint256,address,bytes,address,address,uint256,address) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#75-97):
+	External calls:
+	- handlePayment(payment,0,1,paymentToken,paymentReceiver) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#94)
+		- require(bool,string)(receiver.send(payment),GS011) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#208)
+	Event emitted after the call(s):
+	- SafeSetup(msg.sender,_owners,_threshold,to,fallbackHandler) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#96)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4[0m
+[92m
+Variable UniswapV2Pair.swap(uint256,uint256,address,bytes).balance0Adjusted (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#180) is too similar to UniswapV2Pair.swap(uint256,uint256,address,bytes).balance1Adjusted (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#181)
+Variable UniswapV2Pair.price0CumulativeLast (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#26) is too similar to UniswapV2Pair.price1CumulativeLast (node_modules/@uniswap/v2-core/contracts/UniswapV2Pair.sol#27)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#variable-names-are-too-similar[0m
+[92m
+Variable UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#64) is too similar to UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#65)
+Variable IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#10) is too similar to UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#37)
+Variable IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#10) is too similar to UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#65)
+Variable IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#10) is too similar to IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#11)
+Variable UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#36) is too similar to UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#37)
+Variable UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#36) is too similar to UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#65)
+Variable UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#64) is too similar to UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#37)
+Variable UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#36) is too similar to IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#11)
+Variable UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountADesired (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#64) is too similar to IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256).amountBDesired (node_modules/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol#11)
+Variable UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountAOptimal (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#54) is too similar to UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256).amountBOptimal (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#49)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#variable-names-are-too-similar[0m
+[92m
+Variable Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._ucfaWeight (contracts/tokenomics/Tokenomics.sol#211) is too similar to Tokenomics.changeTokenomicsParameters(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)._ucfcWeight (contracts/tokenomics/Tokenomics.sol#210)
+Variable Tokenomics.getUCF(uint256).weightedUCFa (contracts/tokenomics/Tokenomics.sol#769) is too similar to Tokenomics.getUCF(uint256).weightedUCFc (contracts/tokenomics/Tokenomics.sol#768)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#variable-names-are-too-similar[0m
+[92m
+UniswapV2Factory.createPair(address,address) (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#23-38) uses literals with too many digits:
+	- bytecode = type(address)(UniswapV2Pair).creationCode (node_modules/@uniswap/v2-core/contracts/UniswapV2Factory.sol#28)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits[0m
+[92m
+GnosisSafeProxy.fallback() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#26-43) uses literals with too many digits:
+	- calldataload(uint256)(0) == 0xa619486e00000000000000000000000000000000000000000000000000000000 (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxy.sol#31-34)
+GnosisSafeProxyFactory.proxyRuntimeCode() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#28-30) uses literals with too many digits:
+	- type()(GnosisSafeProxy).runtimeCode (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#29)
+GnosisSafeProxyFactory.proxyCreationCode() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#33-35) uses literals with too many digits:
+	- type()(GnosisSafeProxy).creationCode (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#34)
+GnosisSafeProxyFactory.deployProxyWithNonce(address,bytes,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#42-55) uses literals with too many digits:
+	- deploymentData = abi.encodePacked(type()(GnosisSafeProxy).creationCode,uint256(uint160(_singleton))) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#49)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits[0m
+[92m
+Babylonian.sqrt(uint256) (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#10-52) uses literals with too many digits:
+	- xx >= 0x100000000000000000000000000000000 (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#16)
+Babylonian.sqrt(uint256) (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#10-52) uses literals with too many digits:
+	- xx >= 0x10000000000000000 (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#20)
+Babylonian.sqrt(uint256) (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#10-52) uses literals with too many digits:
+	- xx >= 0x100000000 (node_modules/@uniswap/lib/contracts/libraries/Babylonian.sol#24)
+BitMath.mostSignificantBit(uint256) (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#7-39) uses literals with too many digits:
+	- x >= 0x100000000000000000000000000000000 (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#10)
+BitMath.mostSignificantBit(uint256) (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#7-39) uses literals with too many digits:
+	- x >= 0x10000000000000000 (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#14)
+BitMath.mostSignificantBit(uint256) (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#7-39) uses literals with too many digits:
+	- x >= 0x100000000 (node_modules/@uniswap/lib/contracts/libraries/BitMath.sol#18)
+FixedPoint.slitherConstructorConstantVariables() (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#9-152) uses literals with too many digits:
+	- Q112 = 0x10000000000000000000000000000 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#23)
+FixedPoint.slitherConstructorConstantVariables() (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#9-152) uses literals with too many digits:
+	- Q224 = 0x100000000000000000000000000000000000000000000000000000000 (node_modules/@uniswap/lib/contracts/libraries/FixedPoint.sol#24)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits[0m
+[92m
+Singleton.singleton (node_modules/@gnosis.pm/safe-contracts/contracts/common/Singleton.sol#10) is never used in GnosisSafeL2 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol#9-86)
+GnosisSafe._deprecatedDomainSeparator (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#52) is never used in GnosisSafeL2 (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol#9-86)
+RegistriesManager._mintFee (contracts/registries/RegistriesManager.sol#13) is never used in RegistriesManager (contracts/registries/RegistriesManager.sol#10-79)
+ERC20Permit._PERMIT_TYPEHASH_DEPRECATED_SLOT (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#37) is never used in OLA (contracts/tokenomics/OLA.sol#13-92)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-state-variable[0m
+[92m
+WETH9.decimals (node_modules/canonical-weth/contracts/WETH9.sol#21) should be constant
+WETH9.name (node_modules/canonical-weth/contracts/WETH9.sol#19) should be constant
+WETH9.symbol (node_modules/canonical-weth/contracts/WETH9.sol#20) should be constant
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant[0m
+[92m
+ERC20Permit._PERMIT_TYPEHASH_DEPRECATED_SLOT (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#37) should be constant
+GnosisSafe._deprecatedDomainSeparator (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#52) should be constant
+RegistriesManager._mintFee (contracts/registries/RegistriesManager.sol#13) should be constant
+Singleton.singleton (node_modules/@gnosis.pm/safe-contracts/contracts/common/Singleton.sol#10) should be constant
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant[0m
+[92m
+withdraw(uint256) should be declared external:
+	- WETH9.withdraw(uint256) (node_modules/canonical-weth/contracts/WETH9.sol#38-43)
+totalSupply() should be declared external:
+	- WETH9.totalSupply() (node_modules/canonical-weth/contracts/WETH9.sol#45-47)
+approve(address,uint256) should be declared external:
+	- WETH9.approve(address,uint256) (node_modules/canonical-weth/contracts/WETH9.sol#49-53)
+transfer(address,uint256) should be declared external:
+	- WETH9.transfer(address,uint256) (node_modules/canonical-weth/contracts/WETH9.sol#55-57)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#public-function-that-could-be-declared-external[0m
+[92m
+quote(uint256,uint256,uint256) should be declared external:
+	- UniswapV2Router02.quote(uint256,uint256,uint256) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#403-405)
+getAmountOut(uint256,uint256,uint256) should be declared external:
+	- UniswapV2Router02.getAmountOut(uint256,uint256,uint256) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#407-415)
+getAmountIn(uint256,uint256,uint256) should be declared external:
+	- UniswapV2Router02.getAmountIn(uint256,uint256,uint256) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#417-425)
+getAmountsOut(uint256,address[]) should be declared external:
+	- UniswapV2Router02.getAmountsOut(uint256,address[]) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#427-435)
+getAmountsIn(uint256,address[]) should be declared external:
+	- UniswapV2Router02.getAmountsIn(uint256,address[]) (node_modules/@uniswap/v2-periphery/contracts/UniswapV2Router02.sol#437-445)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#public-function-that-could-be-declared-external[0m
+[92m
+createProxy(address,bytes) should be declared external:
+	- GnosisSafeProxyFactory.createProxy(address,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#15-25)
+proxyRuntimeCode() should be declared external:
+	- GnosisSafeProxyFactory.proxyRuntimeCode() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#28-30)
+proxyCreationCode() should be declared external:
+	- GnosisSafeProxyFactory.proxyCreationCode() (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#33-35)
+createProxyWithCallback(address,bytes,uint256,IProxyCreationCallback) should be declared external:
+	- GnosisSafeProxyFactory.createProxyWithCallback(address,bytes,uint256,IProxyCreationCallback) (node_modules/@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol#82-91)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#public-function-that-could-be-declared-external[0m
+[92m
+getTransactionHash(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) should be declared external:
+	- GnosisSafe.getTransactionHash(address,uint256,bytes,Enum.Operation,uint256,uint256,uint256,address,address,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol#408-421)
+setFallbackHandler(address) should be declared external:
+	- FallbackManager.setFallbackHandler(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/FallbackManager.sol#26-29)
+enableModule(address) should be declared external:
+	- ModuleManager.enableModule(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#32-40)
+disableModule(address,address) should be declared external:
+	- ModuleManager.disableModule(address,address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#47-54)
+execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) should be declared external:
+	- ModuleManager.execTransactionFromModuleReturnData(address,uint256,bytes,Enum.Operation) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#80-101)
+isModuleEnabled(address) should be declared external:
+	- ModuleManager.isModuleEnabled(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/ModuleManager.sol#105-107)
+addOwnerWithThreshold(address,uint256) should be declared external:
+	- OwnerManager.addOwnerWithThreshold(address,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#51-62)
+removeOwner(address,address,uint256) should be declared external:
+	- OwnerManager.removeOwner(address,address,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#70-86)
+swapOwner(address,address,address) should be declared external:
+	- OwnerManager.swapOwner(address,address,address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#94-111)
+getThreshold() should be declared external:
+	- OwnerManager.getThreshold() (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#126-128)
+isOwner(address) should be declared external:
+	- OwnerManager.isOwner(address) (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#130-132)
+getOwners() should be declared external:
+	- OwnerManager.getOwners() (node_modules/@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol#136-148)
+getStorageAt(uint256,uint256) should be declared external:
+	- StorageAccessible.getStorageAt(uint256,uint256) (node_modules/@gnosis.pm/safe-contracts/contracts/common/StorageAccessible.sol#13-23)
+isValidSignature(bytes,bytes) should be declared external:
+	- ISignatureValidator.isValidSignature(bytes,bytes) (node_modules/@gnosis.pm/safe-contracts/contracts/interfaces/ISignatureValidator.sol#19)
+grantRole(bytes32,address) should be declared external:
+	- AccessControl.grantRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#142-144)
+revokeRole(bytes32,address) should be declared external:
+	- AccessControl.revokeRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#155-157)
+renounceRole(bytes32,address) should be declared external:
+	- AccessControl.renounceRole(bytes32,address) (node_modules/@openzeppelin/contracts/access/AccessControl.sol#173-177)
+renounceOwnership() should be declared external:
+	- Ownable.renounceOwnership() (node_modules/@openzeppelin/contracts/access/Ownable.sol#54-56)
+transferOwnership(address) should be declared external:
+	- Ownable.transferOwnership(address) (node_modules/@openzeppelin/contracts/access/Ownable.sol#62-65)
+name() should be declared external:
+	- Governor.name() (node_modules/@openzeppelin/contracts/governance/Governor.sol#109-111)
+	- IGovernor.name() (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#76)
+getVotesWithParams(address,uint256,bytes) should be declared external:
+	- Governor.getVotesWithParams(address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#402-408)
+	- IGovernor.getVotesWithParams(address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#179-183)
+castVote(uint256,uint8) should be declared external:
+	- Governor.castVote(uint256,uint8) (node_modules/@openzeppelin/contracts/governance/Governor.sol#413-416)
+	- IGovernor.castVote(uint256,uint8) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#224)
+castVoteWithReason(uint256,uint8,string) should be declared external:
+	- Governor.castVoteWithReason(uint256,uint8,string) (node_modules/@openzeppelin/contracts/governance/Governor.sol#421-428)
+	- IGovernor.castVoteWithReason(uint256,uint8,string) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#231-235)
+castVoteWithReasonAndParams(uint256,uint8,string,bytes) should be declared external:
+	- Governor.castVoteWithReasonAndParams(uint256,uint8,string,bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#433-441)
+	- IGovernor.castVoteWithReasonAndParams(uint256,uint8,string,bytes) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#242-247)
+castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) should be declared external:
+	- Governor.castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/Governor.sol#446-460)
+	- IGovernor.castVoteBySig(uint256,uint8,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#254-260)
+castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) should be declared external:
+	- Governor.castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/Governor.sol#465-492)
+	- IGovernor.castVoteWithReasonAndParamsBySig(uint256,uint8,string,bytes,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#267-275)
+onERC721Received(address,address,uint256,bytes) should be declared external:
+	- Governor.onERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#562-569)
+	- TimelockController.onERC721Received(address,address,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#381-388)
+onERC1155Received(address,address,uint256,uint256,bytes) should be declared external:
+	- Governor.onERC1155Received(address,address,uint256,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#574-582)
+	- TimelockController.onERC1155Received(address,address,uint256,uint256,bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#393-401)
+onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) should be declared external:
+	- Governor.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (node_modules/@openzeppelin/contracts/governance/Governor.sol#587-595)
+	- TimelockController.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#406-414)
+COUNTING_MODE() should be declared external:
+	- GovernorCompatibilityBravo.COUNTING_MODE() (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#48-50)
+	- IGovernor.COUNTING_MODE() (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#107)
+hasVoted(uint256,address) should be declared external:
+	- GovernorCompatibilityBravo.hasVoted(uint256,address) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#241-243)
+	- IGovernor.hasVoted(uint256,address) (node_modules/@openzeppelin/contracts/governance/IGovernor.sol#189)
+schedule(address,uint256,bytes,bytes32,bytes32,uint256) should be declared external:
+	- TimelockController.schedule(address,uint256,bytes,bytes32,bytes32,uint256) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#213-224)
+scheduleBatch(address[],uint256[],bytes[],bytes32,bytes32,uint256) should be declared external:
+	- TimelockController.scheduleBatch(address[],uint256[],bytes[],bytes32,bytes32,uint256) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#235-251)
+cancel(bytes32) should be declared external:
+	- TimelockController.cancel(bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#269-274)
+execute(address,uint256,bytes,bytes32,bytes32) should be declared external:
+	- TimelockController.execute(address,uint256,bytes,bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#288-299)
+executeBatch(address[],uint256[],bytes[],bytes32,bytes32) should be declared external:
+	- TimelockController.executeBatch(address[],uint256[],bytes[],bytes32,bytes32) (node_modules/@openzeppelin/contracts/governance/TimelockController.sol#310-326)
+propose(address[],uint256[],string[],bytes[],string) should be declared external:
+	- GovernorCompatibilityBravo.propose(address[],uint256[],string[],bytes[],string) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#69-78)
+	- IGovernorCompatibilityBravo.propose(address[],uint256[],string[],bytes[],string) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#73-79)
+queue(uint256) should be declared external:
+	- GovernorCompatibilityBravo.queue(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#83-91)
+	- IGovernorCompatibilityBravo.queue(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#84)
+execute(uint256) should be declared external:
+	- GovernorCompatibilityBravo.execute(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#96-104)
+	- IGovernorCompatibilityBravo.execute(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#89)
+cancel(uint256) should be declared external:
+	- GovernorCompatibilityBravo.cancel(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#106-120)
+	- IGovernorCompatibilityBravo.cancel(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#94)
+proposals(uint256) should be declared external:
+	- GovernorCompatibilityBravo.proposals(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#170-202)
+	- IGovernorCompatibilityBravo.proposals(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#53-68)
+getActions(uint256) should be declared external:
+	- GovernorCompatibilityBravo.getActions(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#207-221)
+	- IGovernorCompatibilityBravo.getActions(uint256) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#99-108)
+getReceipt(uint256,address) should be declared external:
+	- GovernorCompatibilityBravo.getReceipt(uint256,address) (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#226-228)
+	- IGovernorCompatibilityBravo.getReceipt(uint256,address) (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#113)
+quorumVotes() should be declared external:
+	- GovernorCompatibilityBravo.quorumVotes() (node_modules/@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol#233-235)
+	- IGovernorCompatibilityBravo.quorumVotes() (node_modules/@openzeppelin/contracts/governance/compatibility/IGovernorCompatibilityBravo.sol#48)
+setVotingDelay(uint256) should be declared external:
+	- GovernorSettings.setVotingDelay(uint256) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorSettings.sol#61-63)
+setVotingPeriod(uint256) should be declared external:
+	- GovernorSettings.setVotingPeriod(uint256) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorSettings.sol#70-72)
+setProposalThreshold(uint256) should be declared external:
+	- GovernorSettings.setProposalThreshold(uint256) (node_modules/@openzeppelin/contracts/governance/extensions/GovernorSettings.sol#79-81)
+timelock() should be declared external:
+	- GovernorTimelockControl.timelock() (node_modules/@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol#75-77)
+	- IGovernorTimelock.timelock() (node_modules/@openzeppelin/contracts/governance/extensions/IGovernorTimelock.sol#16)
+name() should be declared external:
+	- ERC20.name() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#62-64)
+symbol() should be declared external:
+	- ERC20.symbol() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#70-72)
+decimals() should be declared external:
+	- ERC20.decimals() (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#87-89)
+balanceOf(address) should be declared external:
+	- ERC20.balanceOf(address) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#101-103)
+	- VotingEscrow.balanceOf(address) (contracts/governance/VotingEscrow.sol#495-497)
+transfer(address,uint256) should be declared external:
+	- ERC20.transfer(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#113-117)
+approve(address,uint256) should be declared external:
+	- ERC20.approve(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#136-140)
+transferFrom(address,address,uint256) should be declared external:
+	- ERC20.transferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#158-167)
+increaseAllowance(address,uint256) should be declared external:
+	- ERC20.increaseAllowance(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#181-185)
+decreaseAllowance(address,uint256) should be declared external:
+	- ERC20.decreaseAllowance(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#201-210)
+burn(uint256) should be declared external:
+	- ERC20Burnable.burn(uint256) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol#20-22)
+burnFrom(address,uint256) should be declared external:
+	- ERC20Burnable.burnFrom(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol#35-38)
+permit(address,address,uint256,uint256,uint8,bytes32,bytes32) should be declared external:
+	- ERC20Permit.permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#49-68)
+nonces(address) should be declared external:
+	- ERC20Permit.nonces(address) (node_modules/@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol#73-75)
+name() should be declared external:
+	- ERC721.name() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#79-81)
+symbol() should be declared external:
+	- ERC721.symbol() (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#86-88)
+tokenURI(uint256) should be declared external:
+	- ERC721.tokenURI(uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#93-98)
+approve(address,uint256) should be declared external:
+	- ERC721.approve(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#112-122)
+setApprovalForAll(address,bool) should be declared external:
+	- ERC721.setApprovalForAll(address,bool) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#136-138)
+transferFrom(address,address,uint256) should be declared external:
+	- ERC721.transferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#150-159)
+safeTransferFrom(address,address,uint256) should be declared external:
+	- ERC721.safeTransferFrom(address,address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol#164-170)
+tokenOfOwnerByIndex(address,uint256) should be declared external:
+	- ERC721Enumerable.tokenOfOwnerByIndex(address,uint256) (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#37-40)
+tokenByIndex(uint256) should be declared external:
+	- ERC721Enumerable.tokenByIndex(uint256) (node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol#52-55)
+getVotes(address) should be declared external:
+	- VotingEscrow.getVotes(address) (contracts/governance/VotingEscrow.sol#521-523)
+getPastVotes(address,uint256) should be declared external:
+	- VotingEscrow.getPastVotes(address,uint256) (contracts/governance/VotingEscrow.sol#558-570)
+totalSupplyLocked() should be declared external:
+	- VotingEscrow.totalSupplyLocked() (contracts/governance/VotingEscrow.sol#627-629)
+getPastTotalSupply(uint256) should be declared external:
+	- VotingEscrow.getPastTotalSupply(uint256) (contracts/governance/VotingEscrow.sol#634-638)
+changeManager(address) should be declared external:
+	- AgentRegistry.changeManager(address) (contracts/registries/AgentRegistry.sol#70-72)
+exists(uint256) should be declared external:
+	- AgentRegistry.exists(uint256) (contracts/registries/AgentRegistry.sol#156-158)
+getInfo(uint256) should be declared external:
+	- AgentRegistry.getInfo(uint256) (contracts/registries/AgentRegistry.sol#168-178)
+getDependencies(uint256) should be declared external:
+	- AgentRegistry.getDependencies(uint256) (contracts/registries/AgentRegistry.sol#183-191)
+getHashes(uint256) should be declared external:
+	- AgentRegistry.getHashes(uint256) (contracts/registries/AgentRegistry.sol#197-205)
+getBaseURI() should be declared external:
+	- AgentRegistry.getBaseURI() (contracts/registries/AgentRegistry.sol#215-217)
+setBaseURI(string) should be declared external:
+	- AgentRegistry.setBaseURI(string) (contracts/registries/AgentRegistry.sol#221-223)
+changeManager(address) should be declared external:
+	- ComponentRegistry.changeManager(address) (contracts/registries/ComponentRegistry.sol#66-68)
+exists(uint256) should be declared external:
+	- ComponentRegistry.exists(uint256) (contracts/registries/ComponentRegistry.sol#152-154)
+getInfo(uint256) should be declared external:
+	- ComponentRegistry.getInfo(uint256) (contracts/registries/ComponentRegistry.sol#164-174)
+getDependencies(uint256) should be declared external:
+	- ComponentRegistry.getDependencies(uint256) (contracts/registries/ComponentRegistry.sol#179-187)
+getHashes(uint256) should be declared external:
+	- ComponentRegistry.getHashes(uint256) (contracts/registries/ComponentRegistry.sol#193-201)
+getBaseURI() should be declared external:
+	- ComponentRegistry.getBaseURI() (contracts/registries/ComponentRegistry.sol#211-213)
+setBaseURI(string) should be declared external:
+	- ComponentRegistry.setBaseURI(string) (contracts/registries/ComponentRegistry.sol#217-219)
+changeManager(address) should be declared external:
+	- ServiceRegistry.changeManager(address) (contracts/registries/ServiceRegistry.sol#142-145)
+slash(address[],uint256[],uint256) should be declared external:
+	- ServiceRegistry.slash(address[],uint256[],uint256) (contracts/registries/ServiceRegistry.sol#501-537)
+exists(uint256) should be declared external:
+	- ServiceRegistry.exists(uint256) (contracts/registries/ServiceRegistry.sol#745-747)
+getServiceInfo(uint256) should be declared external:
+	- ServiceRegistry.getServiceInfo(uint256) (contracts/registries/ServiceRegistry.sol#762-783)
+getInstancesForAgentId(uint256,uint256) should be declared external:
+	- ServiceRegistry.getInstancesForAgentId(uint256,uint256) (contracts/registries/ServiceRegistry.sol#790-799)
+getConfigHashes(uint256) should be declared external:
+	- ServiceRegistry.getConfigHashes(uint256) (contracts/registries/ServiceRegistry.sol#805-810)
+getServiceState(uint256) should be declared external:
+	- ServiceRegistry.getServiceState(uint256) (contracts/registries/ServiceRegistry.sol#837-839)
+getOperatorBalance(address,uint256) should be declared external:
+	- ServiceRegistry.getOperatorBalance(address,uint256) (contracts/registries/ServiceRegistry.sol#845-849)
+changeMultisigPermission(address,bool) should be declared external:
+	- ServiceRegistry.changeMultisigPermission(address,bool) (contracts/registries/ServiceRegistry.sol#855-861)
+mint(address,uint256) should be declared external:
+	- ERC20Token.mint(address,uint256) (contracts/test/ERC20Token.sol#10-12)
+createCheckSafe(address[],uint256,address,bytes) should be declared external:
+	- TestServiceRegistry.createCheckSafe(address[],uint256,address,bytes) (contracts/test/TestServiceRegistry.sol#15-33)
+getControlValue() should be declared external:
+	- TestServiceRegistry.getControlValue() (contracts/test/TestServiceRegistry.sol#41-43)
+getProduct(address,uint256) should be declared external:
+	- Depository.getProduct(address,uint256) (contracts/tokenomics/Depository.sol#277-279)
+mint(address,uint256) should be declared external:
+	- OLA.mint(address,uint256) (contracts/tokenomics/OLA.sol#53-57)
+trackServicesETHRevenue(uint256[],uint256[]) should be declared external:
+	- Tokenomics.trackServicesETHRevenue(uint256[],uint256[]) (contracts/tokenomics/Tokenomics.sol#323-350)
+getPoint(uint256) should be declared external:
+	- Tokenomics.getPoint(uint256) (contracts/tokenomics/Tokenomics.sol#707-709)
+isEnabled(address) should be declared external:
+	- Treasury.isEnabled(address) (contracts/tokenomics/Treasury.sol#219-221)
+checkPair(address) should be declared external:
+	- Treasury.checkPair(address) (contracts/tokenomics/Treasury.sol#225-240)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#public-function-that-could-be-declared-external[0m
+. analyzed (126 contracts with 77 detectors), 623 result(s) found

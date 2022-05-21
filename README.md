@@ -48,6 +48,8 @@ The architecture is broken up into three main areas:
 	- [Treasury](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Treasury.sol)
 
 
+❗ Known issues: https://github.com/valory-xyz/onchain-protocol/issues/102
+
 ## Development
 
 ### Prerequisites

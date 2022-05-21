@@ -32,7 +32,7 @@ jobs:
         run: ./node_modules/.bin/hardhat run scripts/deploy.js
 
       # Run hardhat coverage and upload codecov report
-      - name: Remove depository lp coverage for now due to uniswap issue
+      - name: Remove depository lp coverage for now due to the Uniswap issue
         run: rm -rf test/unit/tokenomics/depository test/integration/Tokenomics*
       - name: Solidity coverage summary
         run: ./node_modules/.bin/hardhat coverage

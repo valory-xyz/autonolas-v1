@@ -50,6 +50,9 @@ The architecture is broken up into three main areas:
 
 ❗ Known issues: https://github.com/valory-xyz/onchain-protocol/issues/102
 
+
+![launch](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/LaunchTimeline.png?raw=true)
+
 ## Development
 
 ### Prerequisites

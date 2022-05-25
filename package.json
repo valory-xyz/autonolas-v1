@@ -37,10 +37,15 @@
     "solidity-coverage": "^0.7.21"
   },
   "dependencies": {
+    "@ethersproject/contracts": "^5.6.1",
+    "@ethersproject/providers": "^5.6.7",
+    "@ethersproject/solidity": "^5.6.0",
+    "@ethersproject/wallet": "^5.6.1",
     "@uniswap/lib": "^4.0.1-alpha",
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "canonical-weth": "^1.4.0",
+    "eth-permit": "^0.2.1",
     "solhint": "^3.3.7"
   }
 }

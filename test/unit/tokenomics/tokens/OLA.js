@@ -1,6 +1,7 @@
 /*global describe, context, beforeEach, it*/
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
+const { signERC2612Permit } = require("eth-permit");
 
 describe("OLA", () => {
     let deployer;
@@ -14,22 +15,18 @@ describe("OLA", () => {
     const threeYears = 3 * oneYear;
     const nineYears = 9 * oneYear;
     const tenYears = 10 * oneYear;
+    const amount = 100;
 
     beforeEach(async () => {
         [deployer, treasury, bob, alice] = await ethers.getSigners();
         olaFactory = await ethers.getContractFactory("OLA");
-        [deployer, treasury, bob, alice] = await ethers.getSigners();
         // Treasury address is deployer by default
         ola = await olaFactory.deploy(initSupply, deployer.address);
         // Changing the treasury address
         await ola.connect(deployer).changeMinter(treasury.address);
-        //console.log("Deployer:",deployer.address);
-        //console.log("Vault:",treasury.address);
-        //const newVault = await ola.treasury();
-        //console.log("Vault in OLA:",newVault);
     });
 
-    context("initialization", () => {
+    context("Initialization", () => {
         it("correctly constructs an ERC20", async () => {
             expect(await ola.name()).to.equal("OLA Token");
             expect(await ola.symbol()).to.equal("OLA");
@@ -37,43 +34,67 @@ describe("OLA", () => {
         });
     });
 
-    context("mint", () => {
-        it("must be done by treasury", async () => {
+    context("Mint", () => {
+        it("Must be done by treasury", async () => {
             await expect(ola.connect(bob).mint(bob.address, 100)).to.be.revertedWith(
                 "ManagerOnly"
             );
         });
 
-        it("increases total supply", async () => {
+        it("Increases total supply", async () => {
             const supplyBefore = await ola.totalSupply();
             await ola.connect(treasury).mint(bob.address, 100);
             expect(supplyBefore.add(100)).to.equal(await ola.totalSupply());
         });
     });
 
-    context("burn", () => {
+    context("Burn", () => {
         beforeEach(async () => {
             await ola.connect(treasury).mint(bob.address, 100);
         });
 
-        it("reduces the total supply", async () => {
+        it("Reduces the total supply", async () => {
             const supplyBefore = await ola.totalSupply();
             await ola.connect(bob).burn(10);
             expect(supplyBefore.sub(10)).to.equal(await ola.totalSupply());
         });
 
-        it("cannot exceed total supply", async () => {
+        it("Cannot exceed total supply", async () => {
             const supply = await ola.totalSupply();
             await expect(ola.connect(bob).burn(supply.add(1))).to.be.revertedWith(
                 "ERC20: burn amount exceeds balance"
             );
         });
 
-        it("cannot exceed bob's balance", async () => {
+        it("Cannot exceed bob's balance", async () => {
             await ola.connect(treasury).mint(alice.address, 15);
             await expect(ola.connect(alice).burn(16)).to.be.revertedWith(
                 "ERC20: burn amount exceeds balance"
             );
+        });
+    });
+
+    context("Transfer", () => {
+        it("Transfer from self", async () => {
+            await ola.connect(treasury).mint(bob.address, 100);
+            await ola.connect(bob).transfer(alice.address, amount);
+            expect(await ola.balanceOf(alice.address)).to.equal(amount);
+        });
+
+        it("Transfer from via approve", async () => {
+            await ola.connect(treasury).mint(bob.address, 100);
+            await ola.connect(bob).approve(alice.address, amount);
+            await ola.connect(alice).transferFrom(bob.address, alice.address, amount);
+            expect(await ola.balanceOf(alice.address)).to.equal(amount);
+        });
+
+        it("Transfer from via permit", async () => {
+            await ola.connect(treasury).mint(bob.address, 100);
+            const result = await signERC2612Permit(bob, ola.address, bob.address, alice.address, amount);
+            await ola.permit(bob.address, alice.address, amount, result.deadline,
+                result.v, result.r, result.s);
+            await ola.connect(alice).transferFrom(bob.address, alice.address, amount);
+            expect(await ola.balanceOf(alice.address)).to.equal(amount);
         });
     });
 

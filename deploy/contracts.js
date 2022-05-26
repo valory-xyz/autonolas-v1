@@ -168,7 +168,7 @@ module.exports = async () => {
     // Deploying governance contracts
     // Deploy OLA token and voting escrow
     const Token = await ethers.getContractFactory("OLA");
-    const token = await Token.deploy(0, AddressZero);
+    const token = await Token.deploy(0);
     await token.deployed();
     console.log("OLA token deployed to", token.address);
 

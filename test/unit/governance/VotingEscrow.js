@@ -16,7 +16,7 @@ describe("VotingEscrow", function () {
 
     beforeEach(async function () {
         const OLA = await ethers.getContractFactory("OLA");
-        ola = await OLA.deploy(0, AddressZero);
+        ola = await OLA.deploy(0);
         await ola.deployed();
 
         signers = await ethers.getSigners();

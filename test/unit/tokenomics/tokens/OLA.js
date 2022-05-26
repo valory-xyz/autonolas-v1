@@ -21,7 +21,7 @@ describe("OLA", () => {
         [deployer, treasury, bob, alice] = await ethers.getSigners();
         olaFactory = await ethers.getContractFactory("OLA");
         // Treasury address is deployer by default
-        ola = await olaFactory.deploy(initSupply, deployer.address);
+        ola = await olaFactory.deploy(initSupply);
         // Changing the treasury address
         await ola.connect(deployer).changeMinter(treasury.address);
     });
@@ -160,11 +160,11 @@ describe("OLA", () => {
             // Calculate max supply cap after 4 years in total
             expectedSupplyCap = supplyCap;
             for (let i = 0; i < 4; ++i) {
-                expectedSupplyCap += supplyCap + (supplyCap * supplyCapFraction) / 100;
+                expectedSupplyCap += (expectedSupplyCap * supplyCapFraction) / 100;
             }
 
             // The max supply now is 1,082,432,160 * E18
-            // Mint 30 million more
+            // Mint 60 million more
             amount = "6" + "0".repeat(25);
             await ola.connect(treasury).mint(deployer.address, amount);
 

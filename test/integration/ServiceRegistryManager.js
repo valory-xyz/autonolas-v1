@@ -60,7 +60,7 @@ describe("ServiceRegistry integration", function () {
         await gnosisSafeMultisig.deployed();
 
         const Token = await ethers.getContractFactory("OLA");
-        token = await Token.deploy(0, AddressZero);
+        token = await Token.deploy(0);
         await token.deployed();
 
         // Depositary and dispenser are irrelevant in this set of tests, tokenomics will be correctly assigned below

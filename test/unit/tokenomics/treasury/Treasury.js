@@ -56,7 +56,7 @@ describe("Treasury", async () => {
     beforeEach(async () => {
         dai = await erc20Token.deploy();
         lpToken = await erc20Token.deploy();
-        ola = await olaFactory.deploy(0, AddressZero);
+        ola = await olaFactory.deploy(0);
         // Correct treasury address is missing here, it will be defined just one line below
         tokenomics = await tokenomicsFactory.deploy(ola.address, deployer.address, deployer.address, deployer.address,
             deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);

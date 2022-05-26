@@ -12,7 +12,6 @@ describe("VotingEscrow", function () {
     const oneOLABalance = ethers.utils.parseEther("1");
     const twoOLABalance = ethers.utils.parseEther("2");
     const tenOLABalance = ethers.utils.parseEther("10");
-    const AddressZero = "0x" + "0".repeat(40);
 
     beforeEach(async function () {
         const OLA = await ethers.getContractFactory("OLA");

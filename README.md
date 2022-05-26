@@ -41,7 +41,7 @@ The architecture is broken up into three main areas:
 
 	The OLA token is a standard ERC20 contract with mint functionality and hard coded supply schedule. The Depository and Treasury contracts borrow concepts from OlympusDAO. The Tokenomics contract implements the brunt of the reward logic for component and agent owners as well as veOLA stakers.
 
-	- [OLA](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/OLA.sol)
+	- [OLA](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/OLA.sol) (❗For licensing reasons the optimised token contract we will use - functionality wise equivalent - is [here](https://github.com/valory-xyz/token/blob/main/src/tokens/OLA.sol))
 	- [Depository](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Depository.sol)
 	- [Dispenser](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Dispenser.sol)
 	- [Tokenomics](https://github.com/valory-xyz/onchain-protocol/blob/main/contracts/tokenomics/Tokenomics.sol)

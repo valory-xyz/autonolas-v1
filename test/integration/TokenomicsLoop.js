@@ -111,13 +111,12 @@ describe("Tokenomics integration", async () => {
 
         deployer = signers[0];
         dai = await erc20Token.deploy();
-        ola = await olaFactory.deploy(0, deployer.address);
+        ola = await olaFactory.deploy(0);
         // Correct treasury address is missing here, it will be defined just one line below
         tokenomics = await tokenomicsFactory.deploy(ola.address, deployer.address, deployer.address, deployer.address,
             deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, deployer.address);
-        await ola.changeMinter(treasury.address);
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
         ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA");
         dispenser = await dispenserFactory.deploy(ola.address, tokenomics.address);
@@ -128,6 +127,8 @@ describe("Tokenomics integration", async () => {
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
         await ola.mint(deployer.address, initialMint);
+        // Change minter to the treasury address
+        await ola.changeMinter(treasury.address);
 
         // WETH contract deployment
         const WETH = await ethers.getContractFactory("WETH9");

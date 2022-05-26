@@ -36,7 +36,7 @@ describe("Governance integration", function () {
         await testServiceRegistry.deployed();
 
         const Token = await ethers.getContractFactory("OLA");
-        token = await Token.deploy(0, AddressZero);
+        token = await Token.deploy(0);
         await token.deployed();
 
         // Dispenser address is irrelevant in these tests, so its contract is passed as a zero address

@@ -20,13 +20,13 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     // Maximum annual inflation after first ten years
     uint256 public constant maxMintCapFraction = 2;
     // Initial timestamp of the token deployment
-    uint256 public timeLaunch;
+    uint256 public immutable timeLaunch;
 
     // Minter address
     address public minter;
 
-    constructor(uint256 _supply, address _minter) ERC20("OLA Token", "OLA") ERC20Permit("OLA Token") {
-        minter = _minter;
+    constructor(uint256 _supply) ERC20("OLA Token", "OLA") ERC20Permit("OLA Token") {
+        minter = msg.sender;
         timeLaunch = block.timestamp;
         if (_supply > 0) {
             super._mint(msg.sender, _supply);
@@ -34,7 +34,7 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     }
 
     modifier onlyManager() {
-        if (msg.sender != minter && msg.sender != owner()) {
+        if (msg.sender != minter) {
             revert ManagerOnly(msg.sender, minter);
         }
         _;
@@ -44,7 +44,7 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     /// @param newMinter Address of a new minter.
     function changeMinter(address newMinter) external onlyOwner {
         minter = newMinter;
-        emit MinterUpdated(minter);
+        emit MinterUpdated(newMinter);
     }
 
     /// @dev Mints OLA tokens.
@@ -60,12 +60,8 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     /// @param amount Amount of OLA to mint.
     /// @return True if the amount request is within inflation boundaries.
     function inflationControl(uint256 amount) public view returns (bool) {
-        // Scenario for the first ten years
         uint256 remainder = inflationRemainder();
-        if (amount > remainder) {
-            return false;
-        }
-        return true;
+        return (amount <= remainder);
     }
 
     /// @dev Gets the reminder of OLA possible for the mint.
@@ -74,19 +70,17 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
         uint256 totalSupply = super.totalSupply();
         // Current year
         uint256 numYears = (block.timestamp - timeLaunch) / oneYear;
-        if (numYears < 10) {
-            // Check for the requested mint overflow
-            remainder = tenYearSupplyCap - totalSupply;
-        } else {
+        // Calculate maximum mint amount to date
+        uint256 supplyCap = tenYearSupplyCap;
+        // After 10 years, adjust supplyCap according to the yearly inflation % set in maxMintCapFraction
+        if (numYears > 9) {
             // Number of years after ten years have passed (including ongoing ones)
             numYears -= 9;
-            // Calculate maximum mint amount to date
-            uint256 supplyCap = tenYearSupplyCap;
             for (uint256 i = 0; i < numYears; ++i) {
-                supplyCap += supplyCap * maxMintCapFraction / 100;
+                supplyCap += (supplyCap * maxMintCapFraction) / 100;
             }
-            // Check for the requested mint overflow
-            remainder = supplyCap - totalSupply;
         }
+        // Check for the requested mint overflow
+        remainder = supplyCap - totalSupply;
     }
 }

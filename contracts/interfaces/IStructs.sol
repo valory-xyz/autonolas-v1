@@ -76,11 +76,11 @@ interface IStructs {
         int128 bias;
         // dw / dt = a (slope)
         int128 slope;
-        // Timestamp
-        uint256 ts;
-        // Block number
-        uint256 blockNumber;
-        // Supply or account balance
-        uint256 balance;
+        // Timestamp. It will never overflow 2^64 - 1
+        uint64 ts;
+        // Block number. It will not be bigger than the timestamp
+        uint64 blockNumber;
+        // Supply or account balance. It will never be bigger than 2^128 - 1, since the total supply of OLA is lower
+        uint128 balance;
     }
 }

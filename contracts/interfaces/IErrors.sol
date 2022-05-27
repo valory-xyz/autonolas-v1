@@ -241,7 +241,6 @@ interface IErrors {
     /// @param actualBlockNumber Actual block number.
     error WrongBlockNumber(uint256 providedBlockNumber, uint256 actualBlockNumber);
 
-
-    /// @dev ReentrancyGuard: reentrant call
+    /// @dev Caught reentrancy violation.
     error ReentrancyGuard();
 }

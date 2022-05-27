@@ -210,7 +210,7 @@ interface IErrors {
     /// @dev Locked value is not zero.
     /// @param account Address that is checked for the locked value.
     /// @param amount Locked amount.
-    error LockedValueNotZero(address account, int128 amount);
+    error LockedValueNotZero(address account, uint256 amount);
 
     /// @dev Value lock is expired.
     /// @param account Address that is checked for the locked value.

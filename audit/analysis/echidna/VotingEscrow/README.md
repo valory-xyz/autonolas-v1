@@ -87,23 +87,16 @@ tar xvf echidna-test-2.0.1-Ubuntu-18.04.tar.gz
                                                           │    4647873703454314365629467529353821537,                                                                            │                                                          echidna_test: failed!                                     └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  
 ```
 
-### run fuzzing with close as possible VotingEscrow
+### run fuzzing with close as possible VotingEscrow. 30-05-22
 ```
-                                                                                                                                                                                                                                            
                                                           ┌─────────────────────────────────────────────────────Echidna 2.0.1────────────────────────────────────────────────────┐                                                          
                                                           │ Tests found: 1                                                                                                       │                                                          
-                                                          │ Seed: -2831636687685452030                                                                                           │                                                          
-                                                          │ Unique instructions: 4489                                                                                            │                                                          
+                                                          │ Seed: 6901020868330168219                                                                                            │                                                          
+                                                          │ Unique instructions: 7142                                                                                            │                                                          
                                                           │ Unique codehashes: 1                                                                                                 │                                                          
-                                                          │ Corpus size: 20                                                                                                      │                                                          
+                                                          │ Corpus size: 26                                                                                                      │                                                          
                                                           │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
                                                           │ echidna_test: PASSED!                                                                                                │                                                          
                                                           └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘                                                          
-                                                                                                   Campaign complete, C-c or esc to exit                                                                                                    echidna_test:  passed! 
-                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                            
-Unique instructions: 4489                                                                                                                                                                                                                   
-Unique codehashes: 1                                                                                                                                                                                                                        
-Corpus size: 20                                                                                                                                                                                                                             
-Seed: -2831636687685452030               
+                                                                                                   Campaign complete, C-c or esc to exit                                            
 ```

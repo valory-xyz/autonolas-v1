@@ -26,11 +26,8 @@ achieved with the longest lock possible. This way the users are incentivized to 
 * What we can do is to extrapolate ***At functions */
 
 struct LockedBalance {
-    // Token amount. It will never practically be bigger. Initial OLA cap is 1 bn tokens, or 1e27.
-    // After 10 years, the inflation rate is 2% per year. It would take 1340+ years to reach 2^128 - 1
-    uint128 amount;
-    // Unlock time. It will never practically be bigger
-    uint64 end;
+    int128 amount;
+    uint256 end;
 }
 
 // Structure for voting escrow points
@@ -39,17 +36,16 @@ struct PointVoting {
     int128 bias;
     // dw / dt = a (slope)
     int128 slope;
-    // Timestamp. It will never practically be bigger
-    uint64 ts;
-    // Block number. It will not be bigger than the timestamp
-    uint64 blockNumber;
-    // Token amount. It will never practically be bigger. Initial OLA cap is 1 bn tokens, or 1e27.
-    // After 10 years, the inflation rate is 2% per year. It would take 1340+ years to reach 2^128 - 1
-    uint128 balance;
+    // Timestamp
+    uint256 ts;
+    // Block number
+    uint256 blockNumber;
+    // Supply or account balance
+    uint256 balance;
 }
 
-/// @notice This token supports the ERC20 interface specifications except for transfers.
-contract VotingEscrowFuzzing  {
+contract VotingEscrowFuzzing {
+
     enum DepositType {
         DEPOSIT_FOR_TYPE,
         CREATE_LOCK_TYPE,
@@ -62,13 +58,9 @@ contract VotingEscrowFuzzing  {
     event Supply(uint256 prevSupply, uint256 supply);
 
     // 1 week time
-    uint64 internal constant WEEK = 1 weeks;
+    uint256 internal constant WEEK = 1 weeks;
     // Maximum lock time (4 years)
     uint256 internal constant MAXTIME = 4 * 365 * 86400;
-    // Maximum lock time (4 years) in int128
-    int128 internal constant IMAXTIME = 4 * 365 * 86400;
-    // Number of decimals
-    uint8 public constant decimals = 18;
 
     // Token address
     address public token;
@@ -84,63 +76,32 @@ contract VotingEscrowFuzzing  {
     // Mapping of account address => PointVoting[point Id]
     mapping(address => PointVoting[]) public mapUserPoints;
     // Mapping of time => signed slope change
-    mapping(uint64 => int128) public mapSlopeChanges;
+    mapping(uint256 => int128) public mapSlopeChanges;
 
+    // Number of decimals
+    uint8 public decimals;
     // Voting token name
     string public name;
     // Voting token symbol
     string public symbol;
 
-    // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol
-    // Reentrancy lock
-    uint256 private locked = 1;
-
+    /// Echidna invariant
     bool public cond = true;
 
     /// @dev Contract constructor
     constructor()
     {
-
-        // Create initial point such that default timestamp and block number are not zero
-        // See cast specification in the PointVoting structure
-        mapSupplyPoints[0] = PointVoting(0, 0, uint64(block.timestamp), uint64(block.number), 0);
-    }
-
-    /// @dev Gets the most recently recorded user point for `account`.
-    /// @param account Account address.
-    /// @return pv Last checkpoint.
-    function getLastUserPoint(address account) external view returns (PointVoting memory pv) {
-        uint256 lastPointNumber = mapUserPoints[account].length;
-        if (lastPointNumber > 0) {
-            pv = mapUserPoints[account][lastPointNumber - 1];
-        }
-    }
-
-    /// @dev Gets the number of user points.
-    /// @param account Account address.
-    /// @return accountNumPoints Number of user points.
-    function getNumUserPoints(address account) external view returns (uint256 accountNumPoints) {
-        accountNumPoints = mapUserPoints[account].length;
-    }
-
-    /// @dev Gets the checkpoint structure at number `idx` for `account`.
-    /// @param account User wallet address.
-    /// @param idx User point number.
-    /// @return The requested checkpoint.
-    function getUserPoint(address account, uint256 idx) external view returns (PointVoting memory) {
-        return mapUserPoints[account][idx];
+        mapSupplyPoints[0] = PointVoting(0, 0, block.timestamp, block.number, 0);
     }
 
     /// @dev Record global and per-user data to checkpoint.
     /// @param account Account address. User checkpoint is skipped if the address is zero.
     /// @param oldLocked Previous locked amount / end lock time for the user.
     /// @param newLocked New locked amount / end lock time for the user.
-    /// @param curSupply Current totl supply.
     function _checkpoint(
         address account,
         LockedBalance memory oldLocked,
-        LockedBalance memory newLocked,
-        uint128 curSupply
+        LockedBalance memory newLocked
     ) internal {
         PointVoting memory uOld;
         PointVoting memory uNew;
@@ -151,20 +112,21 @@ contract VotingEscrowFuzzing  {
         if (account != address(0)) {
             // Calculate slopes and biases
             // Kept at zero when they have to
+            int128 maxTime = int128(int256(MAXTIME));
             if (oldLocked.end > block.timestamp && oldLocked.amount > 0) {
-                uOld.slope = int128(oldLocked.amount) / IMAXTIME;
-                uOld.bias = uOld.slope * int128(oldLocked.end - uint128(block.timestamp));
+                uOld.slope = oldLocked.amount / maxTime;
+                uOld.bias = uOld.slope * int128(int256(oldLocked.end - block.timestamp));
             }
             if (newLocked.end > block.timestamp && newLocked.amount > 0) {
-                uNew.slope = int128(newLocked.amount) / IMAXTIME;
-                uNew.bias = uNew.slope * int128(newLocked.end - uint128(block.timestamp));
+                uNew.slope = newLocked.amount / maxTime;
+                uNew.bias = uNew.slope * int128(int256(newLocked.end - block.timestamp));
             }
 
             // Read values of scheduled changes in the slope
             // oldLocked.end can be in the past and in the future
             // newLocked.end can ONLY be in the FUTURE unless everything expired: than zeros
             oldDSlope = mapSlopeChanges[oldLocked.end];
-            if (newLocked.end > 0) {
+            if (newLocked.end != 0) {
                 if (newLocked.end == oldLocked.end) {
                     newDSlope = oldDSlope;
                 } else {
@@ -177,61 +139,63 @@ contract VotingEscrowFuzzing  {
         if (curNumPoint > 0) {
             lastPoint = mapSupplyPoints[curNumPoint];
         } else {
-            // If no point is created yet, we take the actual time and block parameters
-            lastPoint = PointVoting(0, 0, uint64(block.timestamp), uint64(block.number), 0);
+            lastPoint = PointVoting(0, 0, block.timestamp, block.number, supply);
         }
-        uint64 lastCheckpoint = lastPoint.ts;
+        uint256 lastCheckpoint = lastPoint.ts;
         // initialPoint is used for extrapolation to calculate the block number and save them
         // as we cannot figure that out in exact values from inside of the contract
         PointVoting memory initialPoint = lastPoint;
         uint256 block_slope; // dblock/dt
         if (block.timestamp > lastPoint.ts) {
-            block_slope = (1e18 * uint256(block.number - lastPoint.blockNumber)) / uint256(block.timestamp - lastPoint.ts);
+            block_slope = (1e18 * (block.number - lastPoint.blockNumber)) / (block.timestamp - lastPoint.ts);
         }
         // If last point is already recorded in this block, slope == 0, but we know the block already in this case
         // Go over weeks to fill in the history and (or) calculate what the current point is
         {
-            // The timestamp is always rounded and > 0 and < 2^32-1 before 2037
-            uint64 tStep = (lastCheckpoint / WEEK) * WEEK;
+            uint256 tStep = (lastCheckpoint / WEEK) * WEEK;
             for (uint256 i = 0; i < 255; ++i) {
                 // Hopefully it won't happen that this won't get used in 5 years!
                 // If it does, users will be able to withdraw but vote weight will be broken
-                // This is always practically < 2^64-1
-                unchecked {
-                    tStep += WEEK;
-                }
+                tStep += WEEK;
                 int128 dSlope;
                 if (tStep > block.timestamp) {
-                    tStep = uint64(block.timestamp);
+                    tStep = block.timestamp;
                 } else {
                     dSlope = mapSlopeChanges[tStep];
                 }
-                lastPoint.bias -= lastPoint.slope * int128(int64(tStep - lastCheckpoint));
-                lastPoint.slope += dSlope;
-                if (lastPoint.bias < 0) {
-                    // This could potentially happen, but fuzzer didn't find available "real" combinations
-                    lastPoint.bias = 0;
-                    // echidna_test: PASSED! 
-                    // cond = false;
-                }
-                if (lastPoint.slope < 0) {
-                    // This cannot happen - just in case. Again, fuzzer didn't reach this
-                    lastPoint.slope = 0;
+                if(tStep < lastCheckpoint) {
+                    // This could potentially happen
+                    // │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
                     // echidna_test: PASSED!
                     // cond = false;
                 }
+                // always tStep > lastCheckpoint, so correct int256(tStep - lastCheckpoint) from 
+                // https://github.com/solidlyexchange/solidly/blob/master/contracts/ve.sol#L834
+                lastPoint.bias -= lastPoint.slope * int128(int256(tStep - lastCheckpoint));
+                lastPoint.slope += dSlope;
+                if (lastPoint.bias < 0) {
+                    // This could potentially happen
+                    // │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
+                    // echidna_test: PASSED!
+                    // cond = false;
+                    lastPoint.bias = 0;
+
+                }
+                if (lastPoint.slope < 0) {
+                    // This cannot happen - just in case
+                    // │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
+                    // echidna_test: PASSED!
+                    // cond = false;
+                    lastPoint.slope = 0;
+                }
                 lastCheckpoint = tStep;
                 lastPoint.ts = tStep;
-                lastPoint.blockNumber = initialPoint.blockNumber + uint64((block_slope * uint256(tStep - initialPoint.ts)) / 1e18);
+                lastPoint.blockNumber = initialPoint.blockNumber + (block_slope * (tStep - initialPoint.ts)) / 1e18;
                 lastPoint.balance = initialPoint.balance;
-                // In order for the overflow of total number of economical checkpoints (starting from zero)
-                // the _checkpoint() call must happen n >(2**256 -1)/255 or n > ~1e77/255 > ~1e74 times
-                unchecked {
-                    curNumPoint += 1;    
-                }
+                curNumPoint += 1;
                 if (tStep == block.timestamp) {
-                    lastPoint.blockNumber = uint64(block.number);
-                    lastPoint.balance = curSupply;
+                    lastPoint.blockNumber = block.number;
+                    lastPoint.balance = supply;
                     break;
                 } else {
                     mapSupplyPoints[curNumPoint] = lastPoint;
@@ -240,20 +204,23 @@ contract VotingEscrowFuzzing  {
         }
 
         totalNumPoints = curNumPoint;
-
         // Now mapSupplyPoints is filled until current time
+
         if (account != address(0)) {
             // If last point was in this block, the slope change has been already applied. In such case we have 0 slope(s)
             lastPoint.slope += (uNew.slope - uOld.slope);
             lastPoint.bias += (uNew.bias - uOld.bias);
             if (lastPoint.slope < 0) {
-                lastPoint.slope = 0;
-                // echidna_test: PASSED!
                 // cond = false;
+                // │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
+                // echidna_test: PASSED!
+                lastPoint.slope = 0;
             }
             if (lastPoint.bias < 0) {
+                // │─────────────────────────────────────────────────────────Tests────────────────────────────────────────────────────────│                                                          
+                // echidna_test: PASSED!
+                // cond = false;
                 lastPoint.bias = 0;
-                cond = false;
             }
         }
 
@@ -273,15 +240,17 @@ contract VotingEscrowFuzzing  {
                 mapSlopeChanges[oldLocked.end] = oldDSlope;
             }
 
-            if (newLocked.end > block.timestamp && newLocked.end > oldLocked.end) {
-                newDSlope -= uNew.slope; // old slope disappeared at this point
-                mapSlopeChanges[newLocked.end] = newDSlope;
+            if (newLocked.end > block.timestamp) {
+                if (newLocked.end > oldLocked.end) {
+                    newDSlope -= uNew.slope; // old slope disappeared at this point
+                    mapSlopeChanges[newLocked.end] = newDSlope;
+                }
                 // else: we recorded it already in oldDSlope
             }
             // Now handle user history
-            uNew.ts = uint64(block.timestamp);
-            uNew.blockNumber = uint64(block.number);
-            uNew.balance = newLocked.amount;
+            uNew.ts = block.timestamp;
+            uNew.blockNumber = block.number;
+            uNew.balance = uint256(uint128(newLocked.amount));
             mapUserPoints[account].push(uNew);
         }
     }
@@ -300,22 +269,14 @@ contract VotingEscrowFuzzing  {
         DepositType depositType
     ) internal {
         uint256 supplyBefore = supply;
-        uint256 supplyAfter;
-        // Cannot overflow because the total supply << 2^128-1
-        unchecked {
-            supplyAfter = supplyBefore + amount;
-            supply = supplyAfter;
-        }
+        supply = supplyBefore + amount;
         // Get the old locked data
         LockedBalance memory oldLocked;
         (oldLocked.amount, oldLocked.end) = (lockedBalance.amount, lockedBalance.end);
-        // Adding to the existing lock, or if a lock is expired - creating a new one
-        // This cannot be larger than the total supply
-        unchecked {
-            lockedBalance.amount += uint128(amount);
-        }
-        if (unlockTime > 0) {
-            lockedBalance.end = uint64(unlockTime);
+        // Adding to existing lock, or if a lock is expired - creating a new one
+        lockedBalance.amount += int128(int256(amount));
+        if (unlockTime != 0) {
+            lockedBalance.end = unlockTime;
         }
         mapLockedBalances[account] = lockedBalance;
 
@@ -323,24 +284,19 @@ contract VotingEscrowFuzzing  {
         // Both oldLocked.end could be current or expired (>/< block.timestamp)
         // amount == 0 (extend lock) or amount > 0 (add to lock or extend lock)
         // lockedBalance.end > block.timestamp (always)
-        _checkpoint(account, oldLocked, lockedBalance, uint128(supplyAfter));
-        if (amount > 0) {
-            // OLA is full standard token 
-            // with correct function transfer(address to, uint256 amount) public virtual returns (bool)
-            // we can avoid https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/utils/SafeERC20.sol#L29
-            //bool success = IERC20(token).transferFrom(msg.sender, address(this), amount);
-            //if (!success) {
-            //    revert TransferFailed(token, msg.sender, address(this), amount);
-            //}
+        _checkpoint(account, oldLocked, lockedBalance);
+
+        if (amount != 0) {
+            // IERC20(token).safeTransferFrom(from, address(this), amount);
         }
 
         emit Deposit(account, amount, lockedBalance.end, depositType, block.timestamp);
-        emit Supply(supplyBefore, supplyAfter);
+        emit Supply(supplyBefore, supplyBefore + amount);
     }
 
     /// @dev Record global data to checkpoint.
-    function checkpoint() external {
-        _checkpoint(address(0), LockedBalance(0, 0), LockedBalance(0, 0), uint128(supply));
+    function checkpoint() public {
+        _checkpoint(address(0), LockedBalance(0, 0), LockedBalance(0, 0));
     }
 
     /// @dev Deposits `amount` tokens for `account` and adds to the lock.
@@ -348,13 +304,7 @@ contract VotingEscrowFuzzing  {
     ///      cannot extend their locktime and deposit for a brand new user.
     /// @param account Account address.
     /// @param amount Amount to add.
-    function depositFor(address account, uint256 amount) external {
-        // Reentrancy guard
-        if (locked > 1) {
-            revert ();
-        }
-        locked = 2;
-
+    function depositFor(address account, uint256 amount) public {
         LockedBalance memory lockedBalance = mapLockedBalances[account];
         // Check if the amount is zero
         if (amount == 0) {
@@ -365,44 +315,29 @@ contract VotingEscrowFuzzing  {
             revert ();
         }
         // Check the lock expiry
-        if (lockedBalance.end < (block.timestamp + 1)) {
-            revert ();
-        }
-
-        // Need an explicit constraint
-        if(amount > type(uint128).max) {
+        if (lockedBalance.end <= block.timestamp) {
             revert ();
         }
         _depositFor(account, amount, 0, lockedBalance, DepositType.DEPOSIT_FOR_TYPE);
-        locked = 1;
     }
 
     /// @dev Deposits `amount` tokens for `msg.sender` and lock until `unlockTime`.
     /// @param amount Amount to deposit.
     /// @param unlockTime Time when tokens unlock, rounded down to a whole week.
-    function createLock(uint256 amount, uint256 unlockTime) external  {
-        // Reentrancy guard
-        if (locked > 1) {
-            revert ();
-        }
-        locked = 2;
-
+    function createLock(uint256 amount, uint256 unlockTime) public {
         // Lock time is rounded down to weeks
-        // Cannot practically overflow because block.timestamp + unlockTime (max 4 years) << 2^64-1
-        unchecked {
-            unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
-        }
+        uint256 unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
         // Check if the amount is zero
         if (amount == 0) {
             revert ();
         }
         // The locked balance must be zero in order to start the lock
-        if (lockedBalance.amount > 0) {
+        if (lockedBalance.amount != 0) {
             revert ();
         }
         // Check for the lock time correctness
-        if (unlockTime < (block.timestamp + 1)) {
+        if (unlockTime <= block.timestamp) {
             revert ();
         }
         // Check for the lock time not to exceed the MAXTIME
@@ -410,24 +345,12 @@ contract VotingEscrowFuzzing  {
             revert ();
         }
 
-        // Need an explicit constraint
-        if(amount > type(uint128).max) {
-            revert ();
-        }
-
         _depositFor(msg.sender, amount, unlockTime, lockedBalance, DepositType.CREATE_LOCK_TYPE);
-        locked = 1;
     }
 
     /// @dev Deposits `amount` additional tokens for `msg.sender` without modifying the unlock time.
     /// @param amount Amount of tokens to deposit and add to the lock.
-    function increaseAmount(uint256 amount) external {
-        // Reentrancy guard
-        if (locked > 1) {
-            revert ();
-        }
-        locked = 2;
-
+    function increaseAmount(uint256 amount) public {
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
         // Check if the amount is zero
         if (amount == 0) {
@@ -438,42 +361,28 @@ contract VotingEscrowFuzzing  {
             revert ();
         }
         // Check the lock expiry
-        if (lockedBalance.end < (block.timestamp + 1)) {
-            revert ();
-        }
-        // Need an explicit constraint
-        if(amount > type(uint128).max) {
+        if (lockedBalance.end <= block.timestamp) {
             revert ();
         }
 
         _depositFor(msg.sender, amount, 0, lockedBalance, DepositType.INCREASE_LOCK_AMOUNT);
-        locked = 1;
     }
 
     /// @dev Extends the unlock time.
     /// @param unlockTime New tokens unlock time.
-    function increaseUnlockTime(uint256 unlockTime) external {
-        // Reentrancy guard
-        if (locked > 1) {
-            revert ();
-        }
-        locked = 2;
-
+    function increaseUnlockTime(uint256 unlockTime) public {
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
-        // Cannot practically overflow because block.timestamp + unlockTime (max 4 years) << 2^64-1
-        unchecked {
-            unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
-        }
+        uint256 unlockTime = ((block.timestamp + unlockTime) / WEEK) * WEEK;
         // The locked balance must already exist
         if (lockedBalance.amount == 0) {
             revert ();
         }
         // Check the lock expiry
-        if (lockedBalance.end < (block.timestamp + 1)) {
+        if (lockedBalance.end <= block.timestamp) {
             revert ();
         }
         // Check for the lock time correctness
-        if (unlockTime < (lockedBalance.end + 1)) {
+        if (unlockTime <= lockedBalance.end) {
             revert ();
         }
         // Check for the lock time not to exceed the MAXTIME
@@ -482,96 +391,29 @@ contract VotingEscrowFuzzing  {
         }
 
         _depositFor(msg.sender, 0, unlockTime, lockedBalance, DepositType.INCREASE_UNLOCK_TIME);
-        locked = 1;
     }
 
     /// @dev Withdraws all tokens for `msg.sender`. Only possible if the lock has expired.
-    function withdraw() external {
-        // Reentrancy guard
-        if (locked > 1) {
-            revert ();
-        }
-        locked = 2;
-
+    function withdraw() public {
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
         if (lockedBalance.end > block.timestamp) {
             revert ();
         }
-        uint256 amount = uint256(lockedBalance.amount);
+        uint256 amount = uint256(int256(lockedBalance.amount));
 
         mapLockedBalances[msg.sender] = LockedBalance(0,0);
         uint256 supplyBefore = supply;
-        uint256 supplyAfter;
-        // The amount cannot be less than the total supply
-        unchecked {
-            supplyAfter = supplyBefore - amount;
-            supply = supplyAfter;
-        }
+        supply = supplyBefore - amount;
+
         // oldLocked can have either expired <= timestamp or zero end
         // lockedBalance has only 0 end
         // Both can have >= 0 amount
-        _checkpoint(msg.sender, lockedBalance, LockedBalance(0,0), uint128(supplyAfter));
+        _checkpoint(msg.sender, lockedBalance, LockedBalance(0,0));
 
         emit Withdraw(msg.sender, amount, block.timestamp);
-        emit Supply(supplyBefore, supplyAfter);
+        emit Supply(supplyBefore, supply);
 
-        //bool success = IERC20(token).transfer(msg.sender, amount);
-        //if (!success) {
-        //    revert TransferFailed(token, address(this), msg.sender, amount);
-        //}
-        locked = 1;
-    }
-
-    /// @dev Finds a closest point that has a specified block number.
-    /// @param blockNumber Block to find.
-    /// @param account Account address for user points.
-    /// @return point Point with the approximate index number for the specified block.
-    /// @return minPointNumber Point number.
-    function _findPointByBlock(uint256 blockNumber, address account) internal view
-        returns (PointVoting memory point, uint256 minPointNumber)
-    {
-        // Get the last available point number
-        uint256 maxPointNumber;
-        if (account == address(0)) {
-            maxPointNumber = totalNumPoints;
-        } else {
-            maxPointNumber = mapUserPoints[account].length;
-            if (maxPointNumber == 0) {
-                return (point, minPointNumber);
-            }
-            // Already checked for > 0 in this case
-            unchecked {
-                maxPointNumber -= 1;
-            }
-        }
-
-        // Binary search that will be always enough for 128-bit numbers
-        for (uint256 i = 0; i < 128; ++i) {
-            if ((minPointNumber + 1) > maxPointNumber) {
-                break;
-            }
-            uint256 mid = (minPointNumber + maxPointNumber + 1) / 2;
-
-            // Choose the source of points
-            if (account == address(0)) {
-                point = mapSupplyPoints[mid];
-            } else {
-                point = mapUserPoints[account][mid];
-            }
-
-            if (point.blockNumber < (blockNumber + 1)) {
-                minPointNumber = mid;
-            } else {
-                maxPointNumber = mid - 1;
-            }
-        }
-
-        // Get the found point
-        if (account == address(0)) {
-            point = mapSupplyPoints[minPointNumber];
-        } else {
-            point = mapUserPoints[account][minPointNumber];
-        }
+        // IERC20(token).safeTransfer(msg.sender, amount);
     }
 
     /// @dev Echidna fuzzer

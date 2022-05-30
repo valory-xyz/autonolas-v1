@@ -71,13 +71,13 @@ interface IStructs {
     }
 
     // Structure for voting escrow points
-    // The struct size is now two storage slots of 2 * uint256 (128 + 128 + 64 + 64 + 128)
+    // The struct size is now three storage slots of 2 * uint256 (128 + 128 + 64 + 64 + 128)
     struct PointVoting {
         // w(i) = at + b (bias)
         int128 bias;
         // dw / dt = a (slope)
         int128 slope;
-        // Timestamp. It will never practically be bigger
+        // Timestamp. It will never practically be bigger than 2^64 - 1
         uint64 ts;
         // Block number. It will not be bigger than the timestamp
         uint64 blockNumber;

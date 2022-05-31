@@ -29,7 +29,7 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
         minter = msg.sender;
         timeLaunch = block.timestamp;
         if (_supply > 0) {
-            super._mint(msg.sender, _supply);
+            _mint(msg.sender, _supply);
         }
     }
 

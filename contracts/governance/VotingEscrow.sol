@@ -118,7 +118,15 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
     /// @param _token Token address.
     /// @param _name Token name.
     /// @param _symbol Token symbol.
-    constructor(address _token, string memory _name, string memory _symbol)
+    /// @param _addresses Set of addresses for the seed function.
+    /// @param _amounts Correspondent set of amounts.
+    constructor(
+        address _token,
+        string memory _name,
+        string memory _symbol,
+        address[] memory _addresses,
+        uint256[] memory _amounts
+    )
     {
         token = _token;
         name = _name;
@@ -126,6 +134,31 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
         // Create initial point such that default timestamp and block number are not zero
         // See cast specification in the PointVoting structure
         mapSupplyPoints[0] = PointVoting(0, 0, uint64(block.timestamp), uint64(block.number), 0);
+        // Run the seed routine. Called only once
+        // NOTE: The amounts MUST be pre-approved for address(this) before deployment.
+        _seed(_addresses, _amounts);
+    }
+
+    /// @dev Locks amounts for specified accounts.
+    /// @param addresses Set of addresses.
+    /// @param amounts Correspondent set of amounts.
+    function _seed(address[] memory addresses, uint256[] memory amounts) private {
+        // Setting lock times
+        uint256[] memory lockTimes = new uint256[](4);
+        lockTimes[0] = 1 days * 365;
+        lockTimes[1] = 2 days * 365;
+        lockTimes[3] = 3 days * 365;
+        lockTimes[4] = MAXTIME;
+
+        // Locking amounts for specified addresses
+        for (uint256 i = 0; i < addresses.length; ++i) {
+            address account = addresses[i];
+            uint256 amount = amounts[i];
+            LockedBalance memory lockedBalance = mapLockedBalances[account];
+            for (uint iYear = 0; iYear < 4; ++iYear) {
+                _depositFor(account, amount, lockTimes[iYear], lockedBalance, DepositType.CREATE_LOCK_TYPE);
+            }
+        }
     }
 
     /// @dev Gets the most recently recorded user point for `account`.

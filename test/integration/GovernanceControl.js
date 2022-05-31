@@ -453,6 +453,10 @@ describe("Governance integration", function () {
                 governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
                     [callData], descriptionHash)
             ).to.be.revertedWith("Governor: proposal not successful");
+
+            // State 3 means the proposal is defeated
+            const proposalState = await governorBravo.state(proposalId);
+            expect(proposalState).to.equal(3);
         });
 
         it("Winning the proposal with multiple voters", async function () {

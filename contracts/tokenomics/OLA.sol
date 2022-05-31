@@ -52,7 +52,7 @@ contract OLA is IErrors, Ownable, ERC20, ERC20Burnable, ERC20Permit {
     /// @param amount OLA token amount.
     function mint(address account, uint256 amount) public onlyManager {
         if (inflationControl(amount)) {
-            super._mint(account, amount);
+            _mint(account, amount);
         }
     }
 

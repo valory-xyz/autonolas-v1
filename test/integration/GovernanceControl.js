@@ -369,13 +369,15 @@ describe("Governance integration", function () {
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
-            await ve.createLock(fiveOLABalance, lockDuration);
-            // Add a bit more
+            // Lock 5 OLA for each signer, which is lower than the initial proposal threshold by a bit
+            for (let i = 0; i < 4; i++) {
+                await ve.connect(signers[i]).createLock(fiveOLABalance, lockDuration);
+            }
+            // Add one more OLA to the signers[0]
             await ve.increaseAmount(oneOLABalance);
 
-            // Set quorum to 20%
-            const newQuorum = 20;
+            // Set quorum to 30%
+            const newQuorum = 30;
             // Set initial voting delay, period and mindelay as 10 blocks
             const newInitialVotingDelay = 10;
             const newInitialVotingPeriod = 10;
@@ -425,10 +427,14 @@ describe("Governance integration", function () {
                 ethers.provider.send("evm_mine");
             }
 
-            // Have other signers cast votes
-            await ve.connect(signers[1]).createLock(fiveOLABalance, lockDuration);
-            await ve.connect(signers[2]).createLock(fiveOLABalance, lockDuration);
-            await ve.connect(signers[3]).createLock(fiveOLABalance, lockDuration);
+            // Get the snapshot block number of when the voting starts
+            const snapshot = await governorBravo.proposalSnapshot(proposalId);
+            const totalSupplySnapshot = await ve.getPastTotalSupply(snapshot);
+            // Lock more OLA after the voting has started
+            await ve.connect(signers[1]).increaseAmount(oneOLABalance);
+            const expectedTotalSupplySnapshot = await ve.getPastTotalSupply(snapshot);
+            // The total voting power after the voting start does not change even with new locking of OLA
+            expect(Number(totalSupplySnapshot)).to.equal(Number(expectedTotalSupplySnapshot));
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
@@ -443,7 +449,7 @@ describe("Governance integration", function () {
             await governorBravo.connect(signers[1]).castVote(proposalId, 0);
             await governorBravo.connect(signers[2]).castVote(proposalId, 0);
             // The total amount of voting power is 6 + 5 + 5 + 5 = 21. 6 voted for, 10 against
-            // The proposal is not successful
+            // The proposal is not successful, by votes and by quorum: 30% is 6.3 OLA vs 6 OLA voted for
             // Wait for past the voting period number of blocks
             for (let i = 0; i < newInitialVotingPeriod; i++) {
                 ethers.provider.send("evm_mine");

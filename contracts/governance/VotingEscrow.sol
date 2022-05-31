@@ -145,17 +145,16 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
     function _seed(address[] memory addresses, uint256[] memory amounts) private {
         // Setting lock times
         uint256[] memory lockTimes = new uint256[](4);
-        lockTimes[0] = 1 days * 365;
-        lockTimes[1] = 2 days * 365;
-        lockTimes[3] = 3 days * 365;
-        lockTimes[4] = MAXTIME;
+        for (uint256 i = 0; i < 4; ++i) {
+            lockTimes[i] = i * 365 * 86400;
+        }
 
         // Locking amounts for specified addresses
-        for (uint256 i = 0; i < addresses.length; ++i) {
-            address account = addresses[i];
-            uint256 amount = amounts[i];
-            LockedBalance memory lockedBalance = mapLockedBalances[account];
+        for (uint256 i = 0; i < addresses.length; i += 4) {
             for (uint iYear = 0; iYear < 4; ++iYear) {
+                address account = addresses[i + iYear];
+                uint256 amount = amounts[i + iYear];
+                LockedBalance memory lockedBalance = mapLockedBalances[account];
                 _depositFor(account, amount, lockTimes[iYear], lockedBalance, DepositType.CREATE_LOCK_TYPE);
             }
         }

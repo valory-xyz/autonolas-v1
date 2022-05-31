@@ -71,7 +71,7 @@ interface IStructs {
     }
 
     // Structure for voting escrow points
-    // The struct size is now three storage slots of 2 * uint256 (128 + 128 + 64 + 64 + 128)
+    // The struct size is two storage slots of 2 * uint256 (128 + 128 + 64 + 64 + 128)
     struct PointVoting {
         // w(i) = at + b (bias)
         int128 bias;

@@ -179,7 +179,7 @@ async function main() {
     console.log("Timelock deployed to", timelock.address);
 
     // Deploy Governance Bravo
-    const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+    const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
     const governorBravo = await GovernorBravo.deploy(escrow.address, timelock.address, initialVotingDelay,
         initialVotingPeriod, initialProposalThreshold, quorum);
     await governorBravo.deployed();

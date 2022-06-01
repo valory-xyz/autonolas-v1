@@ -63,7 +63,7 @@ describe("Governance integration", function () {
             // console.log("Timelock deployed to", timelock.address);
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
@@ -114,7 +114,7 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
@@ -185,7 +185,7 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
@@ -287,7 +287,7 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
             await governorBravo.deployed();
@@ -391,7 +391,7 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
                 newInitialVotingPeriod, initialProposalThreshold, newQuorum);
             await governorBravo.deployed();
@@ -502,7 +502,7 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
             const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
                 newInitialVotingPeriod, initialProposalThreshold, newQuorum);
             await governorBravo.deployed();

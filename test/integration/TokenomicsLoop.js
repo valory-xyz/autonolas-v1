@@ -118,7 +118,7 @@ describe("Tokenomics integration", async () => {
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(ola.address, deployer.address, tokenomics.address, deployer.address);
         depository = await depositoryFactory.deploy(ola.address, treasury.address, tokenomics.address);
-        ve = await veFactory.deploy(ola.address, "Governance OLA", "veOLA");
+        ve = await veFactory.deploy(ola.address, "Voting Escrow OLA", "veOLA");
         dispenser = await dispenserFactory.deploy(ola.address, tokenomics.address);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address, ve.address);

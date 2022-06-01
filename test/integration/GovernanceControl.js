@@ -41,7 +41,7 @@ describe("Governance integration", function () {
 
         // Dispenser address is irrelevant in these tests, so its contract is passed as a zero address
         const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-        ve = await VotingEscrow.deploy(token.address, "Governance OLA", "veOLA");
+        ve = await VotingEscrow.deploy(token.address, "Voting Escrow OLA", "veOLA");
         await ve.deployed();
 
         signers = await ethers.getSigners();

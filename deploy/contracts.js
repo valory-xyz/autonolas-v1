@@ -173,7 +173,7 @@ module.exports = async () => {
     console.log("OLA token deployed to", token.address);
 
     const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-    const escrow = await VotingEscrow.deploy(token.address, "Governance OLA", "veOLA");
+    const escrow = await VotingEscrow.deploy(token.address, "Voting Escrow OLA", "veOLA");
     await escrow.deployed();
     console.log("Voting Escrow deployed to", escrow.address);
 
@@ -186,7 +186,7 @@ module.exports = async () => {
     console.log("Timelock deployed to", timelock.address);
 
     // Deploy Governance Bravo
-    const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+    const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
     const governorBravo = await GovernorBravo.deploy(escrow.address, timelock.address, initialVotingDelay,
         initialVotingPeriod, initialProposalThreshold, quorum);
     await governorBravo.deployed();
@@ -207,7 +207,7 @@ module.exports = async () => {
         "OLA": token.address,
         "veOLA": escrow.address,
         "timelock": timelock.address,
-        "GovernorBravoOLA": governorBravo.address,
+        "GovernorOLA": governorBravo.address,
         "Service multisig": multisig,
         "agents": {
             "addresses": [agentInstances[0], agentInstances[1], agentInstances[2], agentInstances[3]],

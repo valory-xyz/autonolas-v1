@@ -77,9 +77,9 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
         INCREASE_UNLOCK_TIME
     }
 
-    event Deposit(address provider, uint256 amount, uint256 locktime, DepositType depositType, uint256 ts);
-    event Withdraw(address indexed provider, uint256 amount, uint256 ts);
-    event Supply(uint256 prevSupply, uint256 supply);
+    event Deposit(address indexed account, uint256 amount, uint256 locktime, DepositType depositType, uint256 ts);
+    event Withdraw(address indexed account, uint256 amount, uint256 ts);
+    event Supply(uint256 prevSupply, uint256 curSupply);
 
     // 1 week time
     uint64 internal constant WEEK = 1 weeks;
@@ -397,7 +397,7 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
     /// @dev Deposits `amount` tokens for `msg.sender` and lock until `unlockTime`.
     /// @param amount Amount to deposit.
     /// @param unlockTime Time when tokens unlock, rounded down to a whole week.
-    function createLock(uint256 amount, uint256 unlockTime) external  {
+    function createLock(uint256 amount, uint256 unlockTime) external {
         // Reentrancy guard
         if (locked > 1) {
             revert ReentrancyGuard();
@@ -516,7 +516,7 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
         }
         uint256 amount = uint256(lockedBalance.amount);
 
-        mapLockedBalances[msg.sender] = LockedBalance(0,0);
+        mapLockedBalances[msg.sender] = LockedBalance(0, 0);
         uint256 supplyBefore = supply;
         uint256 supplyAfter;
         // The amount cannot be less than the total supply
@@ -527,7 +527,7 @@ contract VotingEscrow is IErrors, IStructs, IVotes, IERC20, IERC165 {
         // oldLocked can have either expired <= timestamp or zero end
         // lockedBalance has only 0 end
         // Both can have >= 0 amount
-        _checkpoint(msg.sender, lockedBalance, LockedBalance(0,0), uint128(supplyAfter));
+        _checkpoint(msg.sender, lockedBalance, LockedBalance(0, 0), uint128(supplyAfter));
 
         emit Withdraw(msg.sender, amount, block.timestamp);
         emit Supply(supplyBefore, supplyAfter);

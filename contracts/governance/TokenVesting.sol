@@ -87,9 +87,8 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
 
     /// @dev Deposits `amount` tokens for the `account` and lock until `vestingTime`.
     /// @param amount Amount to deposit.
-    /// @param vestingTime Maturity time of all vested tokens.
     /// @param account Target account address.
-    function createLockFor(uint256 amount, uint256 vestingTime, address account) external {
+    function createLockFor(uint256 amount, address account) external {
         // Reentrancy guard
         if (locked > 1) {
             revert ReentrancyGuard();
@@ -104,14 +103,6 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
         // The locked balance must be zero in order to start the lock
         if (lockedBalance.amount > 0) {
             revert LockedValueNotZero(account, uint256(lockedBalance.amount));
-        }
-        // Check for the lock time correctness
-        if (vestingTime < STEP_TIME) {
-            revert UnlockTimeIncorrect(account, STEP_TIME, vestingTime);
-        }
-        // Check for the lock time not to exceed the VESTING_STEPS
-        if (vestingTime > VESTING_STEPS) {
-            revert MaxUnlockTimeReached(account, VESTING_STEPS, vestingTime);
         }
         lockedBalance.start = uint64(block.timestamp);
         lockedBalance.lastRelease = lockedBalance.start;
@@ -141,7 +132,7 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
             }
         }
 
-        emit Vest(account, amount, block.timestamp, vestingTime);
+        emit Vest(account, amount, block.timestamp, block.timestamp + TOTAL_VESTING_TIME);
         emit Supply(supplyBefore, supplyAfter);
         
         locked = 1;

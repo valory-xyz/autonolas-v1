@@ -156,7 +156,7 @@ contract buOLA is IErrors, IStructs, IERC20, IERC165 {
         if (amount == 0) {
             revert LockNotExpired(msg.sender, lockedBalance.lastRelease, block.timestamp);
         }
-        
+
         unchecked {
             // Update the last release time rounded by the locking step
             // Cannot practically overflow because block.timestamp + unlockTime (max 4 years) << 2^64-1

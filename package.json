@@ -1,5 +1,5 @@
 {
-  "name": "component-registry",
+  "name": "onchain-protocol",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/valory-xyz/component-registry.git"
+    "url": "git+https://github.com/valory-xyz/onchain-protocol.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/valory-xyz/component-registry/issues"
+    "url": "https://github.com/valory-xyz/onchain-protocol/issues"
   },
-  "homepage": "https://github.com/valory-xyz/component-registry#readme",
+  "homepage": "https://github.com/valory-xyz/onchain-protocol#readme",
   "devDependencies": {
     "@gnosis.pm/mock-contract": "4.0.0",
     "@gnosis.pm/safe-contracts": "^1.3.0",

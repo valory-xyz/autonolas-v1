@@ -166,7 +166,7 @@ async function main() {
     console.log("OLA token deployed to", token.address);
 
     const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-    const escrow = await VotingEscrow.deploy(token.address, "Governance OLA", "veOLA");
+    const escrow = await VotingEscrow.deploy(token.address, "Voting Escrow OLA", "veOLA");
     await escrow.deployed();
     console.log("Voting Escrow deployed to", escrow.address);
 
@@ -179,7 +179,7 @@ async function main() {
     console.log("Timelock deployed to", timelock.address);
 
     // Deploy Governance Bravo
-    const GovernorBravo = await ethers.getContractFactory("GovernorBravoOLA");
+    const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
     const governorBravo = await GovernorBravo.deploy(escrow.address, timelock.address, initialVotingDelay,
         initialVotingPeriod, initialProposalThreshold, quorum);
     await governorBravo.deployed();

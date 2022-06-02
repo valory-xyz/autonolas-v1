@@ -6,34 +6,34 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "../interfaces/IErrors.sol";
 import "../interfaces/IStructs.sol";
 
-/// @title Token Vesting - OLA vesting contract
+/// @title Burnable Locked OLA Token - OLA burnable contract
 /// @author Aleksandr Kuperman - <aleksandr.kuperman@valory.xyz>
 
-// Struct for storing balance, lock and unlock vesting time
+// Struct for storing balance, lock and unlock time
 // The struct size is one storage slot of uint256 (128 + 64 + 64)
 struct LockedBalance {
     // Token amount
     uint128 amount;
-    // Vesting lock time
+    // Lock time start
     uint64 start;
-    // Number of steps released
+    // Time of the last release
     uint64 lastRelease;
 }
 
 /// @notice This token supports the ERC20 interface specifications except for transfers.
-contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
-    event Vest(address indexed account, uint256 amount, uint256 start, uint256 end);
+contract buOLA is IErrors, IStructs, IERC20, IERC165 {
+    event Lock(address indexed account, uint256 amount, uint256 start, uint256 end);
     event Release(address indexed account, uint256 amount, uint256 ts);
     event Revoke(address indexed account, uint256 amount, uint256 ts);
     event Supply(uint256 prevSupply, uint256 curSupply);
     event OwnerUpdated(address indexed owner);
 
-    // Vesting step (1 year)
+    // Locking step (1 year)
     uint64 internal constant STEP_TIME = 365 * 86400;
-    // Number of vesting steps (4 years)
-    uint64 internal constant VESTING_STEPS = 4;
-    // Total vesting time
-    uint64 internal constant TOTAL_VESTING_TIME = STEP_TIME * VESTING_STEPS;
+    // Number of locking steps (4 years)
+    uint64 internal constant LOCKING_STEPS = 4;
+    // Total locking time
+    uint64 internal constant TOTAL_LOCKING_TIME = STEP_TIME * LOCKING_STEPS;
     // Number of decimals
     uint8 public constant decimals = 18;
 
@@ -85,10 +85,10 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
         emit OwnerUpdated(newOwner);
     }
 
-    /// @dev Deposits `amount` tokens for the `account` and lock until `vestingTime`.
-    /// @param amount Amount to deposit.
+    /// @dev Deposits `amount` tokens for the `account` and lock for `TOTAL_LOCKING_TIME`.
     /// @param account Target account address.
-    function createLockFor(uint256 amount, address account) external {
+    /// @param amount Amount to deposit.
+    function createLockFor(address account, uint256 amount) external {
         // Reentrancy guard
         if (locked > 1) {
             revert ReentrancyGuard();
@@ -123,18 +123,18 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
             supplyAfter = supplyBefore + amount;
             supply = supplyAfter;
         }
-        
+
         if (amount > 0) {
             // OLA is a standard ERC20 token with a original function transfer() that returns bool
-            bool success = IERC20(token).transferFrom(msg.sender, address(this), amount);
+            bool success = IERC20(token).transferFrom(account, address(this), amount);
             if (!success) {
                 revert TransferFailed(token, msg.sender, address(this), amount);
             }
         }
 
-        emit Vest(account, amount, block.timestamp, block.timestamp + TOTAL_VESTING_TIME);
+        emit Lock(account, amount, block.timestamp, block.timestamp + TOTAL_LOCKING_TIME);
         emit Supply(supplyBefore, supplyAfter);
-        
+
         locked = 1;
     }
 
@@ -150,17 +150,19 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
 
         // Calculate the amount to release
         uint256 amount;
-        uint256 vestedSteps;
-        (amount, vestedSteps) = releasableAmount(msg.sender);
-        // Check if at least one vesting step has passed
+        uint256 lockedSteps;
+        (amount, lockedSteps) = releasableAmount(msg.sender);
+        // Check if at least one locking step has passed
         if (amount == 0) {
             revert LockNotExpired(msg.sender, lockedBalance.lastRelease, block.timestamp);
         }
-
-        // Update the last release time rounded by the vesting step
-        // Cannot practically overflow because block.timestamp + vestingTime (max 4 years) << 2^64-1
+        
         unchecked {
-            lockedBalance.lastRelease = lockedBalance.start + uint64(vestedSteps) * STEP_TIME;
+            // Update the last release time rounded by the locking step
+            // Cannot practically overflow because block.timestamp + unlockTime (max 4 years) << 2^64-1
+            lockedBalance.lastRelease += uint64(lockedSteps) * STEP_TIME;
+            // Update the account locked amount
+            lockedBalance.amount -= uint128(amount);
         }
         mapLockedBalances[msg.sender] = lockedBalance;
 
@@ -191,32 +193,34 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
         }
 
         LockedBalance memory lockedBalance = mapLockedBalances[account];
-        // Current vested time
-        uint64 vestedSteps;
+        // Current locked time
+        uint64 lockedSteps;
         // Time in the future will be greater than the start time
         unchecked {
-            vestedSteps = (uint64(block.timestamp) - lockedBalance.start) / STEP_TIME;
+            lockedSteps = (uint64(block.timestamp) - lockedBalance.start) / STEP_TIME;
         }
-        
-        // If the number of vested steps is greater than the maturity, there is nothing to revoke
-        if ((vestedSteps + 1) > VESTING_STEPS) {
-            revert LockExpired(account, lockedBalance.start + TOTAL_VESTING_TIME, block.timestamp);
+
+        // If the number of locked steps is greater than the maturity, there is nothing to revoke
+        if ((lockedSteps + 1) > LOCKING_STEPS) {
+            revert LockExpired(account, lockedBalance.start + TOTAL_LOCKING_TIME, block.timestamp);
         }
         // Calculate what is left from non-matured tokens
-        // At this stage vestedSteps cannot be bigger than VESTING_STEPS
+        // At this stage lockedSteps cannot be bigger than LOCKING_STEPS
         unchecked {
-            vestedSteps = VESTING_STEPS - vestedSteps;
+            lockedSteps = LOCKING_STEPS - lockedSteps;
         }
-
-        // Update the last release time rounded by the vesting step (the rest until this date belongs to the account)
-        // Cannot practically overflow because block.timestamp + vestingTime (max 4 years) << 2^64-1
-        unchecked {
-            lockedBalance.lastRelease = lockedBalance.start + vestedSteps * STEP_TIME;
-        }
-        mapLockedBalances[msg.sender] = lockedBalance;
 
         // Calculate amount to revoke and burn
-        uint256 amount = uint256((lockedBalance.amount * vestedSteps) / VESTING_STEPS);
+        uint256 amount = uint256((lockedBalance.amount * lockedSteps) / LOCKING_STEPS);
+
+        unchecked {
+            // Update the last release time rounded by the locking step (the rest until this date belongs to the account)
+            // Cannot practically overflow because block.timestamp + unlockTime (max 4 years) << 2^64-1
+            lockedBalance.lastRelease += lockedSteps * STEP_TIME;
+            // Update the account locked amount
+            lockedBalance.amount -= uint128(amount);
+        }
+        mapLockedBalances[msg.sender] = lockedBalance;
 
         uint256 supplyBefore = supply;
         uint256 supplyAfter;
@@ -235,7 +239,7 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
         }
     }
 
-    /// @dev Gets the account vesting balance.
+    /// @dev Gets the account locking balance.
     /// @param account Account address.
     /// @return balance Account balance.
     function balanceOf(address account) public view override returns (uint256 balance) {
@@ -251,28 +255,28 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
     /// @dev Gets the account releasable amount.
     /// @param account Account address.
     /// @return amount Amount to release.
-    /// @return vestedSteps Number of vested steps to release.
-    function releasableAmount(address account) public view returns (uint256 amount, uint256 vestedSteps) {
+    /// @return lockedSteps Number of locked steps to release.
+    function releasableAmount(address account) public view returns (uint256 amount, uint256 lockedSteps) {
         LockedBalance memory lockedBalance = mapLockedBalances[msg.sender];
-        // Current vested time
+        // Current locked time
         uint64 releasedSteps;
         // Time in the future will be greater than the start time
         unchecked {
             releasedSteps = (lockedBalance.lastRelease - lockedBalance.start) / STEP_TIME;
-            // Round vested time to the number of steps
-            vestedSteps = (uint64(block.timestamp) - lockedBalance.lastRelease) / STEP_TIME;
+            // Round locked time to the number of steps
+            lockedSteps = (uint64(block.timestamp) - lockedBalance.lastRelease) / STEP_TIME;
         }
 
-        // If the number of vested steps is greater than the maturity, all the available tokens are unlocked
-        if ((vestedSteps + releasedSteps + 1) > VESTING_STEPS) {
-            // VESTING_STEPS is always bigger or equal to releasedSteps
+        // If the number of locked steps is greater than the maturity, all the available tokens are unlocked
+        if ((lockedSteps + releasedSteps + 1) > LOCKING_STEPS) {
+            // LOCKING_STEPS is always bigger or equal to releasedSteps
             unchecked {
-                vestedSteps = VESTING_STEPS - releasedSteps;
+                lockedSteps = LOCKING_STEPS - releasedSteps;
             }
         }
 
         // Calculate the amount to release
-        amount = uint256((lockedBalance.amount * vestedSteps) / VESTING_STEPS);
+        amount = uint256((lockedBalance.amount * lockedSteps) / LOCKING_STEPS);
     }
 
     /// @dev Gets the `account`'s next possible release time.
@@ -282,11 +286,11 @@ contract TokenVesting is IErrors, IStructs, IERC20, IERC165 {
         releaseTime = uint256(mapLockedBalances[account].lastRelease + STEP_TIME);
     }
 
-    /// @dev Gets the `account`'s vesting end time.
+    /// @dev Gets the `account`'s locking end time.
     /// @param account Account address.
-    /// @return vestingTime Maturity time.
-    function vestingEnd(address account) external view returns (uint256 vestingTime) {
-        vestingTime = uint256(mapLockedBalances[account].start + TOTAL_VESTING_TIME);
+    /// @return unlockTime Maturity time.
+    function lockedEnd(address account) external view returns (uint256 unlockTime) {
+        unlockTime = uint256(mapLockedBalances[account].start + TOTAL_LOCKING_TIME);
     }
 
     /// @dev Gets information about the interface support.

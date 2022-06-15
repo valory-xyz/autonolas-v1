@@ -34,7 +34,7 @@ jobs:
       - name: Run tests
         run: ./node_modules/.bin/hardhat test
       - name: Run script(s)
-        run: ./node_modules/.bin/hardhat run scripts/deploy.js
+        run: ./node_modules/.bin/hardhat run deploy/contracts.js
 
       # Run hardhat coverage and upload codecov report
       - name: Remove depository lp coverage for now due to the Uniswap issue

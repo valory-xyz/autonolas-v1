@@ -1,4 +1,4 @@
-/*global ethers, process*/
+/*global ethers, describe, it*/
 
 describe("Node deployment", function () {
     it("Deployment flow", async function () {

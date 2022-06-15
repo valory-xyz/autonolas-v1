@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18.3.0-alpine3.14
 RUN mkdir -p /code
 WORKDIR /code
 ADD . /code

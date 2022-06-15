@@ -10,8 +10,12 @@ jobs:
     continue-on-error: False
     runs-on: ubuntu-latest
     steps:
-      # Clone the code and install required modules
-      - uses: actions/checkout@v2
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+#        with:
+#          submodules: recursive
+
+      # Install modules
       - name: Install modules
         run: yarn
 
@@ -19,57 +23,57 @@ jobs:
       - name: Run ESLint
         run: ./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx
       - name: Run solhint
-        run: ./node_modules/.bin/solhint contracts/interfaces/*.sol contracts/governance/*.sol contracts/multisigs/*.sol contracts/registries/*.sol contracts/test/*.sol contracts/tokenomics/*.sol
+        run: ./node_modules/.bin/solhint contracts/*.sol
 
-      # Compile the code
-      - name: Compile, adjust uniswap library hash and recompile again
-        run: npm run compile
-
-      # Run tests and deploy script(s)
-      - name: Run tests
-        run: ./node_modules/.bin/hardhat test
-      - name: Run script(s)
-        run: ./node_modules/.bin/hardhat run scripts/deploy.js
-
-      # Run hardhat coverage and upload codecov report
-      - name: Remove depository lp coverage for now due to the Uniswap issue
-        run: rm -rf test/unit/tokenomics/depository test/integration/Tokenomics*
-      - name: Solidity coverage summary
-        run: ./node_modules/.bin/hardhat coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-
-  docker:
-    runs-on: ubuntu-latest
-    needs: build
-    if:
-      contains('
-        refs/heads/main
-      ', github.ref)
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: valory
-          password: ${{ secrets.ACCESS_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        if: github.ref == 'refs/heads/main'
-        with:
-          context: .
-          push: true
-          tags: valory/${{ github.event.repository.name }}:main # note need to get the base ref to force for the branch
+#      # Compile the code
+#      - name: Compile, adjust uniswap library hash and recompile again
+#        run: npm run compile
+#
+#      # Run tests and deploy script(s)
+#      - name: Run tests
+#        run: ./node_modules/.bin/hardhat test
+#      - name: Run script(s)
+#        run: ./node_modules/.bin/hardhat run scripts/deploy.js
+#
+#      # Run hardhat coverage and upload codecov report
+#      - name: Remove depository lp coverage for now due to the Uniswap issue
+#        run: rm -rf test/Tokenomics*
+#      - name: Solidity coverage summary
+#        run: ./node_modules/.bin/hardhat coverage
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          directory: ./coverage
+#          flags: unittests
+#          name: codecov-umbrella
+#          fail_ci_if_error: false
+#
+#  docker:
+#    runs-on: ubuntu-latest
+#    needs: build
+#    if:
+#      contains('
+#        refs/heads/main
+#      ', github.ref)
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: valory
+#          password: ${{ secrets.ACCESS_TOKEN }}
+#      - name: Build and push
+#        uses: docker/build-push-action@v2
+#        if: github.ref == 'refs/heads/main'
+#        with:
+#          context: .
+#          push: true
+#          tags: valory/${{ github.event.repository.name }}:main # note need to get the base ref to force for the branch
 

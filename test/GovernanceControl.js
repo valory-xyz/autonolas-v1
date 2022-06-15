@@ -35,18 +35,18 @@ describe("Governance integration", function () {
         testServiceRegistry = await TestServiceRegistry.deploy("service registry", "SERVICE", AddressZero);
         await testServiceRegistry.deployed();
 
-        const Token = await ethers.getContractFactory("OLA");
-        token = await Token.deploy(0);
+        const Token = await ethers.getContractFactory("OLAS");
+        token = await Token.deploy();
         await token.deployed();
 
         // Dispenser address is irrelevant in these tests, so its contract is passed as a zero address
-        const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-        ve = await VotingEscrow.deploy(token.address, "Voting Escrow OLA", "veOLA");
+        const VE = await ethers.getContractFactory("veOLAS");
+        ve = await VE.deploy(token.address, "Voting Escrow OLAS", "veOLAS");
         await ve.deployed();
 
         signers = await ethers.getSigners();
 
-        // Mint 10 OLA worth of OLA tokens by default
+        // Mint 10 OLAS worth of OLAS tokens by default
         await token.mint(signers[0].address, tenOLABalance);
         const balance = await token.balanceOf(signers[0].address);
         expect(ethers.utils.formatEther(balance) == 10).to.be.true;
@@ -63,11 +63,11 @@ describe("Governance integration", function () {
             // console.log("Timelock deployed to", timelock.address);
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
-            await governorBravo.deployed();
-            // console.log("Governor Bravo deployed to", governorBravo.address);
+            await governor.deployed();
+            // console.log("Governor Bravo deployed to", governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
@@ -92,16 +92,16 @@ describe("Governance integration", function () {
             const balance = await token.balanceOf(deployer.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve signers[0] for 10 OLA by voting ve
+            // Approve signers[0] for 10 OLAS by voting ve
             await token.connect(deployer).approve(ve.address, tenOLABalance);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as OLA amount locked:
+            // This will result in voting power being almost exactly as OLAS amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
             await ve.connect(deployer).createLock(fiveOLABalance, lockDuration);
             // Add a bit more
             await ve.connect(deployer).increaseAmount(oneOLABalance);
@@ -114,18 +114,18 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
-            await governorBravo.deployed();
+            await governor.deployed();
 
-            // Grand governorBravo an admin, proposer and executor role in the timelock
+            // Grand governor an admin, proposer and executor role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-            await timelock.grantRole(adminRole, governorBravo.address);
+            await timelock.grantRole(adminRole, governor.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
-            await timelock.grantRole(proposerRole, governorBravo.address);
+            await timelock.grantRole(proposerRole, governor.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
-            await timelock.grantRole(executorRole, governorBravo.address);
+            await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
@@ -134,18 +134,18 @@ describe("Governance integration", function () {
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
             // Solidity overridden functions must be explicitly declared
             // https://github.com/ethers-io/ethers.js/issues/407
-            await governorBravo["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
+            await governor["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
                 [callData], proposalDescription);
 
             // Get the proposalId
             const descriptionHash = ethers.utils.id(proposalDescription);
-            const proposalId = await governorBravo.hashProposal([testServiceRegistry.address], [0], [callData],
+            const proposalId = await governor.hashProposal([testServiceRegistry.address], [0], [callData],
                 descriptionHash);
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
-            await governorBravo.castVote(proposalId, 1);
-            await governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
+            await governor.castVote(proposalId, 1);
+            await governor["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
                 [callData], descriptionHash);
 
             // Waiting for the next minDelay blocks to pass
@@ -153,7 +153,7 @@ describe("Governance integration", function () {
             ethers.provider.send("evm_mine");
 
             // Execute the proposed operation and check the execution result
-            await governorBravo["execute(uint256)"](proposalId);
+            await governor["execute(uint256)"](proposalId);
             const newValue = await testServiceRegistry.getControlValue();
             expect(newValue).to.be.equal(controlValue);
         });
@@ -163,16 +163,16 @@ describe("Governance integration", function () {
             const balance = await token.balanceOf(deployer.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve signers[0] for 10 OLA by voting ve
+            // Approve signers[0] for 10 OLAS by voting ve
             await token.connect(deployer).approve(ve.address, tenOLABalance);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as OLA amount locked:
+            // This will result in voting power being almost exactly as OLAS amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
             await ve.connect(deployer).createLock(fiveOLABalance, lockDuration);
             // Add a bit more
             await ve.connect(deployer).increaseAmount(oneOLABalance);
@@ -185,20 +185,20 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
-            await governorBravo.deployed();
+            await governor.deployed();
 
-            // Grand governorBravo an admin, proposer, executor and canceller role in the timelock
+            // Grand governor an admin, proposer, executor and canceller role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-            await timelock.grantRole(adminRole, governorBravo.address);
+            await timelock.grantRole(adminRole, governor.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
-            await timelock.grantRole(proposerRole, governorBravo.address);
+            await timelock.grantRole(proposerRole, governor.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
-            await timelock.grantRole(executorRole, governorBravo.address);
+            await timelock.grantRole(executorRole, governor.address);
             const cancellerRole = ethers.utils.id("CANCELLER_ROLE");
-            await timelock.grantRole(cancellerRole, governorBravo.address);
+            await timelock.grantRole(cancellerRole, governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
@@ -207,25 +207,25 @@ describe("Governance integration", function () {
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
             // Solidity overridden functions must be explicitly declared
             // https://github.com/ethers-io/ethers.js/issues/407
-            await governorBravo["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
+            await governor["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
                 [callData], proposalDescription);
 
             // Get the proposalId
             const descriptionHash = ethers.utils.id(proposalDescription);
-            const proposalId = await governorBravo.hashProposal([testServiceRegistry.address], [0], [callData],
+            const proposalId = await governor.hashProposal([testServiceRegistry.address], [0], [callData],
                 descriptionHash);
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
-            await governorBravo.castVote(proposalId, 1);
-            await governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
+            await governor.castVote(proposalId, 1);
+            await governor["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
                 [callData], descriptionHash);
 
             // Cancel the proposal
-            await governorBravo["cancel(uint256)"](proposalId);
+            await governor["cancel(uint256)"](proposalId);
 
             // Check that the proposal was cancelled: enum value of ProposalState.Canceled == 2
-            const proposalState = await governorBravo.state(proposalId);
+            const proposalState = await governor.state(proposalId);
             expect(proposalState).to.equal(2);
         });
 
@@ -245,12 +245,12 @@ describe("Governance integration", function () {
             await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafeL2.address, setupData, nonce).then((tx) => tx.wait());
             const multisig = await ethers.getContractAt("GnosisSafeL2", proxyAddress);
 
-            // Mint 10 OLA tokens to the multisig
+            // Mint 10 OLAS tokens to the multisig
             await token.mint(multisig.address, tenOLABalance);
             const balance = await token.balanceOf(multisig.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve multisig for 10 OLA by voting ve
+            // Approve multisig for 10 OLAS by voting ve
             nonce = await multisig.nonce();
             let txHashData = await safeContracts.buildContractCall(token, "approve",
                 [ve.address, tenOLABalance], nonce, 0, 0);
@@ -259,12 +259,12 @@ describe("Governance integration", function () {
             await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as OLA amount locked:
+            // This will result in voting power being almost exactly as OLAS amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
             nonce = await multisig.nonce();
             txHashData = await safeContracts.buildContractCall(ve, "createLock",
                 [fiveOLABalance, lockDuration], nonce, 0, 0);
@@ -287,18 +287,18 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
                 initialVotingPeriod, initialProposalThreshold, quorum);
-            await governorBravo.deployed();
+            await governor.deployed();
 
-            // Grand governorBravo an admin, proposer and executor role in the timelock
+            // Grand governor an admin, proposer and executor role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-            await timelock.grantRole(adminRole, governorBravo.address);
+            await timelock.grantRole(adminRole, governor.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
-            await timelock.grantRole(proposerRole, governorBravo.address);
+            await timelock.grantRole(proposerRole, governor.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
-            await timelock.grantRole(executorRole, governorBravo.address);
+            await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
@@ -308,7 +308,7 @@ describe("Governance integration", function () {
 
             // Make a proposal by a multisig
             nonce = await multisig.nonce();
-            txHashData = await safeContracts.buildContractCall(governorBravo, "propose(address[],uint256[],bytes[],string)",
+            txHashData = await safeContracts.buildContractCall(governor, "propose(address[],uint256[],bytes[],string)",
                 [[testServiceRegistry.address], [0], [callData], proposalDescription], nonce, 0, 0);
             signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
                 await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
@@ -316,13 +316,13 @@ describe("Governance integration", function () {
 
             // Get the proposalId
             const descriptionHash = ethers.utils.id(proposalDescription);
-            const proposalId = await governorBravo.hashProposal([testServiceRegistry.address], [0], [callData],
+            const proposalId = await governor.hashProposal([testServiceRegistry.address], [0], [callData],
                 descriptionHash);
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
             nonce = await multisig.nonce();
-            txHashData = await safeContracts.buildContractCall(governorBravo, "castVote",
+            txHashData = await safeContracts.buildContractCall(governor, "castVote",
                 [proposalId, 1], nonce, 0, 0);
             signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
                 await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
@@ -330,7 +330,7 @@ describe("Governance integration", function () {
 
             // Queueing the passed proposal
             nonce = await multisig.nonce();
-            txHashData = await safeContracts.buildContractCall(governorBravo, "queue(address[],uint256[],bytes[],bytes32)",
+            txHashData = await safeContracts.buildContractCall(governor, "queue(address[],uint256[],bytes[],bytes32)",
                 [[testServiceRegistry.address], [0], [callData], descriptionHash], nonce, 0, 0);
             signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
                 await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
@@ -341,7 +341,7 @@ describe("Governance integration", function () {
 
             // Execute the proposed operation and check the execution result
             nonce = await multisig.nonce();
-            txHashData = await safeContracts.buildContractCall(governorBravo, "execute(uint256)",
+            txHashData = await safeContracts.buildContractCall(governor, "execute(uint256)",
                 [proposalId], nonce, 0, 0);
             signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
                 await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
@@ -353,27 +353,27 @@ describe("Governance integration", function () {
         });
 
         it("Defeating the proposal", async function () {
-            // Mint OLA for other signers
+            // Mint OLAS for other signers
             for (let i = 1; i < 4; i++) {
                 await token.mint(signers[i].address, tenOLABalance);
             }
 
-            // Approve signers for 10 OLA by voting ve
+            // Approve signers for 10 OLAS by voting ve
             for (let i = 0; i < 4; i++) {
                 await token.connect(signers[i]).approve(ve.address, tenOLABalance);
             }
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as OLA amount locked:
+            // This will result in voting power being almost exactly as OLAS amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA for each signer, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS for each signer, which is lower than the initial proposal threshold by a bit
             for (let i = 0; i < 4; i++) {
                 await ve.connect(signers[i]).createLock(fiveOLABalance, lockDuration);
             }
-            // Add one more OLA to the signers[0]
+            // Add one more OLAS to the signers[0]
             await ve.increaseAmount(oneOLABalance);
 
             // Set quorum to 30%
@@ -391,35 +391,35 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
                 newInitialVotingPeriod, initialProposalThreshold, newQuorum);
-            await governorBravo.deployed();
+            await governor.deployed();
 
-            // Grand governorBravo an admin, proposer and executor role in the timelock
+            // Grand governor an admin, proposer and executor role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-            await timelock.grantRole(adminRole, governorBravo.address);
+            await timelock.grantRole(adminRole, governor.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
-            await timelock.grantRole(proposerRole, governorBravo.address);
+            await timelock.grantRole(proposerRole, governor.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
-            await timelock.grantRole(executorRole, governorBravo.address);
+            await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (signers[0] by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
-            await governorBravo["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
+            await governor["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
                 [callData], proposalDescription);
 
             // Get the proposalId
             const descriptionHash = ethers.utils.id(proposalDescription);
-            const proposalId = await governorBravo.hashProposal([testServiceRegistry.address], [0], [callData],
+            const proposalId = await governor.hashProposal([testServiceRegistry.address], [0], [callData],
                 descriptionHash);
 
             // Trying to vote right away does not respect the initial voting delay
             await expect(
-                governorBravo.castVote(proposalId, 1)
+                governor.castVote(proposalId, 1)
             ).to.be.revertedWith("Governor: vote not currently active");
 
             // Wait for 10 initial blocks
@@ -428,61 +428,61 @@ describe("Governance integration", function () {
             }
 
             // Get the snapshot block number of when the voting starts
-            const snapshot = await governorBravo.proposalSnapshot(proposalId);
+            const snapshot = await governor.proposalSnapshot(proposalId);
             const totalSupplySnapshot = await ve.getPastTotalSupply(snapshot);
-            // Lock more OLA after the voting has started
+            // Lock more OLAS after the voting has started
             await ve.connect(signers[1]).increaseAmount(oneOLABalance);
             const expectedTotalSupplySnapshot = await ve.getPastTotalSupply(snapshot);
-            // The total voting power after the voting start does not change even with new locking of OLA
+            // The total voting power after the voting start does not change even with new locking of OLAS
             expect(Number(totalSupplySnapshot)).to.equal(Number(expectedTotalSupplySnapshot));
 
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
             // signers[0] votes for
-            await governorBravo.castVote(proposalId, 1);
+            await governor.castVote(proposalId, 1);
             // Trying to vote again
             await expect(
-                governorBravo.castVote(proposalId, 0)
+                governor.castVote(proposalId, 0)
             ).to.be.revertedWith("GovernorCompatibilityBravo: vote already cast");
 
             // signers[1] and signers[2] vote against
-            await governorBravo.connect(signers[1]).castVote(proposalId, 0);
-            await governorBravo.connect(signers[2]).castVote(proposalId, 0);
+            await governor.connect(signers[1]).castVote(proposalId, 0);
+            await governor.connect(signers[2]).castVote(proposalId, 0);
             // The total amount of voting power is 6 + 5 + 5 + 5 = 21. 6 voted for, 10 against
-            // The proposal is not successful, by votes and by quorum: 30% is 6.3 OLA vs 6 OLA voted for
+            // The proposal is not successful, by votes and by quorum: 30% is 6.3 OLAS vs 6 OLAS voted for
             // Wait for past the voting period number of blocks
             for (let i = 0; i < newInitialVotingPeriod; i++) {
                 ethers.provider.send("evm_mine");
             }
 
             await expect(
-                governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
+                governor["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
                     [callData], descriptionHash)
             ).to.be.revertedWith("Governor: proposal not successful");
 
             // State 3 means the proposal is defeated
-            const proposalState = await governorBravo.state(proposalId);
+            const proposalState = await governor.state(proposalId);
             expect(proposalState).to.equal(3);
         });
 
         it("Winning the proposal with multiple voters", async function () {
-            // Mint OLA for other signers
+            // Mint OLAS for other signers
             for (let i = 1; i < 4; i++) {
                 await token.mint(signers[i].address, tenOLABalance);
             }
 
-            // Approve signers for 10 OLA by voting ve
+            // Approve signers for 10 OLAS by voting ve
             for (let i = 0; i < 4; i++) {
                 await token.connect(signers[i]).approve(ve.address, tenOLABalance);
             }
 
             // Define 4 years for the lock duration.
-            // This will result in voting power being almost exactly as OLA amount locked:
+            // This will result in voting power being almost exactly as OLAS amount locked:
             // voting power = amount * t_left_before_unlock / t_max
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLA, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
             await ve.createLock(fiveOLABalance, lockDuration);
             // Add a bit more
             await ve.increaseAmount(oneOLABalance);
@@ -502,35 +502,35 @@ describe("Governance integration", function () {
             await timelock.deployed();
 
             // Deploy Governance Bravo
-            const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-            const governorBravo = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, newInitialVotingDelay,
                 newInitialVotingPeriod, initialProposalThreshold, newQuorum);
-            await governorBravo.deployed();
+            await governor.deployed();
 
-            // Grand governorBravo an admin, proposer and executor role in the timelock
+            // Grand governor an admin, proposer and executor role in the timelock
             const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-            await timelock.grantRole(adminRole, governorBravo.address);
+            await timelock.grantRole(adminRole, governor.address);
             const proposerRole = ethers.utils.id("PROPOSER_ROLE");
-            await timelock.grantRole(proposerRole, governorBravo.address);
+            await timelock.grantRole(proposerRole, governor.address);
             const executorRole = ethers.utils.id("EXECUTOR_ROLE");
-            await timelock.grantRole(executorRole, governorBravo.address);
+            await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
             testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (signers[0] by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
-            await governorBravo["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
+            await governor["propose(address[],uint256[],bytes[],string)"]([testServiceRegistry.address], [0],
                 [callData], proposalDescription);
 
             // Get the proposalId
             const descriptionHash = ethers.utils.id(proposalDescription);
-            const proposalId = await governorBravo.hashProposal([testServiceRegistry.address], [0], [callData],
+            const proposalId = await governor.hashProposal([testServiceRegistry.address], [0], [callData],
                 descriptionHash);
 
             // Trying to vote right away does not respect the initial voting delay
             await expect(
-                governorBravo.castVote(proposalId, 1)
+                governor.castVote(proposalId, 1)
             ).to.be.revertedWith("Governor: vote not currently active");
 
             // Wait for 10 initial blocks
@@ -546,15 +546,15 @@ describe("Governance integration", function () {
             // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
             // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
             // signers[0] votes for
-            await governorBravo.castVote(proposalId, 1);
+            await governor.castVote(proposalId, 1);
             // Trying to vote again
             await expect(
-                governorBravo.castVote(proposalId, 0)
+                governor.castVote(proposalId, 0)
             ).to.be.revertedWith("GovernorCompatibilityBravo: vote already cast");
             // signers[1] and signers[2] vote against, signers[3] votes for
-            await governorBravo.connect(signers[1]).castVote(proposalId, 0);
-            await governorBravo.connect(signers[2]).castVote(proposalId, 0);
-            await governorBravo.connect(signers[3]).castVote(proposalId, 1);
+            await governor.connect(signers[1]).castVote(proposalId, 0);
+            await governor.connect(signers[2]).castVote(proposalId, 0);
+            await governor.connect(signers[3]).castVote(proposalId, 1);
             // The total amount of voting power is 6 + 5 + 5 + 5 = 21.
             // Overall voting fraction now is 11 vs 10. The proposal succeeds
 
@@ -563,12 +563,12 @@ describe("Governance integration", function () {
                 ethers.provider.send("evm_mine");
             }
 
-            await governorBravo["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
+            await governor["queue(address[],uint256[],bytes[],bytes32)"]([testServiceRegistry.address], [0],
                 [callData], descriptionHash);
 
             // Trying to execute the proposal right away without the min delay wait
             await expect(
-                governorBravo["execute(uint256)"](proposalId)
+                governor["execute(uint256)"](proposalId)
             ).to.be.revertedWith("TimelockController: operation is not ready");
 
             // Waiting for the next minDelay blocks to pass
@@ -577,7 +577,7 @@ describe("Governance integration", function () {
             }
 
             // Execute the proposed operation and check the execution result
-            await governorBravo["execute(uint256)"](proposalId);
+            await governor["execute(uint256)"](proposalId);
             const newValue = await testServiceRegistry.getControlValue();
             expect(newValue).to.be.equal(controlValue);
         });

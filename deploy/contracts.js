@@ -166,16 +166,16 @@ module.exports = async () => {
     await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafeL2.address, setupData, nonce).then((tx) => tx.wait());
 
     // Deploying governance contracts
-    // Deploy OLA token and voting escrow
-    const Token = await ethers.getContractFactory("OLA");
-    const token = await Token.deploy(0);
+    // Deploy OLAS token and voting escrow
+    const Token = await ethers.getContractFactory("OLAS");
+    const token = await Token.deploy();
     await token.deployed();
-    console.log("OLA token deployed to", token.address);
+    console.log("OLAS token deployed to", token.address);
 
-    const VotingEscrow = await ethers.getContractFactory("VotingEscrow");
-    const escrow = await VotingEscrow.deploy(token.address, "Voting Escrow OLA", "veOLA");
-    await escrow.deployed();
-    console.log("Voting Escrow deployed to", escrow.address);
+    const VE = await ethers.getContractFactory("veOLAS");
+    const ve = await VE.deploy(token.address, "Voting Escrow OLAS", "veOLAS");
+    await ve.deployed();
+    console.log("Voting Escrow deployed to", ve.address);
 
     // Deploy timelock with a multisig being a proposer
     const executors = [];
@@ -185,16 +185,16 @@ module.exports = async () => {
     await timelock.deployed();
     console.log("Timelock deployed to", timelock.address);
 
-    // Deploy Governance Bravo
-    const GovernorBravo = await ethers.getContractFactory("GovernorOLA");
-    const governorBravo = await GovernorBravo.deploy(escrow.address, timelock.address, initialVotingDelay,
+    // Deploy Governor OLAS
+    const GovernorOLAS = await ethers.getContractFactory("GovernorOLAS");
+    const governorOLAS = await GovernorOLAS.deploy(ve.address, timelock.address, initialVotingDelay,
         initialVotingPeriod, initialProposalThreshold, quorum);
-    await governorBravo.deployed();
-    console.log("Governor Bravo deployed to", governorBravo.address);
+    await governorOLAS.deployed();
+    console.log("Governor OLAS deployed to", governorOLAS.address);
 
-    // Change the admin role from deployer to governorBravo
+    // Change the admin role from deployer to governorOLAS
     const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
-    await timelock.connect(deployer).grantRole(adminRole, governorBravo.address);
+    await timelock.connect(deployer).grantRole(adminRole, governorOLAS.address);
     await timelock.connect(deployer).renounceRole(adminRole, deployer.address);
 
     // Writing the JSON with the initial deployment data
@@ -204,10 +204,10 @@ module.exports = async () => {
         "registriesManager": registriesManager.address,
         "serviceRegistry": serviceRegistry.address,
         "serviceManager": serviceManager.address,
-        "OLA": token.address,
-        "veOLA": escrow.address,
+        "OLAS": token.address,
+        "veOLAS": ve.address,
         "timelock": timelock.address,
-        "GovernorOLA": governorBravo.address,
+        "GovernorOLA": governorOLAS.address,
         "Service multisig": multisig,
         "agents": {
             "addresses": [agentInstances[0], agentInstances[1], agentInstances[2], agentInstances[3]],

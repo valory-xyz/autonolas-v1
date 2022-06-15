@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v2
-#        with:
-#          submodules: recursive
+        with:
+          submodules: recursive
 
       # Install modules
       - name: Install modules

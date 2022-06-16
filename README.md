@@ -6,7 +6,7 @@ This repository contains the entirety of contracts in form of cloned submodules,
 
 A graphical overview is available here:
 
-![architecture](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/On-chain_architecture_v2.png?raw=true)
+![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v2.png?raw=true)
 
 The architecture is broken up into three main areas:
 
@@ -14,10 +14,9 @@ The architecture is broken up into three main areas:
 2. [Agent Services Functionality](https://github.com/valory-xyz/autonolas-registries);
 3. [Tokenomics](https://github.com/valory-xyz/autonolas-tokenomics).
 
-❗ Known issues: https://github.com/valory-xyz/onchain-protocol/issues/102
+❗ Known issues: https://github.com/valory-xyz/autonolas-v1/issues/102
 
-
-![launch](https://github.com/valory-xyz/onchain-protocol/blob/main/docs/LaunchTimeline.png?raw=true)
+![launch](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/LaunchTimeline.png?raw=true)
 
 ## Development
 
@@ -60,7 +59,10 @@ npx hardhat node
 ```
 
 ### Internal audit
-The audit is provided internally as development matures. The latest audit report can be found here: [audit](https://github.com/valory-xyz/onchain-protocol/blob/main/audit).
+The audit is provided internally as development matures. The latest audit report for a specific subproject can be found here:
+- [Governance and Token audit](https://github.com/valory-xyz/autonolas-governance/blob/main/audits);
+- [Agent Services Functionality audit](https://github.com/valory-xyz/autonolas-registries/blob/main/audits);
+- [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits).
 
 ### Linters
 - [`ESLint`](https://eslint.org) is used for JS code.
@@ -76,6 +78,5 @@ several steps in order to be verified. Those include:
 
 
 ### Staging chain
-
 Merges into main trigger deployment into a freshly provisioned Ganache image. The node is accessible at https://staging.chain.autonolas.tech/ and the latest ABIs are accessible at https://staging.abi-server.autonolas.tech/.
 

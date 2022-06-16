@@ -1,5 +1,7 @@
 /*global ethers, describe, it*/
 
+const { expect } = require("chai");
+
 describe("Node deployment", function () {
     it("Deployment flow", async function () {
         // Common parameters
@@ -20,6 +22,12 @@ describe("Node deployment", function () {
         const safeThreshold = 7;
         const nonce =  0;
         const payload = "0x";
+
+        // Initial OLAS supply of 1 million
+        const initialMint = "1" + "0".repeat(24);
+        // Lock-related parameters
+        const oneYear = 365 * 86400;
+        const numSteps = 4;
 
         // Governance related
         const minDelay = 1;
@@ -160,14 +168,14 @@ describe("Node deployment", function () {
         await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafeL2.address, setupData, nonce).then((tx) => tx.wait());
 
         // Deploying governance contracts
-        // Deploy OLAS token and voting escrow
-        const Token = await ethers.getContractFactory("OLAS");
-        const token = await Token.deploy();
-        await token.deployed();
-        console.log("OLAS token deployed to", token.address);
+        // Deploy OLAS token and veOLAS
+        const OLAS = await ethers.getContractFactory("OLAS");
+        const olas = await OLAS.deploy();
+        await olas.deployed();
+        console.log("OLAS token deployed to", olas.address);
 
         const VE = await ethers.getContractFactory("veOLAS");
-        const ve = await VE.deploy(token.address, "Voting Escrow OLAS", "veOLAS");
+        const ve = await VE.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
         await ve.deployed();
         console.log("Voting Escrow OLAS deployed to", ve.address);
 
@@ -190,5 +198,31 @@ describe("Node deployment", function () {
         const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
         await timelock.connect(deployer).grantRole(adminRole, governor.address);
         await timelock.connect(deployer).renounceRole(adminRole, deployer.address);
+
+        // Deploy buOLAS contract
+        const BU = await ethers.getContractFactory("buOLAS");
+        const bu = await BU.deploy(olas.address, "Lockable OLAS", "buOLAS");
+        await bu.deployed();
+        console.log("buOLAS deployed to", bu.address);
+
+        // Deploy  Sale contracts
+        const SALE = await ethers.getContractFactory("Sale");
+        const sale = await SALE.deploy(olas.address, ve.address, bu.address);
+        await sale.deployed();
+        console.log("Sale deployed to", sale.address);
+
+        // Mint the initial OLAS supply for the Sale contract
+        await olas.mint(sale.address, initialMint);
+
+        // Create lockable balances for the testAddress
+        // 50k OLAS for veOLAS lock
+        const balanceVE = "5" + "0".repeat(22);
+        // 100k OLAS for buOLAS lock
+        const balanceBU = "1" + "0".repeat(23);
+        await sale.createBalancesFor([testAddress], [balanceVE], [oneYear], [testAddress], [balanceBU], [numSteps]);
+
+        const balances = await sale.claimableBalances(testAddress);
+        expect(balances.veBalance).to.equal(balanceVE);
+        expect(balances.buBalance).to.equal(balanceBU);
     });
 });

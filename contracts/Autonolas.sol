@@ -6,6 +6,7 @@ import "../lib/autonolas-governance/contracts/OLAS.sol";
 import "../lib/autonolas-governance/contracts/GovernorOLAS.sol";
 import "../lib/autonolas-governance/contracts/Timelock.sol";
 import "../lib/autonolas-governance/contracts/veOLAS.sol";
+import "../lib/autonolas-governance/contracts/Sale.sol";
 import "../lib/autonolas-registries/contracts/AgentRegistry.sol";
 import "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
 import "../lib/autonolas-registries/contracts/RegistriesManager.sol";

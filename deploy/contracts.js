@@ -20,6 +20,12 @@ module.exports = async () => {
     const nonce =  0;
     const payload = "0x";
 
+    // Initial OLAS supply of 1 million
+    const initialMint = "1" + "0".repeat(24);
+    // Lock-related parameters
+    const oneYear = 365 * 86400;
+    const numSteps = 4;
+
     // Governance related
     const minDelay = 1;
     const initialVotingDelay = 1; // blocks
@@ -166,16 +172,16 @@ module.exports = async () => {
     await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafeL2.address, setupData, nonce).then((tx) => tx.wait());
 
     // Deploying governance contracts
-    // Deploy OLAS token and voting escrow
-    const Token = await ethers.getContractFactory("OLAS");
-    const token = await Token.deploy();
-    await token.deployed();
-    console.log("OLAS token deployed to", token.address);
+    // Deploy OLAS token and veOLAS
+    const OLAS = await ethers.getContractFactory("OLAS");
+    const olas = await OLAS.deploy();
+    await olas.deployed();
+    console.log("OLAS token deployed to", olas.address);
 
     const VE = await ethers.getContractFactory("veOLAS");
-    const ve = await VE.deploy(token.address, "Voting Escrow OLAS", "veOLAS");
+    const ve = await VE.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
     await ve.deployed();
-    console.log("Voting Escrow deployed to", ve.address);
+    console.log("Voting Escrow OLAS deployed to", ve.address);
 
     // Deploy timelock with a multisig being a proposer
     const executors = [];
@@ -197,6 +203,28 @@ module.exports = async () => {
     await timelock.connect(deployer).grantRole(adminRole, governorOLAS.address);
     await timelock.connect(deployer).renounceRole(adminRole, deployer.address);
 
+    // Deploy buOLAS contract
+    const BU = await ethers.getContractFactory("buOLAS");
+    const bu = await BU.deploy(olas.address, "Lockable OLAS", "buOLAS");
+    await bu.deployed();
+    console.log("buOLAS deployed to", bu.address);
+
+    // Deploy  Sale contracts
+    const SALE = await ethers.getContractFactory("Sale");
+    const sale = await SALE.deploy(olas.address, ve.address, bu.address);
+    await sale.deployed();
+    console.log("Sale deployed to", sale.address);
+
+    // Mint the initial OLAS supply for the Sale contract
+    await olas.mint(sale.address, initialMint);
+
+    // Create lockable balances for the testAddress
+    // 50k OLAS for veOLAS lock
+    const balanceVE = "5" + "0".repeat(22);
+    // 100k OLAS for buOLAS lock
+    const balanceBU = "1" + "0".repeat(23);
+    await sale.createBalancesFor([testAddress], [balanceVE], [oneYear], [testAddress], [balanceBU], [numSteps]);
+
     // Writing the JSON with the initial deployment data
     let initDeployJSON = {
         "componentRegistry": componentRegistry.address,
@@ -204,10 +232,12 @@ module.exports = async () => {
         "registriesManager": registriesManager.address,
         "serviceRegistry": serviceRegistry.address,
         "serviceManager": serviceManager.address,
-        "OLAS": token.address,
+        "OLAS": olas.address,
         "veOLAS": ve.address,
         "timelock": timelock.address,
         "GovernorOLA": governorOLAS.address,
+        "buOLAS": bu.address,
+        "Sale": sale.address,
         "Service multisig": multisig,
         "agents": {
             "addresses": [agentInstances[0], agentInstances[1], agentInstances[2], agentInstances[3]],

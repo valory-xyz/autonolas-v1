@@ -118,7 +118,7 @@ describe("Node deployment", function () {
 
         // Create a service
         await serviceRegistry.changeManager(deployer.address);
-        await serviceRegistry.createService(testAddress, name, description, configHash, agentIds, agentParams,
+        await serviceRegistry.create(testAddress, name, description, configHash, agentIds, agentParams,
             maxThreshold);
         console.log("Service is created");
 
@@ -204,6 +204,7 @@ describe("Node deployment", function () {
         const bu = await BU.deploy(olas.address, "Lockable OLAS", "buOLAS");
         await bu.deployed();
         console.log("buOLAS deployed to", bu.address);
+        console.log("!!!!!!!!!!OALS from buOLAS", await bu.token());
 
         // Deploy  Sale contracts
         const SALE = await ethers.getContractFactory("Sale");

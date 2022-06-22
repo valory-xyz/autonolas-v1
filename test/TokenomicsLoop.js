@@ -166,7 +166,7 @@ describe("Tokenomics integration", async () => {
 
             // Create one service
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, [agentId],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -204,7 +204,7 @@ describe("Tokenomics integration", async () => {
 
             // Create one service
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, [agentId],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -244,9 +244,9 @@ describe("Tokenomics integration", async () => {
 
             // Create services
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, [agentId],
                 [agentParams], maxThreshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, [2],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, [2],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -301,9 +301,9 @@ describe("Tokenomics integration", async () => {
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -353,11 +353,11 @@ describe("Tokenomics integration", async () => {
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, agentIds[1],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash2, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash2, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -413,9 +413,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 3;
             const threshold2 = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -478,9 +478,9 @@ describe("Tokenomics integration", async () => {
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -545,7 +545,7 @@ describe("Tokenomics integration", async () => {
 
             // Create one service
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(ownerAddress, name, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(ownerAddress, name, description, configHash, [agentId],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -625,9 +625,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 2;
             const threshold2 = 1;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(serviceOwner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, name, description, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).createService(serviceOwner, name, description, configHash, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, name, description, configHash, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -719,9 +719,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 2;
             const threshold2 = 1;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(serviceOwner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, name, description, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).createService(serviceOwner, name, description, configHash, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, name, description, configHash, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -948,9 +948,9 @@ describe("Tokenomics integration", async () => {
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).createService(owner, name, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, name, description, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances

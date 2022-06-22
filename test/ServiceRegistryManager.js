@@ -137,23 +137,13 @@ describe("ServiceRegistry integration", function () {
             await agentRegistry.connect(manager).create(owner.address, owner.address, componentHash, description, []);
             await serviceRegistry.changeManager(serviceManager.address);
 
-            // Can't unpause unpaused contract
-            await expect(
-                serviceManager.unpause()
-            ).to.be.revertedWith("Pausable: not paused");
-
             // Pause the contract
             await serviceManager.pause();
 
             // Try creating a contract when paused
             await expect(
                 serviceManager.serviceCreate(owner.address, name, description, configHash, [1], [[1, regBond]], 1)
-            ).to.be.revertedWith("Pausable: paused");
-
-            // Try to pause again
-            await expect(
-                serviceManager.pause()
-            ).to.be.revertedWith("Pausable: paused");
+            ).to.be.revertedWith("Paused");
 
             // Unpause the contract
             await serviceManager.unpause();
@@ -322,7 +312,7 @@ describe("ServiceRegistry integration", function () {
             }
         });
 
-        it("Creating services, destroying on of them, getting resulting information", async function () {
+        it("Creating services, getting resulting information", async function () {
             const manager = signers[4];
             const sigOwner = signers[5];
             const owner = signers[5].address;
@@ -352,30 +342,28 @@ describe("ServiceRegistry integration", function () {
             // Getting the set of service Ids of the owner
             let serviceIdsRet = await serviceRegistry.balanceOf(owner);
             for (let i = 0; i < serviceIdsRet; i++) {
-                const serviceIdCheck = await serviceRegistry.tokenOfOwnerByIndex(owner, i);
+                const serviceIdCheck = await serviceRegistry.tokenByIndex(i);
                 expect(serviceIdCheck).to.be.equal(i + 1);
             }
 
             // Activate registration and terminate the very first service and destroy it
             await serviceManager.connect(sigOwner).serviceActivateRegistration(serviceIds[0], {value: regDeposit});
             await serviceManager.connect(sigOwner).serviceTerminate(serviceIds[0]);
-            await serviceManager.connect(sigOwner).serviceDestroy(serviceIds[0]);
 
             // Check for the information consistency
             totalSupply = await serviceRegistry.totalSupply();
-            expect(totalSupply).to.equal(1);
+            expect(totalSupply).to.equal(2);
             // Balance of owner is 1, only service Id 2 belongs to the owner
-            expect(await serviceRegistry.balanceOf(owner)).to.equal(1);
-            expect(await serviceRegistry.exists(serviceIds[0])).to.equal(false);
+            expect(await serviceRegistry.balanceOf(owner)).to.equal(2);
+            expect(await serviceRegistry.exists(serviceIds[0])).to.equal(true);
             expect(await serviceRegistry.exists(serviceIds[1])).to.equal(true);
-            // Requesting for service 1 must revert with non existent service
-            await expect(
-                serviceRegistry.ownerOf(serviceIds[0])
-            ).to.be.revertedWith("ERC721: owner query for nonexistent token");
+            expect(await serviceRegistry.ownerOf(serviceIds[0])).to.equal(owner);
             expect(await serviceRegistry.ownerOf(serviceIds[1])).to.equal(owner);
             // Getting the set of service Ids of the owner, must be service Id 2 only
             serviceIdsRet = await serviceRegistry.balanceOf(owner);
-            expect(await serviceRegistry.tokenOfOwnerByIndex(owner, 0)).to.equal(2);
+            expect(serviceIdsRet).to.equal(2);
+            expect(await serviceRegistry.tokenByIndex(0)).to.equal(1);
+            expect(await serviceRegistry.tokenByIndex(1)).to.equal(2);
         });
 
         it("Terminated service is unbonded", async function () {
@@ -416,7 +404,7 @@ describe("ServiceRegistry integration", function () {
             expect(state).to.equal(6);
         });
 
-        it("Should fail when trying to update the terminated service is destroyed", async function () {
+        it("Should fail when trying to update the terminated service", async function () {
             const manager = signers[4];
             const owner = signers[5];
             await agentRegistry.changeManager(manager.address);
@@ -433,27 +421,9 @@ describe("ServiceRegistry integration", function () {
                 maxThreshold);
             await serviceManager.connect(owner).serviceActivateRegistration(serviceIds[0], {value: regDeposit});
             await serviceManager.connect(owner).serviceTerminate(serviceIds[0]);
-            await serviceManager.connect(owner).serviceDestroy(serviceIds[0]);
             await expect(
                 serviceManager.connect(owner).serviceUpdate(name, description, configHash, [1, 2, 3],
                     [[3, regBond], [0, regBond], [4, regBond]], maxThreshold, serviceIds[0])
-            ).to.be.revertedWith("ServiceNotFound");
-        });
-
-        it("Should fail when registering an agent instance after the service is destroyed", async function () {
-            const mechManager = signers[4];
-            const owner = signers[5];
-            const operator = signers[6];
-            const agentInstance = signers[7].address;
-            await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner.address, owner.address, componentHash, description, []);
-            await agentRegistry.connect(mechManager).create(owner.address, owner.address, componentHash1, description, []);
-            await serviceRegistry.changeManager(serviceManager.address);
-            await serviceManager.serviceCreate(owner.address, name, description, configHash, agentIds, agentParams,
-                maxThreshold);
-            await serviceManager.connect(owner).serviceDestroy(serviceIds[0]);
-            await expect(
-                serviceManager.connect(operator).serviceRegisterAgents(serviceIds[0], [agentInstance], [1], {value: regBond})
             ).to.be.revertedWith("WrongServiceState");
         });
     });

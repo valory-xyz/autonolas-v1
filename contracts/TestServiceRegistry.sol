@@ -33,7 +33,12 @@ contract TestServiceRegistry is ServiceRegistry {
     }
 
     // Function to test the governance execution
-    function executeByGovernor(uint256 newValue) external onlyManager {
+    function executeByGovernor(uint256 newValue) external {
+        // Check for the manager privilege for a service management
+        if (manager != msg.sender) {
+            revert ManagerOnly(msg.sender, manager);
+        }
+
         _controlValue = newValue;
     }
 

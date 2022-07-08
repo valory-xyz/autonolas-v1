@@ -32,7 +32,8 @@ describe("Governance integration", function () {
         await gnosisSafeProxyFactory.deployed();
 
         const TestServiceRegistry = await ethers.getContractFactory("TestServiceRegistry");
-        testServiceRegistry = await TestServiceRegistry.deploy("service registry", "SERVICE", AddressZero);
+        testServiceRegistry = await TestServiceRegistry.deploy("service registry", "SERVICE", "https://localhost/service/",
+            AddressZero);
         await testServiceRegistry.deployed();
 
         const Token = await ethers.getContractFactory("OLAS");

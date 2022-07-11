@@ -226,11 +226,6 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            //            let subComponents = await agentRegistry.getSubComponents([2]);
-            //            console.log(subComponents);
-            //            expect(subComponents.length).to.equal(1);
-            //            return;
-
             // Whitelist a service owner
             await tokenomics.changeServiceOwnerWhiteList([owner], [true]);
             // Fail if the sent amount and the sum of specified amount for each service do not match

@@ -8,8 +8,8 @@ import "../lib/autonolas-registries/contracts/interfaces/IMultisig.sol";
 contract TestServiceRegistry is ServiceRegistry {
     uint256 private _controlValue;
 
-    constructor(string memory _name, string memory _symbol, address _agentRegistry)
-        ServiceRegistry(_name, _symbol, _agentRegistry) {}
+    constructor(string memory _name, string memory _symbol, string memory _baseURI, address _agentRegistry)
+        ServiceRegistry(_name, _symbol, _baseURI, _agentRegistry) {}
 
     // Create a safe contract with the parameters passed and check it via GnosisSafeL2
     function createCheckSafe(

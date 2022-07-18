@@ -48,7 +48,6 @@ describe("Tokenomics integration", async () => {
     const regBond = 1000;
     const regDeposit = 1000;
     const maxThreshold = 1;
-    const description = ethers.utils.formatBytes32String("service description");
     const hundredETHBalance = ethers.utils.parseEther("100");
     const twoHundredETHBalance = ethers.utils.parseEther("200");
     const threeHundredETHBalance = ethers.utils.parseEther("300");
@@ -98,16 +97,16 @@ describe("Tokenomics integration", async () => {
             agentRegistry.address);
         await serviceRegistry.deployed();
 
-        const GnosisSafeL2 = await ethers.getContractFactory("GnosisSafeL2");
-        const gnosisSafeL2 = await GnosisSafeL2.deploy();
-        await gnosisSafeL2.deployed();
+        const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
+        const gnosisSafe = await GnosisSafe.deploy();
+        await gnosisSafe.deployed();
 
         const GnosisSafeProxyFactory = await ethers.getContractFactory("GnosisSafeProxyFactory");
         const gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
         await gnosisSafeProxyFactory.deployed();
 
         const GnosisSafeMultisig = await ethers.getContractFactory("GnosisSafeMultisig");
-        gnosisSafeMultisig = await GnosisSafeMultisig.deploy(gnosisSafeL2.address, gnosisSafeProxyFactory.address);
+        gnosisSafeMultisig = await GnosisSafeMultisig.deploy(gnosisSafe.address, gnosisSafeProxyFactory.address);
         await gnosisSafeMultisig.deployed();
 
         deployer = signers[0];
@@ -162,13 +161,13 @@ describe("Tokenomics integration", async () => {
 
             // Create component and one agent
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash3, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash3, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1]);
 
             // Create one service
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, [agentId],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -202,17 +201,17 @@ describe("Tokenomics integration", async () => {
 
             // Create one component and three agents
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash3, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash3, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash1, [1]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash2, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash1, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash2, [1]);
 
             // Create services
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, [agentId],
                 [agentParams], maxThreshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, [2],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, [2],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -259,20 +258,20 @@ describe("Tokenomics integration", async () => {
 
             // Create one component and three agents
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash3, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash3, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash1, [1]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash2, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash1, [1]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash2, [1]);
 
             // Create services
             const agentIds = [[1, 2], [2, 3]];
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -312,22 +311,22 @@ describe("Tokenomics integration", async () => {
 
             // Create 2 components and 2 agents based on them
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash, []);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash1, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1, 2]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash1, [1, 2]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1, 2]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash1, [1, 2]);
 
             // Create 3 services
             const agentIds = [[1, 2], [1, 2]];
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash2, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash2, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -367,14 +366,14 @@ describe("Tokenomics integration", async () => {
 
             // Create 4 components and 3 agents based on them
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash, []);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash1, []);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash2, []);
-            await componentRegistry.connect(mechManager).create(owner, description, configHash2, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash2, []);
+            await componentRegistry.connect(mechManager).create(owner, configHash2, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1, 2]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash1, [2, 3]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash2, [3, 4]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1, 2]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash1, [2, 3]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash2, [3, 4]);
 
             // Create 2 services
             const agentIds = [[1, 2, 3], [1, 3]];
@@ -383,9 +382,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 3;
             const threshold2 = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -434,23 +433,23 @@ describe("Tokenomics integration", async () => {
 
             // Create 4 components and 3 agents based on them
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash, []);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash1, []);
-            await componentRegistry.connect(mechManager).create(owner, description, componentHash2, []);
-            await componentRegistry.connect(mechManager).create(owner, description, configHash2, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(owner, componentHash2, []);
+            await componentRegistry.connect(mechManager).create(owner, configHash2, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash, [1, 2]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash1, [2]);
-            await agentRegistry.connect(mechManager).create(owner, description, agentHash2, [3]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1, 2]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash1, [2]);
+            await agentRegistry.connect(mechManager).create(owner, agentHash2, [3]);
 
             // Create 2 services
             const agentIds = [[1, 2], [1, 3]];
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances
@@ -511,13 +510,13 @@ describe("Tokenomics integration", async () => {
 
             // Create one component and one agent
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(ownerAddress, description, componentHash, []);
+            await componentRegistry.connect(mechManager).create(ownerAddress, componentHash, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(ownerAddress, description, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(ownerAddress, agentHash, [1]);
 
             // Create one service
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(ownerAddress, description, configHash, [agentId],
+            await serviceRegistry.connect(serviceManager).create(ownerAddress, configHash, [agentId],
                 [agentParams], maxThreshold);
 
             // Register agent instances
@@ -588,10 +587,10 @@ describe("Tokenomics integration", async () => {
 
             // Create one component and agent for one owner, and another agent for another owner
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(owners[0].address, description, componentHash, []);
+            await componentRegistry.connect(mechManager).create(owners[0].address, componentHash, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(owners[0].address, description, agentHash, [1]);
-            await agentRegistry.connect(mechManager).create(owners[1].address, description, agentHash1, [1]);
+            await agentRegistry.connect(mechManager).create(owners[0].address, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(owners[1].address, agentHash1, [1]);
 
             // Create two services
             const agentIds = [[1, 2], [1]];
@@ -600,9 +599,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 2;
             const threshold2 = 1;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(serviceOwner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).create(serviceOwner, description, configHash, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, configHash, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -682,11 +681,11 @@ describe("Tokenomics integration", async () => {
 
             // Create two components and two agents each for their owner
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(componentOwners[0].address, description, componentHash, []);
-            await componentRegistry.connect(mechManager).create(componentOwners[1].address, description, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[0].address, componentHash, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[1].address, componentHash1, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(agentOwners[0].address, description, agentHash, [1]);
-            await agentRegistry.connect(mechManager).create(agentOwners[1].address, description, agentHash1, [2]);
+            await agentRegistry.connect(mechManager).create(agentOwners[0].address, agentHash, [1]);
+            await agentRegistry.connect(mechManager).create(agentOwners[1].address, agentHash1, [2]);
 
             // Create two services
             const agentIds = [[1, 2], [1]];
@@ -695,9 +694,9 @@ describe("Tokenomics integration", async () => {
             const threshold1 = 2;
             const threshold2 = 1;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(serviceOwner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, configHash, agentIds[0],
                 agentParams1, threshold1);
-            await serviceRegistry.connect(serviceManager).create(serviceOwner, description, configHash, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(serviceOwner, configHash, agentIds[1],
                 agentParams2, threshold2);
 
             // Register agent instances
@@ -910,23 +909,23 @@ describe("Tokenomics integration", async () => {
 
             // Create 4 components and 3 agents based on them
             await componentRegistry.changeManager(mechManager.address);
-            await componentRegistry.connect(mechManager).create(componentOwners[0].address, description, componentHash, []);
-            await componentRegistry.connect(mechManager).create(componentOwners[1].address, description, componentHash1, []);
-            await componentRegistry.connect(mechManager).create(componentOwners[2].address, description, componentHash2, []);
-            await componentRegistry.connect(mechManager).create(componentOwners[3].address, description, configHash2, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[0].address, componentHash, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[1].address, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[2].address, componentHash2, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[3].address, configHash2, []);
             await agentRegistry.changeManager(mechManager.address);
-            await agentRegistry.connect(mechManager).create(agentOwners[0].address, description, agentHash, [1, 2]);
-            await agentRegistry.connect(mechManager).create(agentOwners[1].address, description, agentHash1, [2]);
-            await agentRegistry.connect(mechManager).create(agentOwners[2].address, description, agentHash2, [3]);
+            await agentRegistry.connect(mechManager).create(agentOwners[0].address, agentHash, [1, 2]);
+            await agentRegistry.connect(mechManager).create(agentOwners[1].address, agentHash1, [2]);
+            await agentRegistry.connect(mechManager).create(agentOwners[2].address, agentHash2, [3]);
 
             // Create 2 services
             const agentIds = [[1, 2], [1, 3]];
             const agentParams = [[1, regBond], [1, regBond]];
             const threshold = 2;
             await serviceRegistry.changeManager(serviceManager.address);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash, agentIds[0],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
                 agentParams, threshold);
-            await serviceRegistry.connect(serviceManager).create(owner, description, configHash1, agentIds[1],
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
                 agentParams, threshold);
 
             // Register agent instances

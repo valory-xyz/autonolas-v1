@@ -4,7 +4,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("Governance integration", function () {
-    let gnosisSafeL2;
+    let gnosisSafe;
     let gnosisSafeProxyFactory;
     let testServiceRegistry;
     let token;
@@ -23,9 +23,9 @@ describe("Governance integration", function () {
     const proposalDescription = "Proposal to change value";
     const controlValue = 20;
     beforeEach(async function () {
-        const GnosisSafeL2 = await ethers.getContractFactory("GnosisSafeL2");
-        gnosisSafeL2 = await GnosisSafeL2.deploy();
-        await gnosisSafeL2.deployed();
+        const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
+        gnosisSafe = await GnosisSafe.deploy();
+        await gnosisSafe.deployed();
 
         const GnosisSafeProxyFactory = await ethers.getContractFactory("GnosisSafeProxyFactory");
         gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
@@ -235,16 +235,16 @@ describe("Governance integration", function () {
             const safeThreshold = 2;
             let nonce = 0;
             // Create a multisig
-            const setupData = gnosisSafeL2.interface.encodeFunctionData(
+            const setupData = gnosisSafe.interface.encodeFunctionData(
                 "setup",
                 // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
                 [[safeSigners[0].address, safeSigners[1].address], safeThreshold, AddressZero, "0x", AddressZero, AddressZero, 0, AddressZero]
             );
             const safeContracts = require("@gnosis.pm/safe-contracts");
-            const proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafeL2.address,
+            const proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
                 setupData, nonce);
-            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafeL2.address, setupData, nonce).then((tx) => tx.wait());
-            const multisig = await ethers.getContractAt("GnosisSafeL2", proxyAddress);
+            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, nonce).then((tx) => tx.wait());
+            const multisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
 
             // Mint 10 OLAS tokens to the multisig
             await token.mint(multisig.address, tenOLABalance);

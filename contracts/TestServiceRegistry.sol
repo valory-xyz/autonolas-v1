@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.14;
+pragma solidity ^0.8.15;
 
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafeL2.sol";
+import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import "../lib/autonolas-registries/contracts/ServiceRegistry.sol";
 import "../lib/autonolas-registries/contracts/interfaces/IMultisig.sol";
 
@@ -11,7 +11,7 @@ contract TestServiceRegistry is ServiceRegistry {
     constructor(string memory _name, string memory _symbol, string memory _baseURI, address _agentRegistry)
         ServiceRegistry(_name, _symbol, _baseURI, _agentRegistry) {}
 
-    // Create a safe contract with the parameters passed and check it via GnosisSafeL2
+    // Create a safe contract with the parameters passed and check it via GnosisSafe
     function createCheckSafe(
         address[] memory owners,
         uint256 threshold,
@@ -24,7 +24,7 @@ contract TestServiceRegistry is ServiceRegistry {
         address payable gAddress = payable(address(multisig));
 
         // Check the validity of safe
-        GnosisSafeL2 gSafe = GnosisSafeL2(gAddress);
+        GnosisSafe gSafe = GnosisSafe(gAddress);
         require(gSafe.getThreshold() == threshold, "Threshold does not match");
         address[] memory gSafeInstances = gSafe.getOwners();
         for (uint256 i = 0; i < owners.length; i++) {

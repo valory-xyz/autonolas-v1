@@ -1,9 +1,9 @@
 [submodule "lib/autonolas-governance"]
 	path = lib/autonolas-governance
-	url = https://github.com/valory-xyz/autonolas-governance.git
+	url = git@github.com:valory-xyz/autonolas-governance.git
 [submodule "lib/autonolas-registries"]
 	path = lib/autonolas-registries
-	url = https://github.com/valory-xyz/autonolas-registries.git
+	url = git@github.com:valory-xyz/autonolas-registries.git
 [submodule "lib/autonolas-tokenomics"]
 	path = lib/autonolas-tokenomics
 	url = git@github.com:valory-xyz/autonolas-tokenomics.git

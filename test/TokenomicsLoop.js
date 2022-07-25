@@ -230,11 +230,11 @@ describe("Tokenomics integration", async () => {
             // Fail if the sent amount and the sum of specified amount for each service do not match
             await expect(
                 treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: regServiceRevenue})
-            ).to.be.revertedWith("WrongAmount");
+            ).to.be.revertedWithCustomError(treasury, "WrongAmount");
             // Fail if the service Ids / amounts array differ in length
             await expect(
                 treasury.depositETHFromServices([1, 2], [regServiceRevenue], {value: regServiceRevenue})
-            ).to.be.revertedWith("WrongArrayLength");
+            ).to.be.revertedWithCustomError(treasury, "WrongArrayLength");
 
             // Send deposits from services
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: doubleRegServiceRevenue});

@@ -64,6 +64,12 @@ The audit is provided internally as development matures. The latest audit report
 - [Agent Services Functionality audit](https://github.com/valory-xyz/autonolas-registries/blob/main/audits);
 - [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits).
 
+The initial internal audit of the overall `autonolas-v1` pre-split repository is available here:
+- [Autonolas internal audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits).
+
+The initial external audit of the `autonolas-v1` pre-split repository is available here:
+- [Autonolas external audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits/Valory_Review_Final.pdf)
+
 ### Linters
 - [`ESLint`](https://eslint.org) is used for JS code.
 - [`solhint`](https://github.com/protofire/solhint) is used for Solidity linting.

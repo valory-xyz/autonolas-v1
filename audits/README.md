@@ -1,4 +1,4 @@
-# onchain-protocol-audit
+# Autonolas internal audit
 The review has been performed based on the contract code in the following repository:<br>
 `https://github.com/valory-xyz/onchain-protocol` <br>
 commit: `1947cb00ce26bb24d13110a90b370d8f73d6afd1` <br>
@@ -10,7 +10,7 @@ Identifying possible well-known vulnerabilities in smart contracts.
 Particular attention is paid to preventing attacks that can lead to the loss of system / user funds.
 
 ## Audit analysis
-Audit analysis with various frameworks. [analysis](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/analysis) Update: 20.05.22
+Audit analysis with various frameworks. [analysis](https://github.com/valory-xyz/onchain-protocol/blob/main/audits/analysis) Update: 20.05.22
 
 ### Security issues
 Security suggestion and proposal patch: Change `Depository.deposit() / create()` function
@@ -19,10 +19,10 @@ there would be an additional parameter of "maximum slippage" and the actual stat
 `|actual_reserve0/actual_reserver1 - reserve0/reserve1| < max_slippage` (or another alternative way). 
 Tracking TWAP for all possible pair is unrealistic in terms of complexity and gas cost.
 
-The full slither analysis can be found here: [slither](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/analysis/slither).
+The full slither analysis can be found here: [slither](https://github.com/valory-xyz/onchain-protocol/blob/main/audits/analysis/slither).
 
 The major security warnings are listed in the following file, concerns of which we address in more detail below:
-[slither-full](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/analysis/slither/slither_full.txt) 
+[slither-full](https://github.com/valory-xyz/onchain-protocol/blob/main/audits/analysis/slither/slither_full.txt) 
 
 Please note that all the external and audited contracts are not considered.
 
@@ -51,7 +51,7 @@ General considerations for reference:
 - Consider splitting contracts as some of them are too big to deploy.
 
 ### Test coverage
-Result of `npx hardhat coverage`: [hardhat-coverage](https://github.com/valory-xyz/onchain-protocol/blob/main/audit/hardhat-coverage/index.html).
+Result of `npx hardhat coverage` (archive): [hardhat-coverage](https://github.com/valory-xyz/onchain-protocol/blob/main/audits/hardhat-coverage.tar.gz).
 
 
 ## Assessment of readiness for external audit

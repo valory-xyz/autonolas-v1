@@ -8,7 +8,7 @@ describe("Tokenomics integration", async () => {
     // Initial mint for olas and DAI (40,000)
     const initialMint = "4" + "0".repeat(4) + decimals;
     // Supply amount for the bonding product
-    const supplyProductOLA =  "5" + "0".repeat(3) + decimals;
+    const supplyProductOLA =  "2" + "0".repeat(3) + decimals;
 
     let erc20Token;
     let olaFactory;
@@ -187,7 +187,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
@@ -243,7 +243,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             //            console.log(ucf);
             expect(Math.abs(ucf - 0.66666666666666)).to.lessThan(delta);
@@ -296,7 +296,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             //            console.log(ucf);
             expect(Math.abs(ucf - 0.875)).to.lessThan(delta);
@@ -351,7 +351,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
@@ -418,7 +418,7 @@ describe("Tokenomics integration", async () => {
             // (ucfc + ucfa) / 2 = 0.972(2)
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.97222222222222)).to.lessThan(delta);
         });
@@ -492,7 +492,7 @@ describe("Tokenomics integration", async () => {
             // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
 
             // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            const lastEpoch = await tokenomics.epochCounter() - 1;
             const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
         });
@@ -748,7 +748,7 @@ describe("Tokenomics integration", async () => {
 
             // Allocate rewards for the epoch
             await treasury.allocateRewards();
-            //console.log("Current epoch", await tokenomics.getCurrentEpoch());
+            //console.log("Current epoch", await tokenomics.epochCounter());
 
             // Get owners rewards and top-ups for components
             let balanceETHBeforeReward = [await ethers.provider.getBalance(componentOwners[0].address),
@@ -888,8 +888,8 @@ describe("Tokenomics integration", async () => {
 
             // Add liquidity of OLAS-DAI (5000 OLAS, 1000 DAI)
             const amountLiquidityOLA = "5"  + "0".repeat(3) + decimals;
+            const amountDAI = "5" + "0".repeat(3) + decimals;
             const minAmountOLA =  "5" + "0".repeat(2) + decimals;
-            const amountDAI = "1" + "0".repeat(4) + decimals;
             const minAmountDAI = "1" + "0".repeat(3) + decimals;
             const deadline = Date.now() + 1000;
             const toAddress = deployer.address;
@@ -1017,7 +1017,7 @@ describe("Tokenomics integration", async () => {
             // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
 
             // Checking the values with delta rounding error of UCF, DF
-            let lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            let lastEpoch = await tokenomics.epochCounter() - 1;
             let ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
 
@@ -1076,7 +1076,7 @@ describe("Tokenomics integration", async () => {
 
             // Bonding of tokens for OLAS
             // Bond third of current LP token amount
-            const amountToBond = new ethers.BigNumber.from(await pairODAI.balanceOf(deployer.address)).div(3);
+            const amountToBond = new ethers.BigNumber.from(await pairODAI.balanceOf(deployer.address)).div(4);
             await pairODAI.approve(depository.address, amountToBond);
             let [expectedPayout,,] = await depository.callStatic.deposit(pairODAI.address, productId,
                 amountToBond, deployer.address);
@@ -1113,7 +1113,7 @@ describe("Tokenomics integration", async () => {
             await treasury.allocateRewards();
 
             // Checking the values of tokenomics parameters with delta rounding error
-            lastEpoch = await tokenomics.getCurrentEpoch() - 1;
+            lastEpoch = await tokenomics.epochCounter() - 1;
             ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
             expect(Math.abs(ucf - 0.70833333333333)).to.lessThan(delta);
 

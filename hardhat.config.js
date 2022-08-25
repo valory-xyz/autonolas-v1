@@ -37,6 +37,15 @@ module.exports = {
                 },
             },
             {
+                version: "0.8.16",
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 1000,
+                    },
+                },
+            },
+            {
                 version: "0.7.5",  // FixedPoint math from OlympusDAO, not compatible with 8.x
                 settings: {
                     optimizer: {

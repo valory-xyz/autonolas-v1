@@ -610,7 +610,7 @@ describe("Governance integration", function () {
             const balance = await token.balanceOf(multisig.address);
             expect(ethers.utils.formatEther(balance) == 10).to.be.true;
 
-            // Approve multisig for 10 OLAS by voting ve
+            // Approve ve over the 10 OLAS in the multisig
             nonce = await multisig.nonce();
             let txHashData = await safeContracts.buildContractCall(token, "approve",
                 [ve.address, tenOLABalance], nonce, 0, 0);
@@ -624,7 +624,7 @@ describe("Governance integration", function () {
             const fourYears = 4 * 365 * 86400;
             const lockDuration = fourYears;
 
-            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
+            // Lock 5 OLAS, which is slightly below than the initial proposal threshold by a bit
             nonce = await multisig.nonce();
             txHashData = await safeContracts.buildContractCall(ve, "createLock",
                 [fiveOLABalance, lockDuration], nonce, 0, 0);
@@ -664,10 +664,8 @@ describe("Governance integration", function () {
             const multisigImplementations = [signers[10].address, signers[11].address, signers[12].address];
             // Whitelist one multisig implementation
             serviceRegistry.changeMultisigPermission(multisigImplementations[0], true);
-            // Setting the governor to be the owner of a service registry contract
+            // Setting the timelock to be the owner of a service registry contract
             serviceRegistry.changeOwner(timelock.address);
-
-            // Create a multisig to originate a proposal from
 
             // Propose to de-whitelist first multisig implementation and whitelist two new ones
             let callDatas = [serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
@@ -717,6 +715,83 @@ describe("Governance integration", function () {
             nonce = await multisig.nonce();
             txHashData = await safeContracts.buildContractCall(governor, "execute(uint256)",
                 [proposalId], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Verify the multisig implementation whitelisted addresses
+            let result = await serviceRegistry.mapMultisigs(multisigImplementations[0]);
+            expect(result).to.be.equal(false);
+            result = await serviceRegistry.mapMultisigs(multisigImplementations[1]);
+            expect(result).to.be.equal(true);
+            result = await serviceRegistry.mapMultisigs(multisigImplementations[2]);
+            expect(result).to.be.equal(true);
+        });
+
+        it("Proposal from a multisig to add different multisig implementation in service registry contracts via schedule", async function () {
+            const safeSigners = [signers[1], signers[2]];
+            const safeThreshold = 2;
+            let nonce = 0;
+            // Create a multisig
+            const setupData = gnosisSafe.interface.encodeFunctionData(
+                "setup",
+                // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
+                [[safeSigners[0].address, safeSigners[1].address], safeThreshold, AddressZero, "0x", AddressZero, AddressZero, 0, AddressZero]
+            );
+            const safeContracts = require("@gnosis.pm/safe-contracts");
+            const proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
+                setupData, nonce);
+            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, nonce).then((tx) => tx.wait());
+            const multisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
+
+            // Deploy Timelock with multisig executor / proposer roles
+            const executors = [multisig.address];
+            const proposers = [multisig.address];
+            const Timelock = await ethers.getContractFactory("Timelock");
+            const timelock = await Timelock.deploy(minDelay, proposers, executors);
+            await timelock.deployed();
+
+            // Deploy Governance Bravo
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+                initialVotingPeriod, initialProposalThreshold, quorum);
+            await governor.deployed();
+
+            // Declare multisig implementations
+            const multisigImplementations = [signers[10].address, signers[11].address, signers[12].address];
+            // Whitelist one multisig implementation
+            serviceRegistry.changeMultisigPermission(multisigImplementations[0], true);
+            // Setting the timelock to be the owner of a service registry contract
+            serviceRegistry.changeOwner(timelock.address);
+
+            // Propose to de-whitelist first multisig implementation and whitelist two new ones
+            let callDatas = [serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[0], false]),
+            serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[1], true]),
+            serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[2], true])];
+            // Solidity overridden functions must be explicitly declared
+            // https://github.com/ethers-io/ethers.js/issues/407
+            const propAddresses = [serviceRegistry.address, serviceRegistry.address, serviceRegistry.address];
+            const propValues = [0, 0, 0];
+            // Schedule an operation via a multisig that is a proposer
+            nonce = await multisig.nonce();
+            let txHashData = await safeContracts.buildContractCall(timelock, "scheduleBatch",
+                [propAddresses, propValues, callDatas, bytes32Zero, bytes32Zero, minDelay], nonce, 0, 0);
+            let signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Waiting for the minDelay number of blocks to pass
+            for (let i = 0; i < minDelay; i++) {
+                ethers.provider.send("evm_mine");
+            }
+
+            // Execute the proposed operation and check the execution result
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(timelock, "executeBatch",
+                [propAddresses, propValues, callDatas, bytes32Zero, bytes32Zero], nonce, 0, 0);
             signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
                 await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
             await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);

@@ -7,6 +7,7 @@ describe("Governance integration", function () {
     let gnosisSafe;
     let gnosisSafeProxyFactory;
     let testServiceRegistry;
+    let serviceRegistry;
     let token;
     let ve;
     let signers;
@@ -32,9 +33,14 @@ describe("Governance integration", function () {
         await gnosisSafeProxyFactory.deployed();
 
         const TestServiceRegistry = await ethers.getContractFactory("TestServiceRegistry");
-        testServiceRegistry = await TestServiceRegistry.deploy("service registry", "SERVICE", "https://localhost/service/",
-            AddressZero);
+        testServiceRegistry = await TestServiceRegistry.deploy("Test service registry", "TESTSERVICE",
+            "https://localhost/service/", AddressZero);
         await testServiceRegistry.deployed();
+
+        const ServiceRegistry = await ethers.getContractFactory("ServiceRegistry");
+        serviceRegistry = await ServiceRegistry.deploy("Service Registry", "SERVICE", "https://localhost/service/",
+            AddressZero);
+        await serviceRegistry.deployed();
 
         const Token = await ethers.getContractFactory("OLAS");
         token = await Token.deploy();
@@ -581,6 +587,147 @@ describe("Governance integration", function () {
             await governor["execute(uint256)"](proposalId);
             const newValue = await testServiceRegistry.getControlValue();
             expect(newValue).to.be.equal(controlValue);
+        });
+
+        it("Proposal from a multisig to add different multisig implementation in service registry contracts", async function () {
+            const safeSigners = [signers[1], signers[2]];
+            const safeThreshold = 2;
+            let nonce = 0;
+            // Create a multisig
+            const setupData = gnosisSafe.interface.encodeFunctionData(
+                "setup",
+                // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
+                [[safeSigners[0].address, safeSigners[1].address], safeThreshold, AddressZero, "0x", AddressZero, AddressZero, 0, AddressZero]
+            );
+            const safeContracts = require("@gnosis.pm/safe-contracts");
+            const proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
+                setupData, nonce);
+            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, nonce).then((tx) => tx.wait());
+            const multisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
+
+            // Mint 10 OLAS tokens to the multisig
+            await token.mint(multisig.address, tenOLABalance);
+            const balance = await token.balanceOf(multisig.address);
+            expect(ethers.utils.formatEther(balance) == 10).to.be.true;
+
+            // Approve multisig for 10 OLAS by voting ve
+            nonce = await multisig.nonce();
+            let txHashData = await safeContracts.buildContractCall(token, "approve",
+                [ve.address, tenOLABalance], nonce, 0, 0);
+            let signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Define 4 years for the lock duration.
+            // This will result in voting power being almost exactly as OLAS amount locked:
+            // voting power = amount * t_left_before_unlock / t_max
+            const fourYears = 4 * 365 * 86400;
+            const lockDuration = fourYears;
+
+            // Lock 5 OLAS, which is lower than the initial proposal threshold by a bit
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(ve, "createLock",
+                [fiveOLABalance, lockDuration], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+            // Add a bit more
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(ve, "increaseAmount",
+                [oneOLABalance], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Deploy Timelock
+            const executors = [];
+            const proposers = [];
+            const Timelock = await ethers.getContractFactory("Timelock");
+            const timelock = await Timelock.deploy(minDelay, proposers, executors);
+            await timelock.deployed();
+
+            // Deploy Governance Bravo
+            const GovernorBravo = await ethers.getContractFactory("GovernorOLAS");
+            const governor = await GovernorBravo.deploy(ve.address, timelock.address, initialVotingDelay,
+                initialVotingPeriod, initialProposalThreshold, quorum);
+            await governor.deployed();
+
+            // Grand governor an admin, proposer and executor role in the timelock
+            const adminRole = ethers.utils.id("TIMELOCK_ADMIN_ROLE");
+            await timelock.grantRole(adminRole, governor.address);
+            const proposerRole = ethers.utils.id("PROPOSER_ROLE");
+            await timelock.grantRole(proposerRole, governor.address);
+            const executorRole = ethers.utils.id("EXECUTOR_ROLE");
+            await timelock.grantRole(executorRole, governor.address);
+
+            // Declare multisig implementations
+            const multisigImplementations = [signers[10].address, signers[11].address, signers[12].address];
+            // Whitelist one multisig implementation
+            serviceRegistry.changeMultisigPermission(multisigImplementations[0], true);
+            // Setting the governor to be the owner of a service registry contract
+            serviceRegistry.changeOwner(timelock.address);
+
+            // Create a multisig to originate a proposal from
+
+            // Propose to de-whitelist first multisig implementation and whitelist two new ones
+            let callDatas = [serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[0], false]),
+            serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[1], true]),
+            serviceRegistry.interface.encodeFunctionData("changeMultisigPermission",
+                [multisigImplementations[2], true])];
+            // Solidity overridden functions must be explicitly declared
+            // https://github.com/ethers-io/ethers.js/issues/407
+            const propAddresses = [serviceRegistry.address, serviceRegistry.address, serviceRegistry.address];
+            const propValues = [0, 0, 0];
+            // Make a proposal by a multisig
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(governor, "propose(address[],uint256[],bytes[],string)",
+                [propAddresses, propValues, callDatas, proposalDescription], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Get the proposalId
+            const descriptionHash = ethers.utils.id(proposalDescription);
+            const proposalId = await governor.hashProposal(propAddresses, propValues, callDatas, descriptionHash);
+
+            // If initialVotingDelay is greater than 0 we have to wait that many blocks before the voting starts
+            // Casting votes for the proposalId: 0 - Against, 1 - For, 2 - Abstain
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(governor, "castVote",
+                [proposalId, 1], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Queueing the passed proposal
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(governor, "queue(address[],uint256[],bytes[],bytes32)",
+                [propAddresses, propValues, callDatas, descriptionHash], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Waiting for the next minDelay blocks to pass
+            ethers.provider.send("evm_increaseTime", [minDelay * 86460]);
+            ethers.provider.send("evm_mine");
+
+            // Execute the proposed operation and check the execution result
+            nonce = await multisig.nonce();
+            txHashData = await safeContracts.buildContractCall(governor, "execute(uint256)",
+                [proposalId], nonce, 0, 0);
+            signMessageData = [await safeContracts.safeSignMessage(safeSigners[0], multisig, txHashData, 0),
+                await safeContracts.safeSignMessage(safeSigners[1], multisig, txHashData, 0)];
+            await safeContracts.executeTx(multisig, txHashData, signMessageData, 0);
+
+            // Verify the multisig implementation whitelisted addresses
+            let result = await serviceRegistry.mapMultisigs(multisigImplementations[0]);
+            expect(result).to.be.equal(false);
+            result = await serviceRegistry.mapMultisigs(multisigImplementations[1]);
+            expect(result).to.be.equal(true);
+            result = await serviceRegistry.mapMultisigs(multisigImplementations[2]);
+            expect(result).to.be.equal(true);
         });
     });
 });

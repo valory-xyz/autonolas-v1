@@ -814,7 +814,7 @@ describe("Tokenomics integration", async () => {
                 (Number(balanceOLAS[0]) + Number(balanceOLAS[1]));
             expect(diffAgentReward / E18).to.lessThan(delta);
 
-            // Withdraw locking and skating by the deployer (considered rewards and top-ups for 1 epoch) and a staker
+            // Withdraw locking and claim skating by the deployer (considered rewards and top-ups for 1 epoch) and a staker
             balanceETHBeforeReward = [await ethers.provider.getBalance(deployer.address),
                 await ethers.provider.getBalance(staker.address)];
             // veOLAS withdraw
@@ -823,7 +823,7 @@ describe("Tokenomics integration", async () => {
             receipt = [await tx[0].wait(), await tx[1].wait()];
             gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
                 Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
-            // Staking withdraw
+            // Staking claim
             tx = [await dispenser.connect(deployer).claimStakingRewards(),
                 await dispenser.connect(staker).claimStakingRewards()];
             // Add to the gas cost
@@ -859,6 +859,42 @@ describe("Tokenomics integration", async () => {
             // Calculate balance after staking was received minus the initial OLAS balance minus the expected reward in ETH
             const balanceDiff = (sumBalance - Number(initialMint) - Number(expectedTopUp)) / E18;
             expect(Math.abs(balanceDiff)).to.lessThan(delta);
+        });
+
+        it("Claim staking rewards for several epochs", async () => {
+            // Stake OLAS by a deployer
+            await olas.approve(ve.address, hundredETHBalance);
+            // Set the lock duration to be the specified number of weeks
+            const numWeeks = 20;
+            const lockDuration = numWeeks * oneWeek;
+
+            // Balance should be zero before the lock and a specified amount after the lock
+            expect(await ve.getVotes(deployer.address)).to.equal(0);
+            await ve.createLock(hundredETHBalance, lockDuration);
+            const balanceDeployer = await ve.balanceOf(deployer.address);
+            expect(balanceDeployer).to.equal(hundredETHBalance);
+
+            // Allocate empty rewards during the first epoch
+            await tokenomics.checkpoint();
+            // Go through epochs and allocate rewards for OLAS with the inflation schedule
+            for (let i = 0; i < numWeeks; i++) {
+                ethers.provider.send("evm_increaseTime", [oneWeek + 1]);
+                const currentBlock = await ethers.provider.getBlock("latest");
+                // Mine blocks until the next epoch
+                for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
+                    await ethers.provider.send("evm_mine");
+                }
+
+                // Allocate rewards for the epoch
+                await tokenomics.checkpoint();
+            }
+
+            // Claim rewards
+            const tx = await dispenser.connect(deployer).claimStakingRewards();
+            const receipt = await tx.wait();
+            const gasCost = Number(receipt.gasUsed) * Number(tx.gasPrice);
+            expect(gasCost).to.greaterThan(0);
+            //console.log("gas cost", gasCost);
         });
     });
 
@@ -1147,7 +1183,7 @@ describe("Tokenomics integration", async () => {
             diffTopUp = expectedComponentTopUp + expectedAgentTopUp - sumComponentOwnerTopUps - sumAgentOwnerTopUps;
             expect(diffTopUp / E18).to.lessThan(delta);
 
-            // Withdraw skating by the deployer (considered rewards for 1 epoch) and a staker
+            // Claim skating by the deployer (considered rewards for 1 epoch) and a staker
             ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
             currentBlock = await ethers.provider.getBlock("latest");
             // Mine one block to update the time

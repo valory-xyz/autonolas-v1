@@ -14,6 +14,7 @@ describe("Tokenomics integration", async () => {
     let olaFactory;
     let depositoryFactory;
     let tokenomicsFactory;
+    let genericBondCalculator;
     let veFactory;
     let dispenserFactory;
     let componentRegistry;
@@ -58,7 +59,6 @@ describe("Tokenomics integration", async () => {
     const agentParams = [1, regBond];
     const serviceId = 1;
     const payload = "0x";
-    const magicDenominator = 5192296858534816;
     const E18 = 10**18;
     const delta = 1.0 / 10**10;
     const gasDelta = 1.0 / 10**6;
@@ -112,17 +112,24 @@ describe("Tokenomics integration", async () => {
         deployer = signers[0];
         dai = await erc20Token.deploy();
         olas = await olaFactory.deploy();
+        ve = await veFactory.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
         // Correct treasury address is missing here, it will be defined just one line below
         tokenomics = await tokenomicsFactory.deploy(olas.address, deployer.address, deployer.address, deployer.address,
-            deployer.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
+            ve.address, epochLen, componentRegistry.address, agentRegistry.address, serviceRegistry.address);
         // Correct depository address is missing here, it will be defined just one line below
         treasury = await treasuryFactory.deploy(olas.address, deployer.address, tokenomics.address, deployer.address);
-        depository = await depositoryFactory.deploy(olas.address, treasury.address, tokenomics.address);
-        ve = await veFactory.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
+        // Deploy generic bond calculator contract
+        const GenericBondCalculator = await ethers.getContractFactory("GenericBondCalculator");
+        genericBondCalculator = await GenericBondCalculator.deploy(olas.address, tokenomics.address);
+        await genericBondCalculator.deployed();
+        // Deploy depository contract
+        depository = await depositoryFactory.deploy(olas.address, treasury.address, tokenomics.address,
+            genericBondCalculator.address);
+        // Deploy dispenser contract
         dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address);
         // Change to the correct addresses
-        await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address, ve.address);
-        await treasury.changeManagers(depository.address, dispenser.address, AddressZero);
+        await tokenomics.changeManagers(AddressZero, treasury.address, depository.address, dispenser.address);
+        await treasury.changeManagers(AddressZero, AddressZero, depository.address, dispenser.address);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
@@ -138,7 +145,7 @@ describe("Tokenomics integration", async () => {
         const Factory = await ethers.getContractFactory("UniswapV2Factory");
         const factory = await Factory.deploy(deployer.address);
         await factory.deployed();
-        // console.log("Uniswap factory deployed to:", factory.address);
+        //console.log("Uniswap factory deployed to:", factory.address);
 
         // Deploy Router02
         const Router = await ethers.getContractFactory("UniswapV2Router02");
@@ -178,17 +185,15 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1], [true]);
             // Send deposits from a service
             await treasury.depositETHFromServices([1], [regServiceRevenue], {value: regServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
 
@@ -225,8 +230,6 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Fail if the sent amount and the sum of specified amount for each service do not match
             await expect(
                 treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: regServiceRevenue})
@@ -240,12 +243,12 @@ describe("Tokenomics integration", async () => {
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: doubleRegServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
-            //            console.log(ucf);
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
+            //console.log(ucf);
             expect(Math.abs(ucf - 0.66666666666666)).to.lessThan(delta);
         });
 
@@ -287,18 +290,16 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Send deposits services
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: doubleRegServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
-            //            console.log(ucf);
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
+            //console.log(ucf);
             expect(Math.abs(ucf - 0.875)).to.lessThan(delta);
         });
 
@@ -342,17 +343,15 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Send deposits services
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, regServiceRevenue], {value: doubleRegServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
 
@@ -400,14 +399,12 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Send deposits services
             await treasury.depositETHFromServices([1, 2], [doubleRegServiceRevenue, regServiceRevenue],
                 {value: tripleRegServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Calculation of values: ucfc = 1.0 since all 4 components are in both services
             // ucfa[1] = 1, ucfa[2] = 2/3, ucfa[3] = 1
@@ -419,7 +416,7 @@ describe("Tokenomics integration", async () => {
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 0.97222222222222)).to.lessThan(delta);
         });
 
@@ -465,14 +462,12 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Send deposits services
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
                 {value: tripleRegServiceRevenue});
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
@@ -493,7 +488,7 @@ describe("Tokenomics integration", async () => {
 
             // Checking the values with delta rounding error
             const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
         });
     });
@@ -527,8 +522,6 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
             await serviceRegistry.connect(serviceManager).deploy(ownerAddress, serviceId, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1], [true]);
             // Send deposits from a service
             await treasury.depositETHFromServices([1], [regServiceRevenue], {value: regServiceRevenue});
 
@@ -536,11 +529,11 @@ describe("Tokenomics integration", async () => {
             const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Get owner rewards
             const balanceETHBeforeReward = await ethers.provider.getBalance(ownerAddress);
-            const tx = await dispenser.connect(owner).withdrawOwnerRewards();
+            const tx = await dispenser.connect(owner).claimOwnerRewards();
             // Calculate gas cost
             const receipt = await tx.wait();
             const gasCost = Number(receipt.gasUsed) * Number(tx.gasPrice);
@@ -617,8 +610,6 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, 2, gnosisSafeMultisig.address, payload);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
             // Send deposits from a service
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
                 {value: tripleRegServiceRevenue});
@@ -627,13 +618,13 @@ describe("Tokenomics integration", async () => {
             const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
 
             // Calculate current epoch parameters
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Get owners rewards in ETH
             const balanceETHBeforeReward = [await ethers.provider.getBalance(owners[0].address),
                 await ethers.provider.getBalance(owners[1].address)];
-            const tx = [await dispenser.connect(owners[0]).withdrawOwnerRewards(),
-                await dispenser.connect(owners[1]).withdrawOwnerRewards()];
+            const tx = [await dispenser.connect(owners[0]).claimOwnerRewards(),
+                await dispenser.connect(owners[1]).claimOwnerRewards()];
             // Calculate gas cost
             const receipt = [await tx[0].wait(), await tx[1].wait()];
             const gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
@@ -727,11 +718,8 @@ describe("Tokenomics integration", async () => {
             const balanceStaker = await ve.balanceOf(staker.address);
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
-
             // Allocate empty rewards during the first epoch
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
             ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
             const currentBlock = await ethers.provider.getBlock("latest");
             // Mine blocks until the next epoch
@@ -747,14 +735,14 @@ describe("Tokenomics integration", async () => {
             const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
 
             // Allocate rewards for the epoch
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
             //console.log("Current epoch", await tokenomics.epochCounter());
 
             // Get owners rewards and top-ups for components
             let balanceETHBeforeReward = [await ethers.provider.getBalance(componentOwners[0].address),
                 await ethers.provider.getBalance(componentOwners[1].address)];
-            let tx = [await dispenser.connect(componentOwners[0]).withdrawOwnerRewards(),
-                await dispenser.connect(componentOwners[1]).withdrawOwnerRewards()];
+            let tx = [await dispenser.connect(componentOwners[0]).claimOwnerRewards(),
+                await dispenser.connect(componentOwners[1]).claimOwnerRewards()];
             // Calculate gas cost
             let receipt = [await tx[0].wait(), await tx[1].wait()];
             let gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
@@ -793,8 +781,8 @@ describe("Tokenomics integration", async () => {
             // Get owners rewards and top-ups for agents
             balanceETHBeforeReward = [await ethers.provider.getBalance(agentOwners[0].address),
                 await ethers.provider.getBalance(agentOwners[1].address)];
-            tx = [await dispenser.connect(agentOwners[0]).withdrawOwnerRewards(),
-                await dispenser.connect(agentOwners[1]).withdrawOwnerRewards()];
+            tx = [await dispenser.connect(agentOwners[0]).claimOwnerRewards(),
+                await dispenser.connect(agentOwners[1]).claimOwnerRewards()];
             // Calculate gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
             gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
@@ -836,8 +824,8 @@ describe("Tokenomics integration", async () => {
             gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
                 Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
             // Staking withdraw
-            tx = [await dispenser.connect(deployer).withdrawStakingRewards(),
-                await dispenser.connect(staker).withdrawStakingRewards()];
+            tx = [await dispenser.connect(deployer).claimStakingRewards(),
+                await dispenser.connect(staker).claimStakingRewards()];
             // Add to the gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
             gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice) + gasCost[0],
@@ -970,11 +958,8 @@ describe("Tokenomics integration", async () => {
             const balanceStaker = await ve.balanceOf(staker.address);
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 2], [true, true]);
-
             // Allocate empty rewards during the first epoch
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
             let currentBlock = await ethers.provider.getBlock("latest");
             // Mine blocks until the next epoch
             for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
@@ -996,8 +981,11 @@ describe("Tokenomics integration", async () => {
             // Get the top up per epoch before the mint happens, such that it correctly reflects the amount
             let topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
 
+            // Change epsilonRate to 0.4 to test the fKD parameter
+            await tokenomics.changeTokenomicsParameters(1, 1, 1, 1, 1, "4" + "0".repeat(17), "15" + "0".repeat(22), 10, 12, false);
+
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Calculation of ucfc
             // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
@@ -1018,7 +1006,7 @@ describe("Tokenomics integration", async () => {
 
             // Checking the values with delta rounding error of UCF, DF
             let lastEpoch = await tokenomics.epochCounter() - 1;
-            let ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            let ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
 
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
@@ -1028,22 +1016,27 @@ describe("Tokenomics integration", async () => {
             // New agent and component owners = 6
             // D(e) = 6
             // f(K, D) = 6 * 6
-            // df = (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
-            const df = Number(await tokenomics.getDF(lastEpoch)) * 1.0 / E18;
+            // (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
+            // epsilonRate + 1 = 1.4
+            // fKD = fKD > epsilonRate ? fkD : epsilonRate
+            // fKD = 0.36
+            // df = 1 + fKD = 1.36
+            const df = Number(await tokenomics.getIDF(lastEpoch)) * 1.0 / E18;
+            //console.log("df", df);
             expect(Math.abs(df - 1.36)).to.lessThan(delta);
 
             // Get owners top-ups
             // We have 4 components
             let balanceComponentOwner = new Array(4);
             for (let i = 0; i < 4; i++) {
-                await dispenser.connect(componentOwners[i]).withdrawOwnerRewards();
+                await dispenser.connect(componentOwners[i]).claimOwnerRewards();
                 balanceComponentOwner[i] = await olas.balanceOf(componentOwners[i].address);
             }
 
             // 3 agents
             let balanceAgentOwner = new Array(3);
             for (let i = 0; i < 3; i++) {
-                await dispenser.connect(agentOwners[i]).withdrawOwnerRewards();
+                await dispenser.connect(agentOwners[i]).claimOwnerRewards();
                 balanceAgentOwner[i] = Number(await olas.balanceOf(agentOwners[i].address));
             }
 
@@ -1094,8 +1087,6 @@ describe("Tokenomics integration", async () => {
             const topUpStakerFraction = await tokenomics.topUpStakerFraction();
             const expectedStakerTopUpEpoch1 = topUpPerEpoch * topUpStakerFraction / 100;
 
-            // Whitelist protocol-owned service Ids
-            await tokenomics.changeProtocolServicesWhiteList([1, 1], [true, true]);
             // Send service revenues for the next epoch
             await treasury.depositETHFromServices([1, 2], [doubleRegServiceRevenue, regServiceRevenue],
                 {value: tripleRegServiceRevenue});
@@ -1110,25 +1101,25 @@ describe("Tokenomics integration", async () => {
             topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
 
             // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
-            await treasury.allocateRewards();
+            await tokenomics.checkpoint();
 
             // Checking the values of tokenomics parameters with delta rounding error
             lastEpoch = await tokenomics.epochCounter() - 1;
-            ucf = Number(await tokenomics.getUCF(lastEpoch) / magicDenominator) * 1.0 / E18;
+            ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
             expect(Math.abs(ucf - 0.70833333333333)).to.lessThan(delta);
 
             // Get owners rewards
             // We have 4 components
             balanceComponentOwner = new Array(4);
             for (let i = 0; i < 4; i++) {
-                await dispenser.connect(componentOwners[i]).withdrawOwnerRewards();
+                await dispenser.connect(componentOwners[i]).claimOwnerRewards();
                 balanceComponentOwner[i] = Number(await olas.balanceOf(componentOwners[i].address));
             }
 
             // 3 agents
             balanceAgentOwner = new Array(3);
             for (let i = 0; i < 3; i++) {
-                await dispenser.connect(agentOwners[i]).withdrawOwnerRewards();
+                await dispenser.connect(agentOwners[i]).claimOwnerRewards();
                 balanceAgentOwner[i] = Number(await olas.balanceOf(agentOwners[i].address));
             }
 
@@ -1163,8 +1154,8 @@ describe("Tokenomics integration", async () => {
             await ethers.provider.send("evm_mine");
             await ve.withdraw();
             await ve.connect(staker).withdraw();
-            await dispenser.connect(deployer).withdrawStakingRewards();
-            await dispenser.connect(staker).withdrawStakingRewards();
+            await dispenser.connect(deployer).claimStakingRewards();
+            await dispenser.connect(staker).claimStakingRewards();
 
             // Staker balance must increase on the topUpStakerFraction amount of the received service revenue
             // plus the previous epoch rewards

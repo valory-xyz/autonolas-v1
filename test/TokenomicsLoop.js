@@ -1,14 +1,15 @@
 /*global describe, context, beforeEach, it*/
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
+const helpers = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("Tokenomics integration", async () => {
     const decimals = "0".repeat(18);
     const LARGE_APPROVAL = "1" + "0".repeat(6) + decimals;
     // Initial mint for olas and DAI (40,000)
-    const initialMint = "4" + "0".repeat(4) + decimals;
+    const initialMint = "1" + "0".repeat(5) + decimals;
     // Supply amount for the bonding product
-    const supplyProductOLA =  "2" + "0".repeat(3) + decimals;
+    const supplyProductOLAS =  "2" + "0".repeat(3) + decimals;
 
     let erc20Token;
     let olaFactory;
@@ -60,7 +61,7 @@ describe("Tokenomics integration", async () => {
     const serviceId = 1;
     const payload = "0x";
     const E18 = 10**18;
-    const delta = 1.0 / 10**10;
+    const delta = 10**9;
     const gasDelta = 1.0 / 10**6;
     const oneWeek = 7 * 86400;
 
@@ -190,11 +191,6 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
 
         it("Calculate tokenomics factors. Two services with one agent for each, 3 agents in total", async () => {
@@ -244,12 +240,6 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            //console.log(ucf);
-            expect(Math.abs(ucf - 0.66666666666666)).to.lessThan(delta);
         });
 
         it("Calculate tokenomics factors. Two services with different set of agents are deployed", async () => {
@@ -295,12 +285,6 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            //console.log(ucf);
-            expect(Math.abs(ucf - 0.875)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with two agents and two components, one service is not profitable", async () => {
@@ -348,11 +332,6 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 1.0)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with three agents and four components", async () => {
@@ -405,19 +384,6 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Calculation of values: ucfc = 1.0 since all 4 components are in both services
-            // ucfa[1] = 1, ucfa[2] = 2/3, ucfa[3] = 1
-            // |As(1)| = 3, |As(2)| = 2
-            // ucfas[1] = sum(ucfa_s1[i]) / |As(1)| = (1 + 2/3 + 1) / 3 = 8/9
-            // ucfas[2] = sum(ucfa_s2[i]) / |As(2)| = (1 + 1) / 2 = 1
-            // ucfa = sum(ucfas) / |S| = (8/9 + 1) / 2 = 17/18
-            // (ucfc + ucfa) / 2 = 0.972(2)
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 0.97222222222222)).to.lessThan(delta);
         });
 
         it("Tokenomics factors. Two services with three agents and four components, one component is not utilized", async () => {
@@ -468,34 +434,15 @@ describe("Tokenomics integration", async () => {
 
             // Calculate current epoch parameters
             await tokenomics.checkpoint();
-
-            // Calculation of ucfc
-            // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
-            // |Cs(1)| = 2, |Cs(2)| = 3
-            // ucfcs[1] = sum(ucfc_s1[i]) / |Cs(1)| = (1 + 1) / 2 = 1
-            // ucfcs[2] = sum(ucfc_s2[i]) / |Cs(2)| = (1 + 1 + 2/3) / 3 = 8/9
-            // ucfc = sum(ucfas) / |S| = (8/9 + 1) / 2 = 17/18
-            // Since not all components are engaged:
-            // ucfc = ucfc * |Cref| / |Ctotal| = ucfc * 3 / 4 = 17/24
-            // Calculation of ucfa
-            // ucfa[1] = 1, ucfa[2] = 1/3, ucfa[3] = 2/3
-            // |As(1)| = 2, |As(2)| = 2
-            // ucfas[1] = sum(ucfa_s1[i]) / |As(1)| = (1 + 1/3) / 2 = 2/3
-            // ucfas[2] = sum(ucfa_s2[i]) / |As(2)| = (1 + 2/3) / 2 = 5/6
-            // ucfa = sum(ucfas) / |S| = (2/3 + 5/6) / 2 = 3/4
-            // Total UCF
-            // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
-
-            // Checking the values with delta rounding error
-            const lastEpoch = await tokenomics.epochCounter() - 1;
-            const ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
         });
     });
 
 
     context("Dispenser", async function () {
         it("Dispenser for an agent owner", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
             const mechManager = signers[3];
             const serviceManager = signers[4];
             const owner = signers[5];
@@ -522,55 +469,92 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
             await serviceRegistry.connect(serviceManager).deploy(ownerAddress, serviceId, gnosisSafeMultisig.address, payload);
 
-            // Send deposits from a service
+            // In order to get OLAS top-ups, the service owner needs to lock enough veOLAS
+            const minWeightedBalance = await tokenomics.veOLASThreshold();
+            const balanceOLAS = minWeightedBalance.toString() + "1";
+            // Transfer the needed amount of OLAS to the component / agent / service owner
+            await olas.transfer(ownerAddress, balanceOLAS);
+            await olas.connect(owner).approve(ve.address, balanceOLAS);
+            // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+            // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+            const lockDuration = 126144000;
+            await ve.connect(owner).createLock(balanceOLAS, lockDuration);
+
+            // Increase the time to more than the length of the epoch
+            await helpers.time.increase(epochLen + 3);
+            // Send donations to service(s)
             await treasury.depositETHFromServices([1], [regServiceRevenue], {value: regServiceRevenue});
-
-            // Get the top up per epoch before the mint happens, such that it correctly reflects the amount
-            const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
-
-            // Calculate current epoch parameters
+            // Record tokenomics results of this epoch and start the new one
             await tokenomics.checkpoint();
 
             // Get owner rewards
             const balanceETHBeforeReward = await ethers.provider.getBalance(ownerAddress);
-            const tx = await dispenser.connect(owner).claimOwnerRewards();
+            const balanceBeforeTopUps = BigInt(await olas.balanceOf(ownerAddress));
+            // Claiming rewards for one component and one agent
+            const tx = await dispenser.connect(owner).claimOwnerRewards([0, 1], [1, 1]);
             // Calculate gas cost
             const receipt = await tx.wait();
             const gasCost = Number(receipt.gasUsed) * Number(tx.gasPrice);
-            const balanceOLAS = await olas.balanceOf(owner.address);
+            const balanceAfterTopUps = BigInt(await olas.balanceOf(ownerAddress));
             const balanceETHAfterReward = await ethers.provider.getBalance(ownerAddress);
             //console.log("balanceETHBeforeReward", balanceETHBeforeReward);
             //console.log("gas used", receipt.gasUsed);
             //console.log("gas price", tx.gasPrice);
             //console.log("gas cost", gasCost);
-            //console.log("balance OLAS", balanceOLAS);
             //console.log("balanceETHAfterReward", balanceETHAfterReward);
 
+            // Get the last settled epoch counter
+            let lastPoint = Number(await tokenomics.epochCounter()) - 1;
+            // Get the epoch point of the last epoch
+            let ep = await tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
+            // Calculate rewards based on the points information
+            let rewards = [
+                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+            ];
+            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            // Calculate top-ups based on the points information
+            let topUps = [
+                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
+                Number(ep.totalTopUpsOLAS)
+            ];
+            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
+            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            expect(accountRewards).to.greaterThan(0);
+            expect(accountTopUps).to.greaterThan(0);
+
+            // Get the overall incentive amounts for owners
+            const expectedRewards = rewards[1] + rewards[2];
+            const expectedTopUps = topUps[1] + topUps[2];
+
             // Check the received reward
-            const componentFraction = await tokenomics.componentFraction();
-            const agentFraction = await tokenomics.agentFraction();
-            const expectedRewards = regServiceRevenue * componentFraction / 100 + regServiceRevenue * agentFraction / 100;
             // Rewards without gas
             const rewardsNoGas = Number(balanceETHAfterReward) - Number(balanceETHBeforeReward);
             // Rewards with the gas spent for the tx
             const rewardsWithGas = rewardsNoGas + gasCost;
             // Get the absolute difference between expected and received rewards in ETH
-            const rewardsDiffETH = Math.abs((Number(expectedRewards) - rewardsWithGas) / E18);
+            const rewardsDiffETH = Math.abs((expectedRewards - rewardsWithGas) / E18);
             expect(rewardsDiffETH).to.lessThan(gasDelta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsNoGas).to.lessThan(expectedRewards);
 
-            // Check the top-ups for OLAS
-            // Note that regServiceRevenue is not accounted for, since it is equal to sumProfits (1 agent only)
-            const topUpOwnerFraction = Number(await tokenomics.topUpOwnerFraction());
-            const componentWeight = Number(await tokenomics.componentWeight());
-            const agentWeight = Number(await tokenomics.agentWeight());
-            let expectedTopUp = topUpPerEpoch * topUpOwnerFraction * (agentWeight + componentWeight);
-            expectedTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
-            expect(Number(balanceOLAS)).to.equal(expectedTopUp);
+            // Check owner OLAS top-ups
+            const balanceDiff = Number(balanceAfterTopUps - balanceBeforeTopUps);
+            expect(Math.abs(expectedTopUps - balanceDiff)).to.lessThan(delta);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
         });
 
         it("Dispenser for several agent owners", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
             const mechManager = signers[3];
             const serviceManager = signers[4];
             const owners = [signers[5], signers[6]];
@@ -610,57 +594,95 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, 2, gnosisSafeMultisig.address, payload);
 
+            // In order to get OLAS top-ups for owners of components / agents, service owner needs to lock enough veOLAS
+            const minWeightedBalance = await tokenomics.veOLASThreshold();
+            const balanceOLASToLock = minWeightedBalance.toString() + "1";
+            // Transfer the needed amount of OLAS to the component / agent / service owner
+            await olas.transfer(serviceOwner, balanceOLASToLock);
+            // signers[11] is the EOA for the service owner address
+            await olas.connect(signers[11]).approve(ve.address, balanceOLASToLock);
+            // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+            // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+            const lockDuration = 126144000;
+            await ve.connect(signers[11]).createLock(balanceOLASToLock, lockDuration);
+
+            // Increase the time to more than the length of the epoch
+            await helpers.time.increase(epochLen + 3);
             // Send deposits from a service
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
                 {value: tripleRegServiceRevenue});
-
-            // Get the top up per epoch before the mint happens, such that it correctly reflects the amount
-            const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
-
-            // Calculate current epoch parameters
+            // Record tokenomics results of this epoch and start the new one
             await tokenomics.checkpoint();
 
             // Get owners rewards in ETH
             const balanceETHBeforeReward = [await ethers.provider.getBalance(owners[0].address),
                 await ethers.provider.getBalance(owners[1].address)];
-            const tx = [await dispenser.connect(owners[0]).claimOwnerRewards(),
-                await dispenser.connect(owners[1]).claimOwnerRewards()];
+            // owners[0] has one component and one agent with Ids=[1, 1], owners[1] has one agent with Id=2
+            const tx = [await dispenser.connect(owners[0]).claimOwnerRewards([0, 1], [1, 1]),
+                await dispenser.connect(owners[1]).claimOwnerRewards([1], [2])];
             // Calculate gas cost
             const receipt = [await tx[0].wait(), await tx[1].wait()];
             const gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
                 Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
-            // Get OLAS balance
+            // Get OLAS balance: since service owner is not te same as owners[0] or owners[1],
+            // owners[0] and owners[1] balances after the top-up will reflect OLAS top-ups in full
             const balanceOLAS = [await olas.balanceOf(owners[0].address), await olas.balanceOf(owners[1].address)];
             // Get ETH balance after rewards
             const balanceETHAfterReward = [await ethers.provider.getBalance(owners[0].address),
                 await ethers.provider.getBalance(owners[1].address)];
 
+            // Get the last settled epoch counter
+            let lastPoint = Number(await tokenomics.epochCounter()) - 1;
+            // Get the epoch point of the last epoch
+            let ep = await tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
+            // Calculate rewards based on the points information
+            let rewards = [
+                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+            ];
+            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            // Calculate top-ups based on the points information
+            let topUps = [
+                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
+                Number(ep.totalTopUpsOLAS)
+            ];
+            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
+            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            expect(accountRewards).to.greaterThan(0);
+            expect(accountTopUps).to.greaterThan(0);
+
+            // Get the overall incentive amounts for owners
+            const expectedRewards = rewards[1] + rewards[2];
+            const expectedTopUps = topUps[1] + topUps[2];
+
             // Check the received reward in ETH
-            const componentFraction = await tokenomics.componentFraction();
-            const agentFraction = await tokenomics.agentFraction();
-            const expectedRewards = tripleRegServiceRevenue * componentFraction / 100 + tripleRegServiceRevenue * agentFraction / 100;
             // Rewards without gas
             const rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
                 Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
             // Rewards with the gas spent for the tx
             const rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
             // Get the absolute difference between expected and received rewards in ETH
-            const rewardsDiffETH = Math.abs((Number(expectedRewards) - (rewardsWithGas[0] + rewardsWithGas[1])) / E18);
+            const rewardsDiffETH = Math.abs(expectedRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
             expect(rewardsDiffETH).to.lessThan(gasDelta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedRewards);
 
             // Check the top-ups in OLAS
-            // Note that regServiceRevenue is not accounted for, since it is equal to sumProfits (1 agent only)
-            const topUpOwnerFraction = Number(await tokenomics.topUpOwnerFraction());
-            const componentWeight = Number(await tokenomics.componentWeight());
-            const agentWeight = Number(await tokenomics.agentWeight());
-            let expectedTopUp = topUpPerEpoch * topUpOwnerFraction * (agentWeight + componentWeight);
-            expectedTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
-            expect(Number(balanceOLAS[0]) + Number(balanceOLAS[1])).to.equal(expectedTopUp);
+            expect(Math.abs(expectedTopUps - (Number(balanceOLAS[0]) + Number(balanceOLAS[1])))).to.lessThan(delta);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
         });
 
-        it("Dispenser for several agent owners and stakers", async () => {
+        it.only("Dispenser for several agent owners and stakers", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
             const staker = signers[2];
             const mechManager = signers[3];
             const serviceManager = signers[4];
@@ -703,11 +725,23 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, serviceId, gnosisSafeMultisig.address, payload);
             await serviceRegistry.connect(serviceManager).deploy(serviceOwner, 2, gnosisSafeMultisig.address, payload);
 
+            // In order to get OLAS top-ups for owners of components / agents, service owner needs to lock enough veOLAS
+            const minWeightedBalance = await tokenomics.veOLASThreshold();
+            const balanceOLASToLock = minWeightedBalance.toString() + "1";
+            // Transfer the needed amount of OLAS to the component / agent / service owner
+            await olas.transfer(serviceOwner, balanceOLASToLock);
+            // signers[11] is the EOA for the service owner address
+            await olas.connect(signers[11]).approve(ve.address, balanceOLASToLock);
+            // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+            // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+            let lockDuration = 126144000;
+            await ve.connect(signers[11]).createLock(balanceOLASToLock, lockDuration);
+
             // Stake OLAS with 2 stakers: deployer and staker
             await olas.transfer(staker.address, twoHundredETHBalance);
             await olas.approve(ve.address, hundredETHBalance);
             await olas.connect(staker).approve(ve.address, twoHundredETHBalance);
-            const lockDuration = oneWeek;
+            lockDuration = oneWeek;
 
             // Balance should be zero before the lock and specified amount after the lock
             expect(await ve.getVotes(deployer.address)).to.equal(0);
@@ -718,71 +752,84 @@ describe("Tokenomics integration", async () => {
             const balanceStaker = await ve.balanceOf(staker.address);
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
+            // Calculate the fraction of stakers vs the stakers with the service owner staking
+            const userStakersFraction = 1.0 * Number(threeHundredETHBalance) / (Number(threeHundredETHBalance) + Number(balanceOLASToLock));
+
             // Allocate empty rewards during the first epoch
             await tokenomics.checkpoint();
-            ethers.provider.send("evm_increaseTime", [oneWeek + 10000]);
-            const currentBlock = await ethers.provider.getBlock("latest");
-            // Mine blocks until the next epoch
-            for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
-                await ethers.provider.send("evm_mine");
-            }
+            // Increase the time to more than one week for which lockers were staking
+            await helpers.time.increase(oneWeek + 10000);
 
             // Send deposits from a service
             await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
                 {value: tripleRegServiceRevenue});
-
-            // Get the top up per epoch before the mint happens, such that it correctly reflects the amount
-            const topUpPerEpoch = await tokenomics.getTopUpPerEpoch();
-
-            // Allocate rewards for the epoch
+            // Record tokenomics results of this epoch and start the new one
             await tokenomics.checkpoint();
-            //console.log("Current epoch", await tokenomics.epochCounter());
 
-            // Get owners rewards and top-ups for components
+            // Get the last settled epoch counter
+            let lastPoint = Number(await tokenomics.epochCounter()) - 1;
+            // Get the epoch point of the last epoch
+            let ep = await tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
+            // Calculate rewards based on the points information
+            let rewards = [
+                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
+                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+            ];
+            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            // Calculate top-ups based on the points information
+            let topUps = [
+                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
+                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
+                Number(ep.totalTopUpsOLAS)
+            ];
+            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
+            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            expect(accountRewards).to.greaterThan(0);
+            expect(accountTopUps).to.greaterThan(0);
+
+            // Get owners rewards in ETH
             let balanceETHBeforeReward = [await ethers.provider.getBalance(componentOwners[0].address),
                 await ethers.provider.getBalance(componentOwners[1].address)];
-            let tx = [await dispenser.connect(componentOwners[0]).claimOwnerRewards(),
-                await dispenser.connect(componentOwners[1]).claimOwnerRewards()];
+            // Each componentOwners has 1 component
+            let tx = [await dispenser.connect(componentOwners[0]).claimOwnerRewards([0], [1]),
+                await dispenser.connect(componentOwners[1]).claimOwnerRewards([0], [2])];
             // Calculate gas cost
             let receipt = [await tx[0].wait(), await tx[1].wait()];
             let gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
                 Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
-            // Get OLAS balance
-            let balanceOLAS = [await olas.balanceOf(componentOwners[0].address),
-                await olas.balanceOf(componentOwners[1].address)];
+            // Get OLAS balance: since service owner is different from unit owners,
+            // componentOwners and agentOwners balances after the top-up will reflect OLAS top-ups in full
+            let balanceOLAS = [await olas.balanceOf(componentOwners[0].address), await olas.balanceOf(componentOwners[1].address)];
             // Get ETH balance after rewards
             let balanceETHAfterReward = [await ethers.provider.getBalance(componentOwners[0].address),
                 await ethers.provider.getBalance(componentOwners[1].address)];
 
             // Check the received reward in ETH for components
-            const componentFraction = await tokenomics.componentFraction();
-            const expectedComponentRewards = tripleRegServiceRevenue * componentFraction / 100;
+            const expectedComponentRewards = rewards[1];
+            const expectedTopUpsComponents = topUps[1];
             // Rewards without gas
             let rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
                 Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
             // Rewards with the gas spent for the tx
             let rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
             // Get the absolute difference between expected and received rewards in ETH
-            let rewardsDiffETH = Math.abs((Number(expectedComponentRewards) - (rewardsWithGas[0] + rewardsWithGas[1])) / E18);
+            let rewardsDiffETH = Math.abs(expectedComponentRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
             expect(rewardsDiffETH).to.lessThan(gasDelta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedComponentRewards);
 
             // Calculate component top-up sum in OLAS
-            const topUpOwnerFraction = await tokenomics.topUpOwnerFraction();
-            const componentWeight = await tokenomics.componentWeight();
-            const agentWeight = await tokenomics.agentWeight();
-            let expectedTopUp = topUpPerEpoch * topUpOwnerFraction * componentWeight;
-            expectedTopUp /=  100 * (Number(componentWeight) + Number(agentWeight));
-            const diffComponentReward = Number(expectedTopUp) -
-                (Number(balanceOLAS[0]) + Number(balanceOLAS[1]));
-            expect(diffComponentReward / E18).to.lessThan(delta);
+            expect(Math.abs(expectedTopUpsComponents - (Number(balanceOLAS[0]) + Number(balanceOLAS[1])))).to.lessThan(delta);
 
             // Get owners rewards and top-ups for agents
             balanceETHBeforeReward = [await ethers.provider.getBalance(agentOwners[0].address),
                 await ethers.provider.getBalance(agentOwners[1].address)];
-            tx = [await dispenser.connect(agentOwners[0]).claimOwnerRewards(),
-                await dispenser.connect(agentOwners[1]).claimOwnerRewards()];
+            tx = [await dispenser.connect(agentOwners[0]).claimOwnerRewards([1], [1]),
+                await dispenser.connect(agentOwners[1]).claimOwnerRewards([1], [2])];
             // Calculate gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
             gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
@@ -794,25 +841,21 @@ describe("Tokenomics integration", async () => {
                 await ethers.provider.getBalance(agentOwners[1].address)];
 
             // Check the received reward in ETH for agents
-            const agentFraction = await tokenomics.agentFraction();
-            const expectedAgentRewards = tripleRegServiceRevenue * agentFraction / 100;
+            const expectedAgentRewards = rewards[2];
+            const expectedTopUpsAgents = topUps[2];
             // Rewards without gas
             rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
                 Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
             // Rewards with the gas spent for the tx
             rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
             // Get the absolute difference between expected and received rewards in ETH
-            rewardsDiffETH = Math.abs((Number(expectedAgentRewards) - (rewardsWithGas[0] + rewardsWithGas[1])) / E18);
+            rewardsDiffETH = Math.abs(expectedAgentRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
             expect(rewardsDiffETH).to.lessThan(gasDelta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedAgentRewards);
 
             // Calculate agent top-up difference in OLAS with the expected value
-            expectedTopUp = topUpPerEpoch * topUpOwnerFraction * agentWeight;
-            expectedTopUp /=  100 * (Number(agentWeight) + Number(agentWeight));
-            const diffAgentReward = Number(expectedAgentRewards) -
-                (Number(balanceOLAS[0]) + Number(balanceOLAS[1]));
-            expect(diffAgentReward / E18).to.lessThan(delta);
+            expect(Math.abs(expectedTopUpsAgents - (Number(balanceOLAS[0]) + Number(balanceOLAS[1])))).to.lessThan(delta);
 
             // Withdraw locking and claim skating by the deployer (considered rewards and top-ups for 1 epoch) and a staker
             balanceETHBeforeReward = [await ethers.provider.getBalance(deployer.address),
@@ -838,34 +881,41 @@ describe("Tokenomics integration", async () => {
                 await ethers.provider.getBalance(staker.address)];
 
             // Staker balance must increase on the stakerFraction amount of the received service revenue
-            const stakerFraction = await tokenomics.stakerFraction();
-            const expectedStakerRewards = tripleRegServiceRevenue * stakerFraction / 100;
+            // We need to subtract service owner staking part
+            const expectedStakerRewards = rewards[0] * userStakersFraction;
             // Rewards without gas
             rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
                 Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
             // Rewards with the gas spent for the tx
             rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
             // Get the absolute difference between expected and received rewards in ETH
-            rewardsDiffETH = Math.abs((Number(expectedStakerRewards) - (rewardsWithGas[0] + rewardsWithGas[1])) / E18);
+            rewardsDiffETH = Math.abs(expectedStakerRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
             expect(rewardsDiffETH).to.lessThan(gasDelta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedStakerRewards);
 
 
             // Calculate component top-up sum in OLAS
-            const topUpStakerFraction = await tokenomics.topUpStakerFraction();
-            expectedTopUp = topUpPerEpoch * topUpStakerFraction / 100;
+            // Here also we need to subtract service owner staking part
+            const expectedTopUps = topUps[3] * userStakersFraction;
             const sumBalance = Number(balanceOLAS[0]) + Number(balanceOLAS[1]);
-            // Calculate balance after staking was received minus the initial OLAS balance minus the expected reward in ETH
-            const balanceDiff = (sumBalance - Number(initialMint) - Number(expectedTopUp)) / E18;
+            // Calculate balance after staking was received minus the initial OLAS balance minus the expected top-up
+            // plus the amount transferred to the service owner
+            const balanceDiff = sumBalance - Number(initialMint) - expectedTopUps + Number(balanceOLASToLock);
             expect(Math.abs(balanceDiff)).to.lessThan(delta);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
         });
 
         it("Claim staking rewards for several epochs", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
             // Stake OLAS by a deployer
             await olas.approve(ve.address, hundredETHBalance);
             // Set the lock duration to be the specified number of weeks
-            const numWeeks = 20;
+            const numWeeks = 100;
             const lockDuration = numWeeks * oneWeek;
 
             // Balance should be zero before the lock and a specified amount after the lock
@@ -878,12 +928,7 @@ describe("Tokenomics integration", async () => {
             await tokenomics.checkpoint();
             // Go through epochs and allocate rewards for OLAS with the inflation schedule
             for (let i = 0; i < numWeeks; i++) {
-                ethers.provider.send("evm_increaseTime", [oneWeek + 1]);
-                const currentBlock = await ethers.provider.getBlock("latest");
-                // Mine blocks until the next epoch
-                for (let i = currentBlock.number; i < epochLen + currentBlock.number; i++) {
-                    await ethers.provider.send("evm_mine");
-                }
+                await helpers.time.increase(oneWeek + 1);
 
                 // Allocate rewards for the epoch
                 await tokenomics.checkpoint();
@@ -895,11 +940,14 @@ describe("Tokenomics integration", async () => {
             const gasCost = Number(receipt.gasUsed) * Number(tx.gasPrice);
             expect(gasCost).to.greaterThan(0);
             //console.log("gas cost", gasCost);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
         });
     });
 
     context("Tokenomics full life cycle", async function () {
-        it("Performance of two epochs, checks for OLAS top-ups only", async () => {
+        it.only("Performance of two epochs, checks for OLAS top-ups only", async () => {
             const mechManager = signers[1];
             const serviceManager = signers[2];
             const owner = signers[3].address;
@@ -1010,7 +1058,7 @@ describe("Tokenomics integration", async () => {
             await treasury.enableToken(pairODAI.address);
 
             // Create a depository bond product and checking that it's equal
-            await depository.create(pairODAI.address, supplyProductOLA, vesting);
+            await depository.create(pairODAI.address, supplyProductOLAS, vesting);
             const productId = 0;
             expect(await depository.isActive(pairODAI.address, productId)).to.equal(true);
 
@@ -1023,27 +1071,8 @@ describe("Tokenomics integration", async () => {
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
 
-            // Calculation of ucfc
-            // ucfc[1] = 1, ucfc[2] = 1, ucfc[3] = 2/3
-            // |Cs(1)| = 2, |Cs(2)| = 3
-            // ucfcs[1] = sum(ucfc_s1[i]) / |Cs(1)| = (1 + 1) / 2 = 1
-            // ucfcs[2] = sum(ucfc_s2[i]) / |Cs(2)| = (1 + 1 + 2/3) / 3 = 8/9
-            // ucfc = sum(ucfas) / |S| = (8/9 + 1) / 2 = 17/18
-            // Since not all components are engaged:
-            // ucfc = ucfc * |Cref| / |Ctotal| = ucfc * 3 / 4 = 17/24
-            // Calculation of ucfa
-            // ucfa[1] = 1, ucfa[2] = 1/3, ucfa[3] = 2/3
-            // |As(1)| = 2, |As(2)| = 2
-            // ucfas[1] = sum(ucfa_s1[i]) / |As(1)| = (1 + 1/3) / 2 = 2/3
-            // ucfas[2] = sum(ucfa_s2[i]) / |As(2)| = (1 + 2/3) / 2 = 5/6
-            // ucfa = sum(ucfas) / |S| = (2/3 + 5/6) / 2 = 3/4
-            // Total UCF
-            // UCF = (ucfc + ucfa) / 2 = 0.72916(6)
-
-            // Checking the values with delta rounding error of UCF, DF
+            // Get the last epoch
             let lastEpoch = await tokenomics.epochCounter() - 1;
-            let ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 0.72916666666666)).to.lessThan(delta);
 
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
@@ -1138,11 +1167,6 @@ describe("Tokenomics integration", async () => {
 
             // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
-
-            // Checking the values of tokenomics parameters with delta rounding error
-            lastEpoch = await tokenomics.epochCounter() - 1;
-            ucf = Number(await tokenomics.getUCF(lastEpoch)) * 1.0 / E18;
-            expect(Math.abs(ucf - 0.70833333333333)).to.lessThan(delta);
 
             // Get owners rewards
             // We have 4 components

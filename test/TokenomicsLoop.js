@@ -61,8 +61,7 @@ describe("Tokenomics integration", async () => {
     const serviceId = 1;
     const payload = "0x";
     const E18 = 10**18;
-    const delta = 10**9;
-    const gasDelta = 1.0 / 10**6;
+    const delta = 10;
     const oneWeek = 7 * 86400;
     const oneYear = 365 * 24 * 3600;
     const fourYears = 4 * oneYear;
@@ -494,13 +493,13 @@ describe("Tokenomics integration", async () => {
 
             // Get owner rewards
             const balanceETHBeforeReward = await ethers.provider.getBalance(ownerAddress);
-            const balanceBeforeTopUps = Number(await olas.balanceOf(ownerAddress));
+            const balanceBeforeTopUps = ethers.BigNumber.from(await olas.balanceOf(ownerAddress));
             // Claiming rewards for one component and one agent
             const tx = await dispenser.connect(owner).claimOwnerIncentives([0, 1], [1, 1]);
             // Calculate gas cost
             const receipt = await tx.wait();
-            const gasCost = Number(receipt.gasUsed) * Number(tx.gasPrice);
-            const balanceAfterTopUps = Number(await olas.balanceOf(ownerAddress));
+            const gasCost = ethers.BigNumber.from(receipt.gasUsed).mul(ethers.BigNumber.from(tx.gasPrice));
+            const balanceAfterTopUps = ethers.BigNumber.from(await olas.balanceOf(ownerAddress));
             const balanceETHAfterReward = await ethers.provider.getBalance(ownerAddress);
             //console.log("balanceETHBeforeReward", balanceETHBeforeReward);
             //console.log("gas used", receipt.gasUsed);
@@ -515,42 +514,43 @@ describe("Tokenomics integration", async () => {
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
+            const percentFraction = ethers.BigNumber.from(100);
             let rewards = [
-                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
             ];
-            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            let accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
             // Calculate top-ups based on the points information
             let topUps = [
-                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
-                Number(ep.totalTopUpsOLAS)
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
             ];
-            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
-            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            let accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
             expect(accountRewards).to.greaterThan(0);
             expect(accountTopUps).to.greaterThan(0);
 
             // Get the overall incentive amounts for owners
-            const expectedRewards = rewards[1] + rewards[2];
-            const expectedTopUps = topUps[1] + topUps[2];
+            const expectedRewards = rewards[1].add(rewards[2]);
+            const expectedTopUps = topUps[1].add(topUps[2]);
 
             // Check the received reward
             // Rewards without gas
-            const rewardsNoGas = Number(balanceETHAfterReward) - Number(balanceETHBeforeReward);
+            const rewardsNoGas = balanceETHAfterReward.sub(balanceETHBeforeReward);
             // Rewards with the gas spent for the tx
-            const rewardsWithGas = rewardsNoGas + gasCost;
+            const rewardsWithGas = rewardsNoGas.add(gasCost);
             // Get the absolute difference between expected and received rewards in ETH
-            const rewardsDiffETH = Math.abs((expectedRewards - rewardsWithGas) / E18);
-            expect(rewardsDiffETH).to.lessThan(gasDelta);
+            const rewardsDiffETH = Math.abs(Number(expectedRewards.sub(rewardsWithGas)));
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
-            expect(rewardsNoGas).to.lessThan(expectedRewards);
+            expect(rewardsNoGas).to.lessThanOrEqual(expectedRewards);
 
             // Check owner OLAS top-ups
-            const balanceDiff = Number(balanceAfterTopUps - balanceBeforeTopUps);
-            expect(Math.abs(expectedTopUps - balanceDiff)).to.lessThan(delta);
+            const balanceDiff = balanceAfterTopUps.sub(balanceBeforeTopUps);
+            expect(Math.abs(Number(expectedTopUps.sub(balanceDiff)))).to.lessThan(delta);
 
             // Restore to the state of the snapshot
             await snapshot.restore();
@@ -627,8 +627,8 @@ describe("Tokenomics integration", async () => {
                 await dispenser.connect(owners[1]).claimOwnerIncentives([1], [2])];
             // Calculate gas cost
             const receipt = [await tx[0].wait(), await tx[1].wait()];
-            const gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
-                Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
+            const gasCost = [ethers.BigNumber.from(receipt[0].gasUsed).mul(ethers.BigNumber.from(tx[0].gasPrice)),
+                ethers.BigNumber.from(receipt[1].gasUsed).mul(ethers.BigNumber.from(tx[1].gasPrice))];
             // Get OLAS balance: since service owner is not te same as owners[0] or owners[1],
             // owners[0] and owners[1] balances after the top-up will reflect OLAS top-ups in full
             const balanceOLAS = [await olas.balanceOf(owners[0].address), await olas.balanceOf(owners[1].address)];
@@ -643,42 +643,43 @@ describe("Tokenomics integration", async () => {
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
+            const percentFraction = ethers.BigNumber.from(100);
             let rewards = [
-                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
             ];
-            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            let accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
             // Calculate top-ups based on the points information
             let topUps = [
-                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
-                Number(ep.totalTopUpsOLAS)
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
             ];
-            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
-            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            let accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
             expect(accountRewards).to.greaterThan(0);
             expect(accountTopUps).to.greaterThan(0);
 
             // Get the overall incentive amounts for owners
-            const expectedRewards = rewards[1] + rewards[2];
-            const expectedTopUps = topUps[1] + topUps[2];
+            const expectedRewards = rewards[1].add(rewards[2]);
+            const expectedTopUps = topUps[1].add(topUps[2]);
 
             // Check the received reward in ETH
             // Rewards without gas
-            const rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
-                Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
+            const rewardsNoGas = [ethers.BigNumber.from(balanceETHAfterReward[0]).sub(ethers.BigNumber.from(balanceETHBeforeReward[0])),
+                ethers.BigNumber.from(balanceETHAfterReward[1]).sub(ethers.BigNumber.from(balanceETHBeforeReward[1]))];
             // Rewards with the gas spent for the tx
-            const rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
+            const rewardsWithGas = [rewardsNoGas[0].add(gasCost[0]), rewardsNoGas[1].add(gasCost[1])];
             // Get the absolute difference between expected and received rewards in ETH
-            const rewardsDiffETH = Math.abs(expectedRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
-            expect(rewardsDiffETH).to.lessThan(gasDelta);
+            const rewardsDiffETH = Math.abs(Number(expectedRewards.sub(rewardsWithGas[0].add(rewardsWithGas[1]))));
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
-            expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedRewards);
+            expect(rewardsNoGas[0].add(rewardsNoGas[1])).to.lessThanOrEqual(expectedRewards);
 
             // Check the top-ups in OLAS
-            expect(Math.abs(expectedTopUps - (Number(balanceOLAS[0]) + Number(balanceOLAS[1])))).to.lessThan(delta);
+            expect(Math.abs(Number(expectedTopUps.sub(ethers.BigNumber.from(balanceOLAS[0]).add(ethers.BigNumber.from(balanceOLAS[1])))))).to.lessThan(delta);
 
             // Restore to the state of the snapshot
             await snapshot.restore();
@@ -758,7 +759,8 @@ describe("Tokenomics integration", async () => {
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
             // Calculate the fraction of stakers vs the stakers with the service owner staking
-            const userStakersFraction = 1.0 * Number(threeHundredETHBalance) / (Number(threeHundredETHBalance) + Number(balanceOLASToLock));
+            const userStakersFractionNumerator = ethers.BigNumber.from(threeHundredETHBalance);
+            const userStakersFractionDenominator = ethers.BigNumber.from(threeHundredETHBalance).add(ethers.BigNumber.from(balanceOLASToLock));
 
             // Allocate empty rewards during the first epoch
             await tokenomics.checkpoint();
@@ -778,21 +780,22 @@ describe("Tokenomics integration", async () => {
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
+            const percentFraction = ethers.BigNumber.from(100);
             let rewards = [
-                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
             ];
-            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            let accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
             // Calculate top-ups based on the points information
             let topUps = [
-                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
-                Number(ep.totalTopUpsOLAS)
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
             ];
-            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
-            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            let accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
             expect(accountRewards).to.greaterThan(0);
             expect(accountTopUps).to.greaterThan(0);
 
@@ -804,12 +807,12 @@ describe("Tokenomics integration", async () => {
                 await dispenser.connect(componentOwners[1]).claimOwnerIncentives([0], [2])];
             // Calculate gas cost
             let receipt = [await tx[0].wait(), await tx[1].wait()];
-            let gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
-                Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
+            let gasCost = [ethers.BigNumber.from(receipt[0].gasUsed).mul(ethers.BigNumber.from(tx[0].gasPrice)),
+                ethers.BigNumber.from(receipt[1].gasUsed).mul(ethers.BigNumber.from(tx[1].gasPrice))];
             // Get OLAS balance: since service owner is different from unit owners,
             // componentOwners and agentOwners balances after the top-up will reflect OLAS top-ups in full
-            let balanceOLAS = [Number(await olas.balanceOf(componentOwners[0].address)),
-                Number(await olas.balanceOf(componentOwners[1].address))];
+            let balanceOLAS = [ethers.BigNumber.from(await olas.balanceOf(componentOwners[0].address)),
+                ethers.BigNumber.from(await olas.balanceOf(componentOwners[1].address))];
             // Get ETH balance after rewards
             let balanceETHAfterReward = [await ethers.provider.getBalance(componentOwners[0].address),
                 await ethers.provider.getBalance(componentOwners[1].address)];
@@ -818,18 +821,20 @@ describe("Tokenomics integration", async () => {
             const expectedComponentRewards = rewards[1];
             const expectedTopUpsComponents = topUps[1];
             // Rewards without gas
-            let rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
-                Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
+            let rewardsNoGas = [ethers.BigNumber.from(balanceETHAfterReward[0]).sub(ethers.BigNumber.from(balanceETHBeforeReward[0])),
+                ethers.BigNumber.from(balanceETHAfterReward[1]).sub(ethers.BigNumber.from(balanceETHBeforeReward[1]))];
             // Rewards with the gas spent for the tx
-            let rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
+            let rewardsWithGas = [rewardsNoGas[0].add(gasCost[0]), rewardsNoGas[1].add(gasCost[1])];
             // Get the absolute difference between expected and received rewards in ETH
-            let rewardsDiffETH = Math.abs(expectedComponentRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
-            expect(rewardsDiffETH).to.lessThan(gasDelta);
+            let sumRewardsWithGas = rewardsWithGas[0].add(rewardsWithGas[1]);
+            let rewardsDiffETH = Math.abs(Number(expectedComponentRewards.sub(sumRewardsWithGas)));
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
-            expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedComponentRewards);
+            expect(sumRewardsWithGas).to.lessThanOrEqual(expectedComponentRewards);
 
             // Calculate component top-up sum in OLAS
-            expect(Math.abs(expectedTopUpsComponents - (balanceOLAS[0] + balanceOLAS[1]))).to.lessThan(delta);
+            let sumBalanceOLAS = balanceOLAS[0].add(balanceOLAS[1]);
+            expect(Math.abs(Number(expectedTopUpsComponents.sub(sumBalanceOLAS)))).to.lessThan(delta);
 
             // Get owners rewards and top-ups for agents
             balanceETHBeforeReward = [await ethers.provider.getBalance(agentOwners[0].address),
@@ -838,8 +843,8 @@ describe("Tokenomics integration", async () => {
                 await dispenser.connect(agentOwners[1]).claimOwnerIncentives([1], [2])];
             // Calculate gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
-            gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
-                Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
+            gasCost = [ethers.BigNumber.from(receipt[0].gasUsed).mul(ethers.BigNumber.from(tx[0].gasPrice)),
+                ethers.BigNumber.from(receipt[1].gasUsed).mul(ethers.BigNumber.from(tx[1].gasPrice))];
             // Get OLAS balance
             balanceOLAS = [await olas.balanceOf(agentOwners[0].address), await olas.balanceOf(agentOwners[1].address)];
             // Get ETH balance after rewards
@@ -850,18 +855,20 @@ describe("Tokenomics integration", async () => {
             const expectedAgentRewards = rewards[2];
             const expectedTopUpsAgents = topUps[2];
             // Rewards without gas
-            rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
-                Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
+            rewardsNoGas = [ethers.BigNumber.from(balanceETHAfterReward[0]).sub(ethers.BigNumber.from(balanceETHBeforeReward[0])),
+                ethers.BigNumber.from(balanceETHAfterReward[1]).sub(ethers.BigNumber.from(balanceETHBeforeReward[1]))];
             // Rewards with the gas spent for the tx
-            rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
+            rewardsWithGas = [rewardsNoGas[0].add(gasCost[0]), rewardsNoGas[1].add(gasCost[1])];
             // Get the absolute difference between expected and received rewards in ETH
-            rewardsDiffETH = Math.abs(expectedAgentRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
-            expect(rewardsDiffETH).to.lessThan(gasDelta);
+            sumRewardsWithGas = rewardsWithGas[0].add(rewardsWithGas[1]);
+            rewardsDiffETH = Math.abs(Number(expectedAgentRewards.sub(sumRewardsWithGas)));
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
-            expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedAgentRewards);
+            expect(sumRewardsWithGas).to.lessThanOrEqual(expectedAgentRewards);
 
-            // Calculate agent top-up difference in OLAS with the expected value
-            expect(Math.abs(expectedTopUpsAgents - (Number(balanceOLAS[0]) + Number(balanceOLAS[1])))).to.lessThan(delta);
+            // Calculate component top-up sum in OLAS
+            sumBalanceOLAS = balanceOLAS[0].add(balanceOLAS[1]);
+            expect(Math.abs(Number(expectedTopUpsAgents.sub(sumBalanceOLAS)))).to.lessThan(delta);
 
             // Increase the time to more than one week for which lockers were staking
             await helpers.time.increase(oneWeek + 10000);
@@ -872,15 +879,15 @@ describe("Tokenomics integration", async () => {
             tx = [await ve.withdraw(), await ve.connect(staker).withdraw()];
             // Calculate gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
-            gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice),
-                Number(receipt[1].gasUsed) * Number(tx[1].gasPrice)];
+            gasCost = [ethers.BigNumber.from(receipt[0].gasUsed).mul(ethers.BigNumber.from(tx[0].gasPrice)),
+                ethers.BigNumber.from(receipt[1].gasUsed).mul(ethers.BigNumber.from(tx[1].gasPrice))];
             // Staking claim
             tx = [await dispenser.connect(deployer).claimStakingIncentives(),
                 await dispenser.connect(staker).claimStakingIncentives()];
             // Add to the gas cost
             receipt = [await tx[0].wait(), await tx[1].wait()];
-            gasCost = [Number(receipt[0].gasUsed) * Number(tx[0].gasPrice) + gasCost[0],
-                Number(receipt[1].gasUsed) * Number(tx[1].gasPrice) + gasCost[1]];
+            gasCost = [(ethers.BigNumber.from(receipt[0].gasUsed).mul(ethers.BigNumber.from(tx[0].gasPrice))).add(gasCost[0]),
+                (ethers.BigNumber.from(receipt[1].gasUsed).mul(ethers.BigNumber.from(tx[1].gasPrice))).add(gasCost[1])];
             // Get OLAS balance
             balanceOLAS = [await olas.balanceOf(deployer.address),
                 await olas.balanceOf(staker.address)];
@@ -890,26 +897,27 @@ describe("Tokenomics integration", async () => {
 
             // Staker balance must increase on the stakerFraction amount of the received service revenue
             // We need to subtract service owner staking part
-            const expectedStakerRewards = rewards[0] * userStakersFraction;
+            const expectedStakerRewards = (rewards[0].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator);
             // Rewards without gas
-            rewardsNoGas = [Number(balanceETHAfterReward[0]) - Number(balanceETHBeforeReward[0]),
-                Number(balanceETHAfterReward[1]) - Number(balanceETHBeforeReward[1])];
+            rewardsNoGas = [ethers.BigNumber.from(balanceETHAfterReward[0]).sub(ethers.BigNumber.from(balanceETHBeforeReward[0])),
+                ethers.BigNumber.from(balanceETHAfterReward[1]).sub(ethers.BigNumber.from(balanceETHBeforeReward[1]))];
             // Rewards with the gas spent for the tx
-            rewardsWithGas = [rewardsNoGas[0] + gasCost[0], rewardsNoGas[1] + gasCost[1]];
+            rewardsWithGas = [rewardsNoGas[0].add(gasCost[0]), rewardsNoGas[1].add(gasCost[1])];
             // Get the absolute difference between expected and received rewards in ETH
-            rewardsDiffETH = Math.abs(expectedStakerRewards - (rewardsWithGas[0] + rewardsWithGas[1])) / E18;
-            expect(rewardsDiffETH).to.lessThan(gasDelta);
+            sumRewardsWithGas = rewardsWithGas[0].add(rewardsWithGas[1]);
+            rewardsDiffETH = Math.abs(Number(expectedStakerRewards.sub(sumRewardsWithGas)));
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
-            expect(rewardsNoGas[0] + rewardsNoGas[1]).to.lessThan(expectedStakerRewards);
+            expect(sumRewardsWithGas).to.lessThanOrEqual(expectedStakerRewards);
 
             // Calculate component top-up sum in OLAS
             // Here also we need to subtract service owner staking part
-            const expectedTopUps = topUps[3] * userStakersFraction;
-            const sumBalance = Number(balanceOLAS[0]) + Number(balanceOLAS[1]);
+            const expectedTopUps = (topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator);
+            sumBalanceOLAS = balanceOLAS[0].add(balanceOLAS[1]);
             // Calculate balance after staking was received minus the initial OLAS balance minus the expected top-up
             // plus the amount transferred to the service owner
-            const balanceDiff = sumBalance - Number(initialMint) - expectedTopUps + Number(balanceOLASToLock);
-            expect(Math.abs(balanceDiff)).to.lessThan(delta);
+            const balanceDiff = sumBalanceOLAS.add(ethers.BigNumber.from(balanceOLASToLock)).sub(ethers.BigNumber.from(initialMint)).sub(expectedTopUps);
+            expect(Math.abs(Number(balanceDiff))).to.lessThan(delta);
 
             // Restore to the state of the snapshot
             await snapshot.restore();
@@ -1086,18 +1094,16 @@ describe("Tokenomics integration", async () => {
                 rewardsSumWithGas = rewardsSumWithGas.add(rewardsWithGas[i]);
                 topUpsSum = topUpsSum.add(balanceOLAS[i]);
             }
-            // Define high precision delta as 1 digit at most
-            const curDelta = 10;
             // Get the absolute difference between expected and received rewards in ETH
             let rewardsDiffETH = Math.abs(Number(expectedComponentRewards.sub(rewardsSumWithGas)));
-            expect(rewardsDiffETH).to.lessThan(curDelta);
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsSumNoGas).to.lessThan(expectedComponentRewards);
             // Calculated reward value must be less or equal the theoretical one
             expect(rewardsSumWithGas).to.lessThanOrEqual(expectedComponentRewards);
 
             // Calculate component top-up sum in OLAS
-            expect(Math.abs(Number(expectedTopUpsComponents.sub(topUpsSum)))).to.lessThan(curDelta);
+            expect(Math.abs(Number(expectedTopUpsComponents.sub(topUpsSum)))).to.lessThan(delta);
             // Calculated top-up value must be less or equal the theoretical one
             expect(topUpsSum).to.lessThanOrEqual(expectedTopUpsComponents);
 
@@ -1142,14 +1148,14 @@ describe("Tokenomics integration", async () => {
             }
             // Get the absolute difference between expected and received rewards in ETH
             rewardsDiffETH = Math.abs(Number(expectedAgentRewards.sub(rewardsSumWithGas)));
-            expect(rewardsDiffETH).to.lessThan(curDelta);
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsSumNoGas).to.lessThan(expectedAgentRewards);
             // Calculated reward value must be less or equal the theoretical one
             expect(rewardsSumWithGas).to.lessThanOrEqual(expectedAgentRewards);
 
             // Calculate component top-up sum in OLAS
-            expect(Math.abs(Number(expectedTopUpsAgents.sub(topUpsSum)))).to.lessThan(curDelta);
+            expect(Math.abs(Number(expectedTopUpsAgents.sub(topUpsSum)))).to.lessThan(delta);
             // Calculated top-up value must be less or equal the theoretical one
             expect(topUpsSum).to.lessThanOrEqual(expectedTopUpsAgents);
 
@@ -1338,17 +1344,17 @@ describe("Tokenomics integration", async () => {
                 topUpsSum = topUpsSum.add(balanceOLAS[i]);
             }
             // Define high precision delta as 1 digit at most
-            const curDelta = 10;
+            const delta = 10;
             // Get the absolute difference between expected and received rewards in ETH
             let rewardsDiffETH = Math.abs(Number(expectedComponentRewards.sub(rewardsSumWithGas)));
-            expect(rewardsDiffETH).to.lessThan(curDelta);
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsSumNoGas).to.lessThan(expectedComponentRewards);
             // Calculated reward value must be less or equal the theoretical one
             expect(rewardsSumWithGas).to.lessThanOrEqual(expectedComponentRewards);
 
             // Calculate component top-up sum in OLAS
-            expect(Math.abs(Number(expectedTopUpsComponents.sub(topUpsSum)))).to.lessThan(curDelta);
+            expect(Math.abs(Number(expectedTopUpsComponents.sub(topUpsSum)))).to.lessThan(delta);
             // Calculated top-up value must be less or equal the theoretical one
             expect(topUpsSum).to.lessThanOrEqual(expectedTopUpsComponents);
 
@@ -1386,14 +1392,14 @@ describe("Tokenomics integration", async () => {
             }
             // Get the absolute difference between expected and received rewards in ETH
             rewardsDiffETH = Math.abs(Number(expectedAgentRewards.sub(rewardsSumWithGas)));
-            expect(rewardsDiffETH).to.lessThan(curDelta);
+            expect(rewardsDiffETH).to.lessThan(delta);
             // The balance after reward minus the balance before minus the gas must be less than expected reward
             expect(rewardsSumNoGas).to.lessThan(expectedAgentRewards);
             // Calculated reward value must be less or equal the theoretical one
             expect(rewardsSumWithGas).to.lessThanOrEqual(expectedAgentRewards);
 
             // Calculate component top-up sum in OLAS
-            expect(Math.abs(Number(expectedTopUpsAgents.sub(topUpsSum)))).to.lessThan(curDelta);
+            expect(Math.abs(Number(expectedTopUpsAgents.sub(topUpsSum)))).to.lessThan(delta);
             // Calculated top-up value must be less or equal the theoretical one
             expect(topUpsSum).to.lessThanOrEqual(expectedTopUpsAgents);
 
@@ -1455,7 +1461,7 @@ describe("Tokenomics integration", async () => {
             const agentOwners = [signers[15], signers[16], signers[17]];
 
             // Add liquidity of OLAS-DAI (5000 OLAS, 1000 DAI)
-            const amountLiquidityOLA = "5"  + "0".repeat(3) + decimals;
+            const amountLiquidityOLAS = "5"  + "0".repeat(3) + decimals;
             const amountDAI = "5" + "0".repeat(3) + decimals;
             const minAmountOLA =  "5" + "0".repeat(2) + decimals;
             const minAmountDAI = "1" + "0".repeat(3) + decimals;
@@ -1468,7 +1474,7 @@ describe("Tokenomics integration", async () => {
                 dai.address,
                 olas.address,
                 amountDAI,
-                amountLiquidityOLA,
+                amountLiquidityOLAS,
                 minAmountDAI,
                 minAmountOLA,
                 toAddress,
@@ -1551,7 +1557,8 @@ describe("Tokenomics integration", async () => {
             expect(balanceStaker).to.equal(twoHundredETHBalance);
 
             // Calculate the fraction of stakers vs the stakers with the service owner staking
-            const userStakersFraction = 1.0 * Number(threeHundredETHBalance) / (Number(threeHundredETHBalance) + Number(balanceOLASToLock));
+            const userStakersFractionNumerator = ethers.BigNumber.from(threeHundredETHBalance);
+            const userStakersFractionDenominator = ethers.BigNumber.from(threeHundredETHBalance).add(ethers.BigNumber.from(balanceOLASToLock));
 
             // Allocate empty rewards during the first epoch
             await tokenomics.checkpoint();
@@ -1602,21 +1609,22 @@ describe("Tokenomics integration", async () => {
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
+            const percentFraction = ethers.BigNumber.from(100);
             let rewards = [
-                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
             ];
-            let accountRewards = rewards[0] + rewards[1] + rewards[2];
+            let accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
             // Calculate top-ups based on the points information
             let topUps = [
-                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
-                Number(ep.totalTopUpsOLAS)
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
             ];
-            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
-            let accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            let accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
             expect(accountRewards).to.greaterThan(0);
             expect(accountTopUps).to.greaterThan(0);
 
@@ -1625,34 +1633,34 @@ describe("Tokenomics integration", async () => {
             let balanceComponentOwner = new Array(4);
             for (let i = 0; i < 4; i++) {
                 await dispenser.connect(componentOwners[i]).claimOwnerIncentives([0], [i+1]);
-                balanceComponentOwner[i] = Number(await olas.balanceOf(componentOwners[i].address));
+                balanceComponentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address));
             }
 
             // 3 agents
             let balanceAgentOwner = new Array(3);
             for (let i = 0; i < 3; i++) {
                 await dispenser.connect(agentOwners[i]).claimOwnerIncentives([1], [i+1]);
-                balanceAgentOwner[i] = Number(await olas.balanceOf(agentOwners[i].address));
+                balanceAgentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address));
             }
 
             // Check the received top-ups for components in OLAS
             // Calculate component top-up sum in OLAS
             let expectedComponentTopUp = topUps[1];
             // Calculate component top-up sup
-            let sumComponentOwnerTopUps = 0;
+            let sumComponentOwnerTopUps = ethers.BigNumber.from(0);
             for (let i = 0; i < 4; i++) {
-                sumComponentOwnerTopUps += balanceComponentOwner[i];
+                sumComponentOwnerTopUps = sumComponentOwnerTopUps.add(balanceComponentOwner[i]);
             }
 
             // Check the received top-ups for agents
             let expectedAgentTopUp = topUps[2];
             // Calculate agent top-up sum difference with the expected value
-            let sumAgentOwnerTopUps = 0;
+            let sumAgentOwnerTopUps = ethers.BigNumber.from(0);
             for (let i = 0; i < 3; i++) {
-                sumAgentOwnerTopUps += balanceAgentOwner[i];
+                sumAgentOwnerTopUps = sumAgentOwnerTopUps.add(balanceAgentOwner[i]);
             }
             // Get the overall sum and compare the difference with the expected value
-            let diffTopUp = Math.abs(expectedComponentTopUp + expectedAgentTopUp - sumComponentOwnerTopUps - sumAgentOwnerTopUps);
+            let diffTopUp = Math.abs(expectedComponentTopUp.add(expectedAgentTopUp).sub(sumComponentOwnerTopUps).sub(sumAgentOwnerTopUps));
             expect(diffTopUp).to.lessThan(delta);
 
             // Staking rewards will be calculated after 2 epochs are completed
@@ -1667,17 +1675,15 @@ describe("Tokenomics integration", async () => {
             await depository.deposit(pairODAI.address, productId, amountToBond, deployer.address);
 
             await helpers.time.increase(vesting + 60);
-            const deployerBalanceBeforeBondRedeem = Number(await olas.balanceOf(deployer.address));
+            const deployerBalanceBeforeBondRedeem = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
             await depository.redeemAll(deployer.address);
-            const deployerBalanceAfterBondRedeem = Number(await olas.balanceOf(deployer.address));
-            const diffBalance = deployerBalanceAfterBondRedeem - deployerBalanceBeforeBondRedeem;
-            expect(Math.abs(Number(expectedPayout) - diffBalance)).to.lessThan(delta);
+            const deployerBalanceAfterBondRedeem = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
+            const diffBalance = deployerBalanceAfterBondRedeem.sub(deployerBalanceBeforeBondRedeem);
+            expect(Math.abs(Number(ethers.BigNumber.from(expectedPayout).sub(diffBalance)))).to.lessThan(delta);
 
             // Stakers reward for this epoch in OLAS
             // We need to subtract service owner staking part
-            const expectedStakerTopUpEpoch1 = topUps[3] * userStakersFraction;
-            const intermediate = await tokenomics.getStakingIncentives(staker.address, lastPoint);
-            console.log(intermediate.topUp);
+            const expectedStakerTopUpEpoch1 = (topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator);
 
             // Increase the time to more than one epoch length
             await helpers.time.increase(epochLen + 3);
@@ -1698,20 +1704,20 @@ describe("Tokenomics integration", async () => {
             up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
             rewards = [
-                (Number(ep.totalDonationsETH) * Number(ep.rewardStakerFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[0].rewardUnitFraction)) / 100,
-                (Number(ep.totalDonationsETH) * Number(up[1].rewardUnitFraction)) / 100
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
             ];
-            accountRewards = rewards[0] + rewards[1] + rewards[2];
+            accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
             // Calculate top-ups based on the points information
             topUps = [
-                (Number(ep.totalTopUpsOLAS) * Number(ep.maxBondFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[0].topUpUnitFraction)) / 100,
-                (Number(ep.totalTopUpsOLAS) * Number(up[1].topUpUnitFraction)) / 100,
-                Number(ep.totalTopUpsOLAS)
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
             ];
-            topUps[3] -= topUps[0] + topUps[1] + topUps[2];
-            accountTopUps = topUps[1] + topUps[2] + topUps[3];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
             expect(accountRewards).to.greaterThan(0);
             expect(accountTopUps).to.greaterThan(0);
 
@@ -1719,37 +1725,37 @@ describe("Tokenomics integration", async () => {
             // We have 4 components
             for (let i = 0; i < 4; i++) {
                 // Subtract the balance owners had before claiming top-ups
-                const balanceBeforeClaim = Number(await olas.balanceOf(componentOwners[i].address));
+                const balanceBeforeClaim = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address));
                 await dispenser.connect(componentOwners[i]).claimOwnerIncentives([0], [i+1]);
-                balanceComponentOwner[i] = Number(await olas.balanceOf(componentOwners[i].address)) - balanceBeforeClaim;
+                balanceComponentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address)).sub(balanceBeforeClaim);
             }
 
             // 3 agents
             for (let i = 0; i < 3; i++) {
                 // Subtract the balance owners had before claiming top-ups
-                const balanceBeforeClaim = Number(await olas.balanceOf(agentOwners[i].address));
+                const balanceBeforeClaim = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address));
                 await dispenser.connect(agentOwners[i]).claimOwnerIncentives([1], [i+1]);
-                balanceAgentOwner[i] = Number(await olas.balanceOf(agentOwners[i].address)) - balanceBeforeClaim;
+                balanceAgentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address)).sub(balanceBeforeClaim);
             }
 
             // Check the received top-ups for components in OLAS
             // Calculate component top-up sum in OLAS
             expectedComponentTopUp = topUps[1];
             // Calculate component top-up sup
-            sumComponentOwnerTopUps = 0;
+            sumComponentOwnerTopUps = ethers.BigNumber.from(0);
             for (let i = 0; i < 4; i++) {
-                sumComponentOwnerTopUps += balanceComponentOwner[i];
+                sumComponentOwnerTopUps = sumComponentOwnerTopUps.add(balanceComponentOwner[i]);
             }
 
             // Check the received top-ups for agents
             expectedAgentTopUp = topUps[2];
             // Calculate agent top-up sum difference with the expected value
-            sumAgentOwnerTopUps = 0;
+            sumAgentOwnerTopUps = ethers.BigNumber.from(0);
             for (let i = 0; i < 3; i++) {
-                sumAgentOwnerTopUps += balanceAgentOwner[i];
+                sumAgentOwnerTopUps = sumAgentOwnerTopUps.add(balanceAgentOwner[i]);
             }
             // Get the overall sum and compare the difference with the expected value
-            diffTopUp = Math.abs(expectedComponentTopUp + expectedAgentTopUp - sumComponentOwnerTopUps - sumAgentOwnerTopUps);
+            diffTopUp = Math.abs(expectedComponentTopUp.add(expectedAgentTopUp).sub(sumComponentOwnerTopUps).sub(sumAgentOwnerTopUps));
             expect(diffTopUp).to.lessThan(delta);
 
             // Increase the time to more than one week for which lockers were staking
@@ -1763,17 +1769,16 @@ describe("Tokenomics integration", async () => {
             // Staker balance must increase on the topUpStakerFraction amount of the received service revenue
             // plus the previous epoch rewards
             // We need to subtract service owner staking part
-            const expectedTopUp = topUps[3] * userStakersFraction + expectedStakerTopUpEpoch1;
-            const deployerBalance = await olas.balanceOf(deployer.address);
-            const stakerBalance = await olas.balanceOf(staker.address);
-            console.log(stakerBalance);
-            const sumBalance = Number(deployerBalance) + Number(stakerBalance);
+            const expectedTopUp = ((topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator)).add(expectedStakerTopUpEpoch1);
+            const deployerBalance = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
+            const stakerBalance = ethers.BigNumber.from(await olas.balanceOf(staker.address));
+            const sumBalance = deployerBalance.add(stakerBalance);
 
             // Calculate initial OLAS balance minus the initial liquidity amount of the deployer plus the reward after
             // staking was received plus the amount of OLAS from bonding minus the final amount balance of both accounts
             // minus the OLAS amount transferred to the srvice owner
-            const balanceDiff = (Number(initialMint) - Number(amountLiquidityOLA) + Number(expectedTopUp) +
-                Number(expectedPayout) - sumBalance - Number(balanceOLASToLock));
+            const balanceDiff = (ethers.BigNumber.from(initialMint).add(expectedTopUp).add(ethers.BigNumber.from(expectedPayout)).
+                sub(ethers.BigNumber.from(amountLiquidityOLAS)).sub(sumBalance).sub(ethers.BigNumber.from(balanceOLASToLock)));
             expect(Math.abs(balanceDiff)).to.lessThan(delta);
 
             //console.log("before", deployerBalanceBeforeBondRedeem / E18);

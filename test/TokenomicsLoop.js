@@ -32,6 +32,9 @@ describe("Tokenomics integration", async () => {
     let tokenomics;
     let ve;
     let dispenser;
+    let gnosisSafe;
+    let gnosisSafeProxyFactory;
+    let defaultCallbackHandler;
     let router;
     let epochLen = 10;
     let vesting = 60 * 60 * 24;
@@ -100,16 +103,20 @@ describe("Tokenomics integration", async () => {
         await serviceRegistry.deployed();
 
         const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
-        const gnosisSafe = await GnosisSafe.deploy();
+        gnosisSafe = await GnosisSafe.deploy();
         await gnosisSafe.deployed();
 
         const GnosisSafeProxyFactory = await ethers.getContractFactory("GnosisSafeProxyFactory");
-        const gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
+        gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
         await gnosisSafeProxyFactory.deployed();
 
         const GnosisSafeMultisig = await ethers.getContractFactory("GnosisSafeMultisig");
         gnosisSafeMultisig = await GnosisSafeMultisig.deploy(gnosisSafe.address, gnosisSafeProxyFactory.address);
         await gnosisSafeMultisig.deployed();
+
+        const DefaultCallbackHandler = await ethers.getContractFactory("DefaultCallbackHandler");
+        defaultCallbackHandler = await DefaultCallbackHandler.deploy();
+        await defaultCallbackHandler.deployed();
 
         deployer = signers[0];
         dai = await erc20Token.deploy();
@@ -128,7 +135,7 @@ describe("Tokenomics integration", async () => {
         depository = await depositoryFactory.deploy(olas.address, treasury.address, tokenomics.address,
             genericBondCalculator.address);
         // Deploy dispenser contract
-        dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address);
+        dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address, treasury.address);
         // Change to the correct addresses
         await tokenomics.changeManagers(AddressZero, treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, AddressZero, depository.address, dispenser.address);
@@ -1574,9 +1581,10 @@ describe("Tokenomics integration", async () => {
             await treasury.enableToken(pairODAI.address);
 
             // Create a depository bond product and checking that it's equal
-            await depository.create(pairODAI.address, supplyProductOLAS, vesting);
+            const priceLP = await depository.getCurrentPriceLP(pairODAI.address);
+            await depository.create(pairODAI.address, priceLP, supplyProductOLAS, vesting);
             const productId = 0;
-            expect(await depository.isActive(pairODAI.address, productId)).to.equal(true);
+            expect(await depository.isActiveProduct(productId)).to.equal(true);
 
             // Change epsilonRate to 0.4 to test the fKD parameter
             // Rest of tokenomics parameters are left unchanged
@@ -1668,15 +1676,14 @@ describe("Tokenomics integration", async () => {
             // Bonding of tokens for OLAS
             // Bond amount that is 2 times smaller than the supply (IFD is 1.4 < 2)
             const amountToBond = new ethers.BigNumber.from(supplyProductOLAS).div(2);
-            await pairODAI.approve(depository.address, amountToBond);
-            let [expectedPayout,,] = await depository.callStatic.deposit(pairODAI.address, productId,
-                amountToBond, deployer.address);
+            await pairODAI.approve(treasury.address, amountToBond);
+            let [expectedPayout,,] = await depository.connect(deployer).callStatic.deposit(productId, amountToBond);
             //console.log("[expectedPayout, expiry, index]:",[expectedPayout, expiry, index]);
-            await depository.deposit(pairODAI.address, productId, amountToBond, deployer.address);
+            await depository.connect(deployer).deposit(productId, amountToBond);
 
             await helpers.time.increase(vesting + 60);
             const deployerBalanceBeforeBondRedeem = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
-            await depository.redeemAll(deployer.address);
+            await depository.connect(deployer).redeem([0]);
             const deployerBalanceAfterBondRedeem = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
             const diffBalance = deployerBalanceAfterBondRedeem.sub(deployerBalanceBeforeBondRedeem);
             expect(Math.abs(Number(ethers.BigNumber.from(expectedPayout).sub(diffBalance)))).to.lessThan(delta);
@@ -1772,6 +1779,414 @@ describe("Tokenomics integration", async () => {
             const expectedTopUp = ((topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator)).add(expectedStakerTopUpEpoch1);
             const deployerBalance = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
             const stakerBalance = ethers.BigNumber.from(await olas.balanceOf(staker.address));
+            const sumBalance = deployerBalance.add(stakerBalance);
+
+            // Calculate initial OLAS balance minus the initial liquidity amount of the deployer plus the reward after
+            // staking was received plus the amount of OLAS from bonding minus the final amount balance of both accounts
+            // minus the OLAS amount transferred to the srvice owner
+            const balanceDiff = (ethers.BigNumber.from(initialMint).add(expectedTopUp).add(ethers.BigNumber.from(expectedPayout)).
+                sub(ethers.BigNumber.from(amountLiquidityOLAS)).sub(sumBalance).sub(ethers.BigNumber.from(balanceOLASToLock)));
+            expect(Math.abs(balanceDiff)).to.lessThan(delta);
+
+            //console.log("before", deployerBalanceBeforeBondRedeem / E18);
+            //console.log("after", deployerBalanceAfterBondRedeem / E18);
+            //console.log("expected reward epoch 1", Number(expectedStakerTopUpEpoch1) / E18);
+            //console.log("expected total rewards", expectedStakerRewards / E18);
+            //console.log("final deployer balance", Number(deployerBalance) / E18);
+            //console.log("sumBalance", sumBalance / E18);
+            //console.log("expected payout", Number(expectedPayout) / E18);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+
+        it("Performance of two epochs, checks for OLAS top-ups only, with gnosis safe wallets", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            const mechManager = signers[1];
+            const serviceManager = signers[2];
+            const owner = signers[3].address;
+            const operator = signers[4].address;
+            const agentInstances = [signers[5].address, signers[6].address, signers[7].address, signers[8].address,
+                signers[9].address];
+            const staker = signers[10];
+            const componentOwners = [signers[11], signers[12], signers[13], signers[14]];
+            const agentOwners = [signers[15], signers[16]];
+            const agentOwnerMultisigSigner = signers[17];
+
+            // Create a multisig that will be the agent owner, and the staker multisig
+            const safeContracts = require("@gnosis.pm/safe-contracts");
+            // Agent owner multisig
+            let setupData = gnosisSafe.interface.encodeFunctionData(
+                "setup",
+                // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
+                // defaultCallbackHandler is needed for the ERC721 support
+                [[agentOwnerMultisigSigner.address], 1, AddressZero, "0x", defaultCallbackHandler.address,
+                    AddressZero, 0, AddressZero]
+            );
+            let proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
+                setupData, 0);
+            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, 0).then((tx) => tx.wait());
+            const agentOwnerMultisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
+            const agentOwnerMultisigAddress = agentOwnerMultisig.address;
+
+            // Staker multisig
+            setupData = gnosisSafe.interface.encodeFunctionData(
+                "setup",
+                // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
+                [[staker.address], 1, AddressZero, "0x", AddressZero, AddressZero, 0, AddressZero]
+            );
+             proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
+                setupData, 0);
+            await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, 0).then((tx) => tx.wait());
+            const stakerMultisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
+            const stakerMultisigAddress = stakerMultisig.address;
+
+            // Add liquidity of OLAS-DAI (5000 OLAS, 1000 DAI)
+            const amountLiquidityOLAS = "5"  + "0".repeat(3) + decimals;
+            const amountDAI = "5" + "0".repeat(3) + decimals;
+            const minAmountOLA =  "5" + "0".repeat(2) + decimals;
+            const minAmountDAI = "1" + "0".repeat(3) + decimals;
+            const deadline = Date.now() + 1000;
+            const toAddress = stakerMultisigAddress;
+            await olas.approve(router.address, LARGE_APPROVAL);
+            await dai.approve(router.address, LARGE_APPROVAL);
+
+            await router.connect(deployer).addLiquidity(
+                dai.address,
+                olas.address,
+                amountDAI,
+                amountLiquidityOLAS,
+                minAmountDAI,
+                minAmountOLA,
+                toAddress,
+                deadline
+            );
+
+            // Create 4 components and 3 agents based on them
+            await componentRegistry.changeManager(mechManager.address);
+            await componentRegistry.connect(mechManager).create(componentOwners[0].address, componentHash, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[1].address, componentHash1, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[2].address, componentHash2, []);
+            await componentRegistry.connect(mechManager).create(componentOwners[3].address, configHash2, []);
+            await agentRegistry.changeManager(mechManager.address);
+            await agentRegistry.connect(mechManager).create(agentOwners[0].address, agentHash, [1, 2]);
+            await agentRegistry.connect(mechManager).create(agentOwners[1].address, agentHash1, [2]);
+            // The last agent is registered for the multisig address
+            await agentRegistry.connect(mechManager).create(agentOwnerMultisigAddress, agentHash2, [3]);
+
+            // Create 2 services
+            const agentIds = [[1, 2], [1, 3]];
+            const agentParams = [[1, regBond], [1, regBond]];
+            const threshold = 2;
+            await serviceRegistry.changeManager(serviceManager.address);
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, agentIds[0],
+                agentParams, threshold);
+            await serviceRegistry.connect(serviceManager).create(owner, configHash1, agentIds[1],
+                agentParams, threshold);
+
+            // Register agent instances
+            await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
+            await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
+            await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+            await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
+                agentIds[1], {value: 2 * regBond});
+
+            // Deploy services
+            await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
+            await serviceRegistry.connect(serviceManager).deploy(owner, serviceId, gnosisSafeMultisig.address, payload);
+            await serviceRegistry.connect(serviceManager).deploy(owner, 2, gnosisSafeMultisig.address, payload);
+
+            // In order to get OLAS top-ups for owners of components / agents, service owner needs to lock enough veOLAS
+            const minWeightedBalance = await tokenomics.veOLASThreshold();
+            const balanceOLASToLock = minWeightedBalance.toString() + "1";
+            // Transfer the needed amount of OLAS to the component / agent / service owner
+            await olas.transfer(owner, balanceOLASToLock);
+            // signers[3] is the EOA for the service owner address
+            await olas.connect(signers[3]).approve(ve.address, balanceOLASToLock);
+            // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+            // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+            let lockDuration = fourYears;
+            await ve.connect(signers[3]).createLock(balanceOLASToLock, lockDuration);
+
+            // Stake OLAS with 2 stakers: deployer and staker
+            await olas.transfer(stakerMultisigAddress, twoHundredETHBalance);
+            await olas.approve(ve.address, hundredETHBalance);
+            let nonce = await stakerMultisig.nonce();
+            let txHashData = await safeContracts.buildContractCall(olas, "approve",
+                [ve.address, twoHundredETHBalance], nonce, 0, 0);
+            let signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+            lockDuration = oneWeek;
+
+            // Balance should be zero before the lock and specified amount after the lock
+            expect(await ve.getVotes(deployer.address)).to.equal(0);
+            await ve.createLock(hundredETHBalance, lockDuration);
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(ve, "createLock",
+                [twoHundredETHBalance, lockDuration], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+            const balanceDeployer = await ve.balanceOf(deployer.address);
+            expect(balanceDeployer).to.equal(hundredETHBalance);
+            const balanceStaker = await ve.balanceOf(stakerMultisigAddress);
+            expect(balanceStaker).to.equal(twoHundredETHBalance);
+
+            // Calculate the fraction of stakers vs the stakers with the service owner staking
+            const userStakersFractionNumerator = ethers.BigNumber.from(threeHundredETHBalance);
+            const userStakersFractionDenominator = ethers.BigNumber.from(threeHundredETHBalance).add(ethers.BigNumber.from(balanceOLASToLock));
+
+            // Allocate empty rewards during the first epoch
+            await tokenomics.checkpoint();
+
+            // Increase the time to more than one epoch
+            await helpers.time.increase(epochLen + 3);
+
+            // Send deposits services
+            await treasury.depositETHFromServices([1, 2], [regServiceRevenue, doubleRegServiceRevenue],
+                {value: tripleRegServiceRevenue});
+
+            // Enable LP token of OLAS-DAI pair
+            await treasury.enableToken(pairODAI.address);
+
+            // Create a depository bond product and checking that it's equal
+            const priceLP = await depository.getCurrentPriceLP(pairODAI.address);
+            await depository.create(pairODAI.address, priceLP, supplyProductOLAS, vesting);
+            const productId = 0;
+            expect(await depository.isActiveProduct(productId)).to.equal(true);
+
+            // Change epsilonRate to 0.4 to test the fKD parameter
+            // Rest of tokenomics parameters are left unchanged
+            await tokenomics.changeTokenomicsParameters(0, "4" + "0".repeat(17), 0, 0);
+
+            // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
+            await tokenomics.checkpoint();
+
+            // Get the last settled epoch counter
+            let lastPoint = await tokenomics.epochCounter() - 1;
+            // Check the inverse discount factor caltulation
+            // f(K(e), D(e)) = d * k * K(e) + d * D(e)
+            // Default treasury reward is 0, so K(e) = 0
+            // New components = 3, new agents = 3
+            // d = 3 + 3 = 6
+            // New agent and component owners = 6
+            // D(e) = 6
+            // f(K, D) = 6 * 6
+            // (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
+            // epsilonRate + 1 = 1.4
+            // fKD = fKD > epsilonRate ? fkD : epsilonRate
+            // fKD = 0.36
+            // df = 1 + fKD = 1.36
+            const df = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
+            //console.log("df", df);
+            expect(Math.abs(df - 1.36)).to.lessThan(delta);
+
+            // Get the epoch point of the last epoch
+            let ep = await tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
+            // Calculate rewards based on the points information
+            const percentFraction = ethers.BigNumber.from(100);
+            let rewards = [
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
+            ];
+            let accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
+            // Calculate top-ups based on the points information
+            let topUps = [
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
+            ];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            let accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
+            expect(accountRewards).to.greaterThan(0);
+            expect(accountTopUps).to.greaterThan(0);
+
+            // Get owners top-ups
+            // We have 4 components
+            let balanceComponentOwner = new Array(4);
+            for (let i = 0; i < 4; i++) {
+                await dispenser.connect(componentOwners[i]).claimOwnerIncentives([0], [i+1]);
+                balanceComponentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address));
+            }
+
+            // 2 agent owners plus a gnosis safe one
+            let balanceAgentOwner = new Array(3);
+            for (let i = 0; i < 2; i++) {
+                await dispenser.connect(agentOwners[i]).claimOwnerIncentives([1], [i+1]);
+                balanceAgentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address));
+            }
+            nonce = await agentOwnerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(dispenser, "claimOwnerIncentives",
+                [[1], [3]], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(agentOwnerMultisigSigner, agentOwnerMultisig, txHashData, 0);
+            await safeContracts.executeTx(agentOwnerMultisig, txHashData, [signMessageData], 0);
+            balanceAgentOwner[2] = ethers.BigNumber.from(await olas.balanceOf(agentOwnerMultisigAddress));
+
+            // Check the received top-ups for components in OLAS
+            // Calculate component top-up sum in OLAS
+            let expectedComponentTopUp = topUps[1];
+            // Calculate component top-up sup
+            let sumComponentOwnerTopUps = ethers.BigNumber.from(0);
+            for (let i = 0; i < 4; i++) {
+                sumComponentOwnerTopUps = sumComponentOwnerTopUps.add(balanceComponentOwner[i]);
+            }
+
+            // Check the received top-ups for agents
+            let expectedAgentTopUp = topUps[2];
+            // Calculate agent top-up sum difference with the expected value
+            let sumAgentOwnerTopUps = ethers.BigNumber.from(0);
+            for (let i = 0; i < 3; i++) {
+                sumAgentOwnerTopUps = sumAgentOwnerTopUps.add(balanceAgentOwner[i]);
+            }
+            // Get the overall sum and compare the difference with the expected value
+            let diffTopUp = Math.abs(expectedComponentTopUp.add(expectedAgentTopUp).sub(sumComponentOwnerTopUps).sub(sumAgentOwnerTopUps));
+            expect(diffTopUp).to.lessThan(delta);
+
+            // Staking rewards will be calculated after 2 epochs are completed
+
+            // Bonding of tokens for OLAS
+            // Bond amount that is 2 times smaller than the supply (IFD is 1.4 < 2)
+            const amountToBond = ethers.BigNumber.from(supplyProductOLAS).div(2);
+            // Approve LP tokens for the treasury
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(pairODAI, "approve",
+                [treasury.address, amountToBond], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+            // Deposit LP tokens for OLAS
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(depository, "deposit",
+                [productId, amountToBond], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+
+            // Get the expected payout for the bond Id 0
+            const bondInstance = await depository.mapUserBonds(0);
+            const expectedPayout = bondInstance.payout;
+
+            // Advance to the maturity time and redeem the bond
+            await helpers.time.increase(vesting + 60);
+            const deployerBalanceBeforeBondRedeem = ethers.BigNumber.from(await olas.balanceOf(stakerMultisigAddress));
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(depository, "redeem", [[0]], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+            // Compare the OLAS balance after redeeming the bond
+            const deployerBalanceAfterBondRedeem = ethers.BigNumber.from(await olas.balanceOf(stakerMultisigAddress));
+            const diffBalance = deployerBalanceAfterBondRedeem.sub(deployerBalanceBeforeBondRedeem);
+            expect(Math.abs(Number(ethers.BigNumber.from(expectedPayout).sub(diffBalance)))).to.lessThan(delta);
+
+            // Stakers reward for this epoch in OLAS
+            // We need to subtract service owner staking part
+            const expectedStakerTopUpEpoch1 = (topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator);
+
+            // Increase the time to more than one epoch length
+            await helpers.time.increase(epochLen + 3);
+
+            // Send service revenues for the next epoch
+            await treasury.depositETHFromServices([1, 2], [doubleRegServiceRevenue, regServiceRevenue],
+                {value: tripleRegServiceRevenue});
+
+
+            // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
+            await tokenomics.checkpoint();
+
+            // Get the last settled epoch counter
+            lastPoint = await tokenomics.epochCounter() - 1;
+            // Get the epoch point of the last epoch
+            ep = await tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
+            // Calculate rewards based on the points information
+            rewards = [
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(ep.rewardStakerFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[0].rewardUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalDonationsETH).mul(ethers.BigNumber.from(up[1].rewardUnitFraction)).div(percentFraction)
+            ];
+            accountRewards = rewards[0].add(rewards[1]).add(rewards[2]);
+            // Calculate top-ups based on the points information
+            topUps = [
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(ep.maxBondFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[0].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS).mul(ethers.BigNumber.from(up[1].topUpUnitFraction)).div(percentFraction),
+                ethers.BigNumber.from(ep.totalTopUpsOLAS)
+            ];
+            topUps[3] = topUps[3].sub(topUps[0].add(topUps[1]).add(topUps[2]));
+            accountTopUps = topUps[1].add(topUps[2]).add(topUps[3]);
+            expect(accountRewards).to.greaterThan(0);
+            expect(accountTopUps).to.greaterThan(0);
+
+            // Get owners rewards
+            // We have 4 components
+            for (let i = 0; i < 4; i++) {
+                // Subtract the balance owners had before claiming top-ups
+                const balanceBeforeClaim = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address));
+                await dispenser.connect(componentOwners[i]).claimOwnerIncentives([0], [i+1]);
+                balanceComponentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(componentOwners[i].address)).sub(balanceBeforeClaim);
+            }
+
+            // 2 agent owners plus the gnosis safe one
+            for (let i = 0; i < 2; i++) {
+                // Subtract the balance owners had before claiming top-ups
+                const balanceBeforeClaim = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address));
+                await dispenser.connect(agentOwners[i]).claimOwnerIncentives([1], [i+1]);
+                balanceAgentOwner[i] = ethers.BigNumber.from(await olas.balanceOf(agentOwners[i].address)).sub(balanceBeforeClaim);
+            }
+            const balanceBeforeClaim = ethers.BigNumber.from(await olas.balanceOf(agentOwnerMultisigAddress));
+            nonce = await agentOwnerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(dispenser, "claimOwnerIncentives",
+                [[1], [3]], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(agentOwnerMultisigSigner, agentOwnerMultisig, txHashData, 0);
+            await safeContracts.executeTx(agentOwnerMultisig, txHashData, [signMessageData], 0);
+            balanceAgentOwner[2] = ethers.BigNumber.from(await olas.balanceOf(agentOwnerMultisigAddress)).sub(balanceBeforeClaim);
+
+            // Check the received top-ups for components in OLAS
+            // Calculate component top-up sum in OLAS
+            expectedComponentTopUp = topUps[1];
+            // Calculate component top-up sup
+            sumComponentOwnerTopUps = ethers.BigNumber.from(0);
+            for (let i = 0; i < 4; i++) {
+                sumComponentOwnerTopUps = sumComponentOwnerTopUps.add(balanceComponentOwner[i]);
+            }
+
+            // Check the received top-ups for agents
+            expectedAgentTopUp = topUps[2];
+            // Calculate agent top-up sum difference with the expected value
+            sumAgentOwnerTopUps = ethers.BigNumber.from(0);
+            for (let i = 0; i < 3; i++) {
+                sumAgentOwnerTopUps = sumAgentOwnerTopUps.add(balanceAgentOwner[i]);
+            }
+            // Get the overall sum and compare the difference with the expected value
+            diffTopUp = Math.abs(expectedComponentTopUp.add(expectedAgentTopUp).sub(sumComponentOwnerTopUps).sub(sumAgentOwnerTopUps));
+            expect(diffTopUp).to.lessThan(delta);
+
+            // Increase the time to more than one week for which lockers were staking
+            await helpers.time.increase(oneWeek + 10000);
+            // Claim skating by the deployer (considered rewards for 1 epoch) and a staker
+            await ve.withdraw();
+            await dispenser.connect(deployer).claimStakingIncentives();
+
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(ve, "withdraw", [], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+            nonce = await stakerMultisig.nonce();
+            txHashData = await safeContracts.buildContractCall(dispenser, "claimStakingIncentives", [], nonce, 0, 0);
+            signMessageData = await safeContracts.safeSignMessage(staker, stakerMultisig, txHashData, 0);
+            await safeContracts.executeTx(stakerMultisig, txHashData, [signMessageData], 0);
+
+            // Staker balance must increase on the topUpStakerFraction amount of the received service revenue
+            // plus the previous epoch rewards
+            // We need to subtract service owner staking part
+            const expectedTopUp = ((topUps[3].mul(userStakersFractionNumerator)).div(userStakersFractionDenominator)).add(expectedStakerTopUpEpoch1);
+            const deployerBalance = ethers.BigNumber.from(await olas.balanceOf(deployer.address));
+            const stakerBalance = ethers.BigNumber.from(await olas.balanceOf(stakerMultisigAddress));
             const sumBalance = deployerBalance.add(stakerBalance);
 
             // Calculate initial OLAS balance minus the initial liquidity amount of the deployer plus the reward after

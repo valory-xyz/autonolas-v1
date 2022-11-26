@@ -8,6 +8,7 @@ require("hardhat-gas-reporter");
  * @type import('hardhat/config').HardhatUserConfig
  */
 const accounts = {
+    count: 50,
     mnemonic: "test test test test test test test test test test test junk",
     accountsBalance: "100000000000000000000000000",
 };

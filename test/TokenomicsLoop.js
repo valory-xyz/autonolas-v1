@@ -1837,7 +1837,7 @@ describe("Tokenomics integration", async () => {
                 // signers, threshold, to_address, data, fallback_handler, payment_token, payment, payment_receiver
                 [[staker.address], 1, AddressZero, "0x", AddressZero, AddressZero, 0, AddressZero]
             );
-             proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
+            proxyAddress = await safeContracts.calculateProxyAddress(gnosisSafeProxyFactory, gnosisSafe.address,
                 setupData, 0);
             await gnosisSafeProxyFactory.createProxyWithNonce(gnosisSafe.address, setupData, 0).then((tx) => tx.wait());
             const stakerMultisig = await ethers.getContractAt("GnosisSafe", proxyAddress);

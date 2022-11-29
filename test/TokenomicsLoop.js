@@ -52,6 +52,7 @@ describe("Tokenomics integration", async () => {
     const AddressZero = "0x" + "0".repeat(40);
     const regBond = 1000;
     const regDeposit = 1000;
+    const regFine = 500;
     const maxThreshold = 1;
     const hundredETHBalance = ethers.utils.parseEther("100");
     const twoHundredETHBalance = ethers.utils.parseEther("200");
@@ -1607,10 +1608,10 @@ describe("Tokenomics integration", async () => {
             // epsilonRate + 1 = 1.4
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.36
-            // df = 1 + fKD = 1.36
-            const df = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
-            //console.log("df", df);
-            expect(Math.abs(df - 1.36)).to.lessThan(delta);
+            // idf = 1 + fKD = 1.36
+            const idf = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
+            //console.log("idf", idf);
+            expect(Math.abs(idf - 1.36)).to.lessThan(delta);
 
             // Get the epoch point of the last epoch
             let ep = await tokenomics.getEpochPoint(lastPoint);
@@ -1978,10 +1979,10 @@ describe("Tokenomics integration", async () => {
             // epsilonRate + 1 = 1.4
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.36
-            // df = 1 + fKD = 1.36
-            const df = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
-            //console.log("df", df);
-            expect(Math.abs(df - 1.36)).to.lessThan(delta);
+            // idf = 1 + fKD = 1.36
+            const idf = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
+            //console.log("idf", idf);
+            expect(Math.abs(idf - 1.36)).to.lessThan(delta);
 
             // Get the epoch point of the last epoch
             let ep = await tokenomics.getEpochPoint(lastPoint);
@@ -2206,6 +2207,91 @@ describe("Tokenomics integration", async () => {
 
             // Restore to the state of the snapshot
             await snapshot.restore();
+        });
+    });
+
+    context("Drain slashed funds", async function () {
+        it("Drain slashed funds from the service registry", async () => {
+            const mechManager = signers[3];
+            const serviceManager = signers[4];
+            const owner = signers[5].address;
+            const operator = signers[6].address;
+            const agentInstance = signers[7];
+            const maxThreshold = 1;
+
+            // Create a component and an agent
+            await componentRegistry.changeManager(mechManager.address);
+            await componentRegistry.connect(mechManager).create(owner, componentHash, []);
+            await agentRegistry.changeManager(mechManager.address);
+            await agentRegistry.connect(mechManager).create(owner, agentHash, [1]);
+
+            // Whitelist gnosis multisig implementation
+            await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
+
+            // Create services and activate the agent instance registration
+            let serviceInstance = await serviceRegistry.getService(serviceId);
+            expect(serviceInstance.state).to.equal(0);
+            await serviceRegistry.changeManager(serviceManager.address);
+            await serviceRegistry.connect(serviceManager).create(owner, configHash, [1],
+                [[1, regBond]], maxThreshold);
+
+            await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
+
+            /// Register agent instance
+            await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId, [agentInstance.address], [agentId], {value: regBond});
+
+            // Create multisig
+            const safe = await serviceRegistry.connect(serviceManager).deploy(owner, serviceId,
+                gnosisSafeMultisig.address, payload);
+            const result = await safe.wait();
+            const proxyAddress = result.events[0].address;
+
+            // Getting a real multisig address and calling slashing method with it
+            const multisig = await ethers.getContractAt("GnosisSafe", proxyAddress);
+            const safeContracts = require("@gnosis.pm/safe-contracts");
+            const nonce = await multisig.nonce();
+            const txHashData = await safeContracts.buildContractCall(serviceRegistry, "slash",
+                [[agentInstance.address], [regFine], serviceId], nonce, 0, 0);
+            const signMessageData = await safeContracts.safeSignMessage(agentInstance, multisig, txHashData, 0);
+
+            // Slash the agent instance operator with the correct multisig
+            await safeContracts.executeTx(multisig, txHashData, [signMessageData], 0);
+
+            // After slashing the operator balance must be the difference between the regBond and regFine
+            const balanceOperator = Number(await serviceRegistry.getOperatorBalance(operator, serviceId));
+            expect(balanceOperator).to.equal(regBond - regFine);
+
+            // The overall slashing balance must be equal to regFine
+            const slashedFunds = Number(await serviceRegistry.slashedFunds());
+            expect(slashedFunds).to.equal(regFine);
+
+            // Drain slashed funds by the drainer (treasury)
+            await serviceRegistry.changeDrainer(treasury.address);
+            // Trying to drain by the operator
+            await expect(
+                treasury.connect(signers[1]).drainServiceSlashedFunds()
+            ).to.be.revertedWithCustomError(treasury, "OwnerOnly");
+
+            // Get the slashed funds transferred to the drainer address
+            const amount = await treasury.connect(deployer).callStatic.drainServiceSlashedFunds();
+            expect(amount).to.equal(regFine);
+
+            // Check that slashed funds are zeroed
+            await treasury.connect(deployer).drainServiceSlashedFunds();
+            expect(await serviceRegistry.slashedFunds()).to.equal(0);
+
+            // Try to drain again
+            // First one to check the drained amount to be zero with a static call
+            expect(await treasury.connect(deployer).callStatic.drainServiceSlashedFunds()).to.equal(0);
+            // Then do the real drain and make sure nothing has changed or failed
+            await treasury.connect(deployer).callStatic.drainServiceSlashedFunds();
+            expect(await serviceRegistry.slashedFunds()).to.equal(0);
+
+            // Check the treasury balances
+            const ETHOwned = Number(await treasury.ETHOwned());
+            expect(ETHOwned).to.equal(regFine);
+            const balanceTreasury = await ethers.provider.getBalance(treasury.address);
+            expect(balanceTreasury).to.equal(regFine);
         });
     });
 });

@@ -132,7 +132,7 @@ describe("Tokenomics integration", async () => {
         // Deploy master tokenomics contract
         const tokenomicsMaster = await tokenomicsFactory.deploy();
 
-        // Correct treasury address is missing here, it will be defined just one line below
+        // Correct treasury, depository and dispenser addresses are missing here, they will be defined below
         const proxyData = tokenomicsMaster.interface.encodeFunctionData("initializeTokenomics",
             [olas.address, deployer.address, deployer.address, deployer.address, ve.address, epochLen,
                 componentRegistry.address, agentRegistry.address, serviceRegistry.address, donatorBlacklist.address]);

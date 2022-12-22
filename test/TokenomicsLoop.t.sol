@@ -49,6 +49,8 @@ contract BaseSetup is Test {
     address[] internal agentOwners;
     uint256[] internal serviceIds;
     uint256[] internal serviceAmounts;
+    uint256[] internal unitTypes;
+    uint256[] internal unitIds;
     address internal deployer;
     address internal serviceOwner;
     address internal operator;
@@ -59,6 +61,10 @@ contract BaseSetup is Test {
     uint32 internal threshold = 2;
     uint96 internal regBond = 1000;
     uint256 internal regDeposit = 1000;
+    uint256 internal delta = 10;
+    uint256 internal globalDelta = 3e3;
+    uint256 internal globalRoundOffETH;
+    uint256 internal globalRoundOffOLAS;
 
     bytes32 internal unitHash = 0x9999999999999999999999999999999999999999999999999999999999999999;
     bytes internal payload;
@@ -77,6 +83,8 @@ contract BaseSetup is Test {
         (agentIds[0][0], agentIds[0][1]) = (1, 2);
         agentIds[1] = new uint32[](2);
         (agentIds[1][0], agentIds[1][1]) = (1, 3);
+        unitTypes = new uint256[](1);
+        unitIds = new uint256[](1);
 
         utils = new Utils();
         users = utils.createUsers(50);
@@ -219,6 +227,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
         vm.startPrank(serviceOwner);
         olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
         // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
@@ -226,24 +235,21 @@ contract TokenomicsLoopTest is BaseSetup {
         ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
         vm.stopPrank();
 
-//        // Define the types of units to claim rewards and top-ups for
-//        (unitTypes[0], unitTypes[1]) = (0, 1);
-//        // Define unit Ids to claim rewards and top-ups for
-//        (unitIds[0], unitIds[1]) = (1, 1);
-
         // Set epoch length equal to a week
         tokenomics.changeTokenomicsParameters(0, 0, epochLen, 0);
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
 
-        uint256[] memory rewards = new uint256[](2);
+        uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](2);
 
-        // Run for more than 2 years (more than 52 weeks in a year)
-        uint256 endTime = 2 weeks;
+        // Run for more than 10 years (more than 52 weeks in a year)
+        uint256 endTime = 550 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
             // Send donations to services from the deployer
             (serviceAmounts[0], serviceAmounts[1]) = (amount0, amount1);
+            // Set deployer balance to cover the max of two donations
+            vm.deal(deployer, type(uint128).max);
             vm.prank(deployer);
             treasury.depositServiceDonationsETH{value: serviceAmounts[0] + serviceAmounts[1]}(serviceIds, serviceAmounts);
 
@@ -263,17 +269,75 @@ contract TokenomicsLoopTest is BaseSetup {
             (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
 
             // Calculate rewards based on the points information
-            rewards[0] += (ep.totalDonationsETH * up[0].rewardUnitFraction) / 100;
-            rewards[1] += (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
+            rewards[0] = (ep.totalDonationsETH * up[0].rewardUnitFraction) / 100;
+            rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
+            rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
             uint256 accountRewards = rewards[0] + rewards[1];
             // Calculate top-ups based on the points information
-            topUps[0] += (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
-            topUps[1] += (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
+            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
+            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
             uint256 accountTopUps = topUps[0] + topUps[1];
 
             // Rewards and top-ups must not be zero
-            assertGe(accountRewards, 0);
-            assertGe(accountTopUps, 0);
+            assertGt(accountRewards, 0);
+            assertGt(accountTopUps, 0);
+            assertGt(rewards[2], 0);
+
+            uint256 balanceETH;
+            uint256 balanceOLAS;
+
+            // Get owners rewards and sum up all of them
+            // We have 4 components
+            unitTypes[0] = 0;
+            for (uint256 j = 0; j < 4; ++j) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = componentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
+                unitIds[0] = j + 1;
+                vm.prank(componentOwners[j]);
+                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+
+            // 3 agents
+            unitTypes[0] = 1;
+            for (uint256 j = 0; j < 3; j++) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = agentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
+                unitIds[0] = j + 1;
+                vm.prank(agentOwners[j]);
+                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+
+            // Check the ETH and OLAS balance after receiving incentives
+            if (balanceETH > accountRewards) {
+                balanceETH -= accountRewards;
+            } else {
+                balanceETH = accountRewards - balanceETH;
+            }
+            assertLt(balanceETH, delta);
+
+            // OLAS balance could be zero when the serviceOwner veOLAS balance is less than the required top-up threshold
+            if (balanceOLAS > 0) {
+                if (balanceOLAS > accountTopUps) {
+                    balanceOLAS -= accountTopUps;
+                } else {
+                    balanceOLAS = accountTopUps - balanceOLAS;
+                }
+                assertLt(balanceOLAS, delta);
+            } else {
+                assertLt(ve.getVotes(serviceOwner), tokenomics.veOLASThreshold());
+            }
+
+            // Sum up the global round-off error
+            globalRoundOffETH += balanceETH;
+            globalRoundOffOLAS += balanceOLAS;
         }
+        assertLt(globalRoundOffETH, globalDelta);
+        assertLt(globalRoundOffOLAS, globalDelta);
     }
 }

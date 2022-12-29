@@ -10,6 +10,9 @@ describe("Tokenomics integration", async () => {
     const initialMint = "1" + "0".repeat(5) + decimals;
     // Supply amount for the bonding product
     const supplyProductOLAS =  "20" + decimals;
+    const oneWeek = 86400 * 7;
+    const oneYear = 365 * 24 * 3600;
+    const fourYears = 4 * oneYear;
 
     let erc20Token;
     let olaFactory;
@@ -37,7 +40,7 @@ describe("Tokenomics integration", async () => {
     let gnosisSafeProxyFactory;
     let defaultCallbackHandler;
     let router;
-    let epochLen = 1000;
+    let epochLen = oneWeek;
     let vesting = 60 * 60 * 24;
 
     const componentHash = "0x" + "9".repeat(64);
@@ -67,9 +70,6 @@ describe("Tokenomics integration", async () => {
     const payload = "0x";
     const E18 = 10**18;
     const delta = 10;
-    const oneWeek = 7 * 86400;
-    const oneYear = 365 * 24 * 3600;
-    const fourYears = 4 * oneYear;
 
     let signers;
     let deployer;
@@ -145,19 +145,19 @@ describe("Tokenomics integration", async () => {
         tokenomics = await ethers.getContractAt("Tokenomics", tokenomicsProxy.address);
 
         // Correct depository address is missing here, it will be defined just one line below
-        treasury = await treasuryFactory.deploy(olas.address, deployer.address, tokenomics.address, deployer.address);
+        treasury = await treasuryFactory.deploy(olas.address, tokenomics.address, deployer.address, deployer.address);
         // Deploy generic bond calculator contract
         const GenericBondCalculator = await ethers.getContractFactory("GenericBondCalculator");
         genericBondCalculator = await GenericBondCalculator.deploy(olas.address, tokenomics.address);
         await genericBondCalculator.deployed();
         // Deploy depository contract
-        depository = await depositoryFactory.deploy(olas.address, treasury.address, tokenomics.address,
+        depository = await depositoryFactory.deploy(olas.address, tokenomics.address, treasury.address,
             genericBondCalculator.address);
         // Deploy dispenser contract
         dispenser = await dispenserFactory.deploy(tokenomics.address, treasury.address);
         // Change to the correct addresses
-        await tokenomics.changeManagers(AddressZero, treasury.address, depository.address, dispenser.address);
-        await treasury.changeManagers(AddressZero, AddressZero, depository.address, dispenser.address);
+        await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
+        await treasury.changeManagers(AddressZero, depository.address, dispenser.address);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
@@ -1559,7 +1559,6 @@ describe("Tokenomics integration", async () => {
             await treasury.depositServiceDonationsETH([1, 2], [doubleRegServiceRevenue, regServiceRevenue],
                 {value: tripleRegServiceRevenue});
 
-
             // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
 
@@ -1992,7 +1991,7 @@ describe("Tokenomics integration", async () => {
     });
 
     context("Drain slashed funds", async function () {
-        it("Drain slashed funds from the service registry", async () => {
+        it.only("Drain slashed funds from the service registry", async () => {
             const mechManager = signers[3];
             const serviceManager = signers[4];
             const owner = signers[5].address;

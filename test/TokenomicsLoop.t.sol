@@ -430,7 +430,7 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
 
         uint256[] memory rewards = new uint256[](3);
-        uint256[] memory topUps = new uint256[](2);
+        uint256[] memory topUps = new uint256[](3);
 
         // Run for more than 10 years (more than 52 weeks in a year)
         uint256 endTime = 550 weeks;
@@ -473,12 +473,19 @@ contract TokenomicsLoopTest is BaseSetup {
             // Calculate top-ups based on the points information
             topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
             topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
+            topUps[2] = (ep.totalTopUpsOLAS * ep.maxBondFraction) / 100;
             uint256 accountTopUps = topUps[0] + topUps[1];
 
             // Rewards and top-ups must not be zero
             assertGt(accountRewards, 0);
             assertGt(accountTopUps, 0);
             assertGt(rewards[2], 0);
+            // maxBond must not be zero
+            assertGt(topUps[2], 0);
+            // Other epoch point values must not be zero as well
+            assertGt(ep.idf, 0);
+            assertGt(ep.devsPerCapital, 0);
+            assertGt(ep.endTime, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
             assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());
@@ -494,9 +501,6 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = componentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
                 unitIds[0] = j + 1;
-//                (uint256 reward, uint256 topUp) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
-//                console.log("reward", reward);
-//                console.log("topUp", topUp);
                 vm.prank(componentOwners[j]);
                 dispenser.claimOwnerIncentives(unitTypes, unitIds);
                 balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;

@@ -193,8 +193,8 @@ contract TokenomicsLoopTest is BaseSetup {
         // TODO Add liquidity to the LP token, create a bonding program and deposit from epoch to epoch
 
         // Amounts must be bigger than a meaningful amount
-        vm.assume(amount0 > treasury.MIN_ACCEPTED_AMOUNT());
-        vm.assume(amount1 > treasury.MIN_ACCEPTED_AMOUNT());
+        vm.assume(amount0 > treasury.minAcceptedETH());
+        vm.assume(amount1 > treasury.minAcceptedETH());
 
         // Create 4 components and 3 agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -363,7 +363,7 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param numServices Number of services to donate to.
     function testTokenomicsChangingNumberOfServices(uint64 donationAmount, uint256 numServices) public {
         // Donation amount must be bigger than a meaningful amount
-        vm.assume(donationAmount > treasury.MIN_ACCEPTED_AMOUNT());
+        vm.assume(donationAmount > treasury.minAcceptedETH());
         // The number of services is within the max number range
         vm.assume(numServices > 0 && numServices <= maxNumUnits);
 

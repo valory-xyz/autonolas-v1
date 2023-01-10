@@ -1,0 +1,6 @@
+forge-std/=lib/forge-std/src/
+solmate/=lib/solmate/src
+zuniswapv2/=lib/autonolas-tokenomics/lib/zuniswapv2/src
+autonolas-governance=lib/autonolas-governance/contracts
+autonolas-registries=lib/autonolas-registries/contracts
+autonolas-tokenomics=lib/autonolas-tokenomics/contracts

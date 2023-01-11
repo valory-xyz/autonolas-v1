@@ -21,7 +21,6 @@ import "autonolas-tokenomics/GenericBondCalculator.sol";
 import "autonolas-tokenomics/Tokenomics.sol";
 import "autonolas-tokenomics/TokenomicsProxy.sol";
 import "autonolas-tokenomics/Treasury.sol";
-import "../lib/autonolas-governance/contracts/OLAS.sol";
 
 contract BaseSetup is Test {
     Utils internal utils;

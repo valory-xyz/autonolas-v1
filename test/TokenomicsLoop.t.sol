@@ -302,12 +302,16 @@ contract TokenomicsLoopTest is BaseSetup {
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
+        // Move at least epochLen seconds in time
+        vm.warp(block.timestamp + epochLen);
+        // Skip the first epoch to apply tokenomics incentives changes
+        tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
-        uint256 endTime = 550 weeks;
+        uint256 endTime = 1 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
             // Create a bond product
             productId = depository.create(pair, priceLP, supplyProductOLAS, vesting);
@@ -321,8 +325,10 @@ contract TokenomicsLoopTest is BaseSetup {
             (bondIds, ) = depository.getPendingBonds(deployer, true);
 
             // Redeem matured bonds
-            vm.prank(deployer);
-            depository.redeem(bondIds);
+            if (bondIds.length > 0) {
+                vm.prank(deployer);
+                depository.redeem(bondIds);
+            }
 
             // Send donations to services from the deployer
             (serviceAmounts[0], serviceAmounts[1]) = (amount0, amount1);
@@ -375,8 +381,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = componentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(componentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(componentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, componentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -388,8 +401,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = agentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(agentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(agentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(agentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, agentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -499,6 +519,10 @@ contract TokenomicsLoopTest is BaseSetup {
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
+        // Move at least epochLen seconds in time
+        vm.warp(block.timestamp + epochLen);
+        // Skip the first epoch to apply tokenomics incentives changes
+        tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](3);
@@ -555,7 +579,9 @@ contract TokenomicsLoopTest is BaseSetup {
             assertGt(topUps[2], 0);
             // Other epoch point values must not be zero as well
             assertGt(ep.idf, 0);
-            assertGt(ep.devsPerCapital, 0);
+            assertGt(tokenomics.devsPerCapital(), 0);
+            assertGt(tokenomics.componentWeight(), 0);
+            assertGt(tokenomics.agentWeight(), 0);
             assertGt(ep.endTime, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
@@ -572,8 +598,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = componentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(componentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(componentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, componentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -585,8 +618,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = agentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(agentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(agentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(agentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, agentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
             }

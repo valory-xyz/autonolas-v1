@@ -3,9 +3,9 @@ pragma solidity 0.8.17;
 import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
 import "forge-std/Test.sol";
-import "zuniswapv2/ZuniswapV2Factory.sol";
-import "zuniswapv2/ZuniswapV2Router.sol";
-import "zuniswapv2/ZuniswapV2Pair.sol";
+import {ZuniswapV2Factory} from "zuniswapv2/ZuniswapV2Factory.sol";
+import {ZuniswapV2Router} from "zuniswapv2/ZuniswapV2Router.sol";
+import {ZuniswapV2Pair} from "zuniswapv2/ZuniswapV2Pair.sol";
 import "./utils/Utils.sol";
 import "autonolas-governance/OLAS.sol";
 import "autonolas-governance/veOLAS.sol";
@@ -322,7 +322,7 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Check matured bonds up until the last created bond Id
             delete bondIds;
-            (bondIds, ) = depository.getPendingBonds(deployer, true);
+            (bondIds, ) = depository.getBonds(deployer, true);
 
             // Redeem matured bonds
             if (bondIds.length > 0) {
@@ -347,7 +347,7 @@ contract TokenomicsLoopTest is BaseSetup {
             uint256 lastPoint = tokenomics.epochCounter() - 1;
 
             // Get the epoch point of the last epoch
-            EpochPoint memory ep = tokenomics.getEpochPoint(lastPoint);
+            EpochPoint memory ep = tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             UnitPoint[] memory up = new UnitPoint[](2);
             (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
@@ -444,7 +444,7 @@ contract TokenomicsLoopTest is BaseSetup {
         // Move four more weeks in time
         vm.warp(block.timestamp + 4 weeks);
         // Check that all bond products are closed
-        productIds = depository.getActiveProducts();
+        productIds = depository.getProducts(true);
         assertEq(productIds.length, 0);
     }
 
@@ -555,7 +555,7 @@ contract TokenomicsLoopTest is BaseSetup {
             uint256 lastPoint = tokenomics.epochCounter() - 1;
 
             // Get the epoch point of the last epoch
-            EpochPoint memory ep = tokenomics.getEpochPoint(lastPoint);
+            EpochPoint memory ep = tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             UnitPoint[] memory up = new UnitPoint[](2);
             (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));

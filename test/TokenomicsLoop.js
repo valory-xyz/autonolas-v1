@@ -535,7 +535,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -657,7 +657,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -767,7 +767,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -970,7 +970,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -1216,7 +1216,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -1432,7 +1432,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -1668,7 +1668,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             let lastPoint = Number(await tokenomics.epochCounter()) - 1;
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -1946,7 +1946,7 @@ describe("Tokenomics integration", async () => {
             expect(Math.abs(idf - 1.36)).to.lessThan(delta);
 
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -2039,7 +2039,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             lastPoint = await tokenomics.epochCounter() - 1;
             // Get the epoch point of the last epoch
-            ep = await tokenomics.getEpochPoint(lastPoint);
+            ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -2280,7 +2280,7 @@ describe("Tokenomics integration", async () => {
             expect(Math.abs(idf - 1.36)).to.lessThan(delta);
 
             // Get the epoch point of the last epoch
-            let ep = await tokenomics.getEpochPoint(lastPoint);
+            let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -2397,7 +2397,7 @@ describe("Tokenomics integration", async () => {
             // Get the last settled epoch counter
             lastPoint = await tokenomics.epochCounter() - 1;
             // Get the epoch point of the last epoch
-            ep = await tokenomics.getEpochPoint(lastPoint);
+            ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
             // Calculate rewards based on the points information
@@ -2562,7 +2562,7 @@ describe("Tokenomics integration", async () => {
             // First one to check the drained amount to be zero with a static call
             await expect(
                 treasury.connect(deployer).drainServiceSlashedFunds()
-            ).to.be.revertedWithCustomError(treasury, "AmountLowerThan");
+            ).to.be.revertedWithCustomError(treasury, "LowerThan");
 
             // Check the treasury balances
             const ETHOwned = await treasury.ETHOwned();

@@ -70,7 +70,6 @@ describe("Tokenomics integration", async () => {
     const agentParams = [1, regBond];
     const serviceId = 1;
     const payload = "0x";
-    const E18 = 10**18;
     const delta = 10;
 
     let signers;
@@ -1921,31 +1920,31 @@ describe("Tokenomics integration", async () => {
 
             // Change epsilonRate to 0.4 to test the fKD parameter
             // Rest of tokenomics parameters are left unchanged
-            await tokenomics.changeTokenomicsParameters(0, "4" + "0".repeat(17), 0, 0, 0, 0);
+            await tokenomics.changeTokenomicsParameters(0, 0, "4" + "0".repeat(17), 0, 0);
 
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let lastPoint = await tokenomics.epochCounter() - 1;
+            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
             // New components = 3, new agents = 3
-            // d = 3 + 3 = 6
+            // d = 1
             // New agent and component owners = 6
             // D(e) = 6
-            // f(K, D) = 6 * 6
-            // (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
-            // epsilonRate + 1 = 1.4
+            // f(K, D) = 1 * 6
+            // (f(K, D) / 100) + 1 = 0.06 + 1 = 1.06
+            // epsilonRate + 1 = 1.1
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
-            // fKD = 0.36
-            // idf = 1 + fKD = 1.36
-            const idf = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
-            //console.log("idf", idf);
-            expect(Math.abs(idf - 1.36)).to.lessThan(delta);
+            // fKD = 0.06
+            // idf = 1 + fKD = 1.06
+            const idf = await tokenomics.getIDF(currentPoint);
+            expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch
+            let lastPoint = await tokenomics.epochCounter() - 1;
             let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];
@@ -2255,31 +2254,31 @@ describe("Tokenomics integration", async () => {
 
             // Change epsilonRate to 0.4 to test the fKD parameter
             // Rest of tokenomics parameters are left unchanged
-            await tokenomics.changeTokenomicsParameters(0, "4" + "0".repeat(17), 0, 0, 0, 0);
+            await tokenomics.changeTokenomicsParameters(0, 0, "4" + "0".repeat(17), 0, 0);
 
             // !!!!!!!!!!!!!!!!!!    EPOCH 1    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let lastPoint = await tokenomics.epochCounter() - 1;
+            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
             // New components = 3, new agents = 3
-            // d = 3 + 3 = 6
+            // d = 1
             // New agent and component owners = 6
             // D(e) = 6
-            // f(K, D) = 6 * 6
-            // (f(K, D) / 100) + 1 = 0.36 + 1 = 1.36
-            // epsilonRate + 1 = 1.4
+            // f(K, D) = 1 * 6
+            // (f(K, D) / 100) + 1 = 0.06 + 1 = 1.06
+            // epsilonRate + 1 = 1.1
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
-            // fKD = 0.36
-            // idf = 1 + fKD = 1.36
-            const idf = Number(await tokenomics.getIDF(lastPoint)) * 1.0 / E18;
-            //console.log("idf", idf);
-            expect(Math.abs(idf - 1.36)).to.lessThan(delta);
+            // fKD = 0.06
+            // idf = 1 + fKD = 1.06
+            const idf = await tokenomics.getIDF(currentPoint);
+            expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch
+            let lastPoint = await tokenomics.epochCounter() - 1;
             let ep = await tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             let up = [await tokenomics.getUnitPoint(lastPoint, 0), await tokenomics.getUnitPoint(lastPoint, 1)];

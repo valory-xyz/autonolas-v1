@@ -42,13 +42,20 @@ contract BaseSetup is Test {
     uint32[] internal agent1Components;
     uint32[] internal agent2Components;
     uint32[] internal agent3Components;
+    uint32[] internal agentDefaultComponents;
+    uint32[] internal agentMaxNumComponents;
     address payable[] internal users;
     address[] internal agentInstancesService1;
     address[] internal agentInstancesService2;
+    address[] internal defaultAgentInstances;
     address[] internal componentOwners;
     address[] internal agentOwners;
     uint256[] internal serviceIds;
+    uint256[] internal defaultServiceIds;
     uint256[] internal serviceAmounts;
+    uint256[] internal defaultServiceAmounts;
+    uint256[] internal donationServiceIds;
+    uint256[] internal donationServiceAmounts;
     uint256[] internal unitTypes;
     uint256[] internal unitIds;
     address internal deployer;
@@ -62,13 +69,17 @@ contract BaseSetup is Test {
     uint96 internal regBond = 1000;
     uint256 internal regDeposit = 1000;
     uint256 internal delta = 10;
+    uint256 internal deltaMaxNumUnits = 100;
     uint256 internal globalDelta = 3e3;
+    uint256 internal globalDeltaMaxNumUnits = 3e4;
     uint256 internal globalRoundOffETH;
     uint256 internal globalRoundOffOLAS;
+    uint256 internal maxNumUnits = 50;
 
     bytes32 internal unitHash = 0x9999999999999999999999999999999999999999999999999999999999999999;
     bytes internal payload;
     uint32[][] internal agentIds;
+    uint32[] internal defaultAgentIds;
 
     function setUp() public virtual {
         emptyArray32 = new uint32[](0);
@@ -78,16 +89,19 @@ contract BaseSetup is Test {
         agent2Components[0] = 2;
         agent3Components = new uint32[](1);
         agent3Components[0] = 3;
+        agentDefaultComponents = new uint32[](1);
+        agentMaxNumComponents = new uint32[](maxNumUnits);
         agentIds = new uint32[][](2);
         agentIds[0] = new uint32[](2);
         (agentIds[0][0], agentIds[0][1]) = (1, 2);
         agentIds[1] = new uint32[](2);
         (agentIds[1][0], agentIds[1][1]) = (1, 3);
+        defaultAgentIds = new uint32[](1);
         unitTypes = new uint256[](1);
         unitIds = new uint256[](1);
 
         utils = new Utils();
-        users = utils.createUsers(50);
+        users = utils.createUsers(20 + 2 * maxNumUnits);
         deployer = users[0];
         vm.label(deployer, "Deployer");
         serviceOwner = users[3];
@@ -101,20 +115,21 @@ contract BaseSetup is Test {
         for (uint256 i = 0; i < 2; ++i) {
             agentInstancesService2[i] = users[i + 7];
         }
-        // There are 4 component owners
-        componentOwners = new address[](4);
-        for (uint256 i = 0; i < 4; ++i) {
+        defaultAgentInstances = new address[](1);
+        // There are maxNumUnits component and agent owners
+        componentOwners = new address[](maxNumUnits);
+        agentOwners = new address[](maxNumUnits);
+        for (uint256 i = 0; i < maxNumUnits; ++i) {
             componentOwners[i] = users[i + 11];
-        }
-        // There are 3 agent owners
-        agentOwners = new address[](3);
-        for (uint256 i = 0; i < 3; ++i) {
-            agentOwners[i] = users[i + 15];
+            agentOwners[i] = users[i + 11 + maxNumUnits];
+            agentMaxNumComponents[i] = uint32(i + 1);
         }
         // There are 2 service amounts field for donating to each service
         serviceAmounts = new uint256[](2);
         serviceIds = new uint256[](2);
         (serviceIds[0], serviceIds[1]) = (1, 2);
+        defaultServiceAmounts = new uint256[](1);
+        defaultServiceIds = new uint256[](1);
 
         // Deploying registries contracts
         componentRegistry = new ComponentRegistry("Component Registry", "COMPONENT", "https://localhost/component/");
@@ -146,17 +161,17 @@ contract BaseSetup is Test {
         tokenomics = Tokenomics(address(tokenomicsProxy));
 
         // Correct depository address is missing here, it will be defined just one line below
-        treasury = new Treasury(address(olas), deployer, address(tokenomics), deployer);
+        treasury = new Treasury(address(olas), address(tokenomics), deployer, deployer);
         // Deploy generic bond calculator contract
         genericBondCalculator = new GenericBondCalculator(address(olas), address(tokenomics));
         // Deploy depository contract
-        depository = new Depository(address(olas), address(treasury), address(tokenomics), address(genericBondCalculator));
+        depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
         dispenser = new Dispenser(address(tokenomics), address(treasury));
 
         // Change contract addresses to the correct ones
-        tokenomics.changeManagers(address(0), address(treasury), address(depository), address(dispenser));
-        treasury.changeManagers(address(0), address(0), address(depository), address(dispenser));
+        tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));
+        treasury.changeManagers(address(0), address(depository), address(dispenser));
 
         // Set treasury contract as a minter for OLAS
         olas.changeMinter(address(treasury));
@@ -170,16 +185,16 @@ contract TokenomicsLoopTest is BaseSetup {
         super.setUp();
     }
 
-    /// @dev Tokenomics full loop for 2 services.
+    /// @dev Tokenomics full loop for 2 services throughout 550 epochs.
     /// @notice Assume that no single donation is bigger than 2^64 - 1.
     /// @param amount0 Amount to donate to the first service.
     /// @param amount1 Amount to donate to the second service.
-    function testTokenomics(uint64 amount0, uint64 amount1) public {
+    function testTokenomicsBasic(uint64 amount0, uint64 amount1) public {
         // TODO Add liquidity to the LP token, create a bonding program and deposit from epoch to epoch
 
         // Amounts must be bigger than a meaningful amount
-        vm.assume(amount0 > 1e9);
-        vm.assume(amount1 > 1e9);
+        vm.assume(amount0 > treasury.minAcceptedETH());
+        vm.assume(amount1 > treasury.minAcceptedETH());
 
         // Create 4 components and 3 agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -235,8 +250,6 @@ contract TokenomicsLoopTest is BaseSetup {
         ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
         vm.stopPrank();
 
-        // Set epoch length equal to a week
-        tokenomics.changeTokenomicsParameters(0, 0, epochLen, 0);
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
 
@@ -282,6 +295,9 @@ contract TokenomicsLoopTest is BaseSetup {
             assertGt(accountRewards, 0);
             assertGt(accountTopUps, 0);
             assertGt(rewards[2], 0);
+
+            // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
+            assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());
 
             uint256 balanceETH;
             uint256 balanceOLAS;
@@ -339,5 +355,196 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         assertLt(globalRoundOffETH, globalDelta);
         assertLt(globalRoundOffOLAS, globalDelta);
+    }
+
+    /// @dev Tokenomics with changing number of services throughout 550 epochs.
+    /// @notice Assume that no single donation is bigger than 2^64 - 1.
+    /// @param donationAmount Amount to donate to the service.
+    /// @param numServices Number of services to donate to.
+    function testTokenomicsChangingNumberOfServices(uint64 donationAmount, uint256 numServices) public {
+        // Donation amount must be bigger than a meaningful amount
+        vm.assume(donationAmount > treasury.minAcceptedETH());
+        // The number of services is within the max number range
+        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+
+        // Create components and agents based on them
+        componentRegistry.changeManager(address(registriesManager));
+        agentRegistry.changeManager(address(registriesManager));
+        vm.startPrank(address(registriesManager));
+        for (uint256 i = 0; i < numServices; ++i) {
+            componentRegistry.create(componentOwners[i], unitHash, emptyArray32);
+            agentDefaultComponents[0] = uint32(i + 1);
+            agentRegistry.create(agentOwners[i], unitHash, agentDefaultComponents);
+        }
+        vm.stopPrank();
+
+        AgentParams[] memory agentParams = new AgentParams[](1);
+        agentParams[0].slots = 1;
+        agentParams[0].bond = regBond;
+        // Create maxNumUnits services with 1 agent (consisting of one component) each
+        serviceRegistry.changeManager(address(serviceManager));
+        vm.startPrank(address(serviceManager));
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultAgentIds[0] = uint32(i + 1);
+            serviceRegistry.create(serviceOwner, unitHash, defaultAgentIds, agentParams, 1);
+        }
+        vm.stopPrank();
+
+        // Activate registration by service owners
+        vm.startPrank(serviceOwner);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            serviceManager.activateRegistration{value: regDeposit}(defaultServiceIds[0]);
+        }
+        vm.stopPrank();
+
+        // Register agent instances by the operator
+        vm.startPrank(operator);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            defaultAgentIds[0] = uint32(i + 1);
+            defaultAgentInstances[0] = agentOwners[i];
+            serviceManager.registerAgents{value: regBond}(defaultServiceIds[0], defaultAgentInstances, defaultAgentIds);
+        }
+        vm.stopPrank();
+
+        // Deploy services
+        serviceRegistry.changeMultisigPermission(address(gnosisSafeMultisig), true);
+        vm.startPrank(serviceOwner);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            serviceManager.deploy(defaultServiceIds[0], address(gnosisSafeMultisig), payload);
+        }
+        vm.stopPrank();
+
+        // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
+        vm.startPrank(serviceOwner);
+        olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
+        // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+        // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+        ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
+        vm.stopPrank();
+
+        // Set treasury reward fraction to be more than zero
+        tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
+
+        uint256[] memory rewards = new uint256[](3);
+        uint256[] memory topUps = new uint256[](3);
+
+        // Run for more than 10 years (more than 52 weeks in a year)
+        uint256 endTime = 550 weeks;
+        for (uint256 i = 0; i < endTime; i += epochLen) {
+            // Send donations to services from the deployer
+            donationServiceIds = new uint256[](numServices);
+            donationServiceAmounts = new uint256[](numServices);
+            // All services will receive the same amount
+            uint256 sumDonation;
+            for (uint256 j = 0; j < numServices; ++j) {
+                donationServiceIds[j] = j + 1;
+                donationServiceAmounts[j] = donationAmount + j;
+                sumDonation += donationServiceAmounts[j];
+            }
+            // Set deployer balance to cover the max donation
+            vm.deal(deployer, type(uint128).max);
+            vm.prank(deployer);
+            treasury.depositServiceDonationsETH{value: sumDonation}(donationServiceIds, donationServiceAmounts);
+
+            // Move at least epochLen seconds in time
+            vm.warp(block.timestamp + epochLen);
+
+            // Start new epoch and calculate tokenomics parameters and rewards
+            tokenomics.checkpoint();
+
+            // Get the last settled epoch counter
+            uint256 lastPoint = tokenomics.epochCounter() - 1;
+
+            // Get the epoch point of the last epoch
+            EpochPoint memory ep = tokenomics.getEpochPoint(lastPoint);
+            // Get the unit points of the last epoch
+            UnitPoint[] memory up = new UnitPoint[](2);
+            (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
+
+            // Calculate rewards based on the points information
+            rewards[0] = (ep.totalDonationsETH * up[0].rewardUnitFraction) / 100;
+            rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
+            rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
+            uint256 accountRewards = rewards[0] + rewards[1];
+            // Calculate top-ups based on the points information
+            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
+            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
+            topUps[2] = (ep.totalTopUpsOLAS * ep.maxBondFraction) / 100;
+            uint256 accountTopUps = topUps[0] + topUps[1];
+
+            // Rewards and top-ups must not be zero
+            assertGt(accountRewards, 0);
+            assertGt(accountTopUps, 0);
+            assertGt(rewards[2], 0);
+            // maxBond must not be zero
+            assertGt(topUps[2], 0);
+            // Other epoch point values must not be zero as well
+            assertGt(ep.idf, 0);
+            assertGt(ep.devsPerCapital, 0);
+            assertGt(ep.endTime, 0);
+
+            // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
+            assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());
+
+            uint256 balanceETH;
+            uint256 balanceOLAS;
+
+            // Get owners rewards and sum up all of them
+            // We have maxNumUnits components
+            unitTypes[0] = 0;
+            for (uint256 j = 0; j < numServices; ++j) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = componentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
+                unitIds[0] = j + 1;
+                vm.prank(componentOwners[j]);
+                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+
+            // maxNumUnits agents
+            unitTypes[0] = 1;
+            for (uint256 j = 0; j < numServices; j++) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = agentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
+                unitIds[0] = j + 1;
+                vm.prank(agentOwners[j]);
+                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+
+            // Check the ETH and OLAS balance after receiving incentives
+            if (balanceETH > accountRewards) {
+                balanceETH -= accountRewards;
+            } else {
+                balanceETH = accountRewards - balanceETH;
+            }
+            assertLt(balanceETH, deltaMaxNumUnits);
+
+            // OLAS balance could be zero when the serviceOwner veOLAS balance is less than the required top-up threshold
+            if (balanceOLAS > 0) {
+                if (balanceOLAS > accountTopUps) {
+                    balanceOLAS -= accountTopUps;
+                } else {
+                    balanceOLAS = accountTopUps - balanceOLAS;
+                }
+                assertLt(balanceOLAS, deltaMaxNumUnits);
+            } else {
+                assertLt(ve.getVotes(serviceOwner), tokenomics.veOLASThreshold());
+            }
+
+            // Sum up the global round-off error
+            globalRoundOffETH += balanceETH;
+            globalRoundOffOLAS += balanceOLAS;
+        }
+        assertLt(globalRoundOffETH, globalDeltaMaxNumUnits);
+        assertLt(globalRoundOffOLAS, globalDeltaMaxNumUnits);
     }
 }

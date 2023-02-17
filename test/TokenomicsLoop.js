@@ -10,6 +10,9 @@ describe("Tokenomics integration", async () => {
     const initialMint = "1" + "0".repeat(5) + decimals;
     // Supply amount for the bonding product
     const supplyProductOLAS =  "20" + decimals;
+    const oneWeek = 86400 * 7;
+    const oneYear = 365 * 24 * 3600;
+    const fourYears = 4 * oneYear;
 
     let erc20Token;
     let olaFactory;
@@ -37,7 +40,7 @@ describe("Tokenomics integration", async () => {
     let gnosisSafeProxyFactory;
     let defaultCallbackHandler;
     let router;
-    let epochLen = 1000;
+    let epochLen = oneWeek;
     let vesting = 60 * 60 * 24;
 
     const componentHash = "0x" + "9".repeat(64);
@@ -51,9 +54,11 @@ describe("Tokenomics integration", async () => {
     const configHash1 = "0x" + "7".repeat(64);
     const configHash2 = "0x" + "8".repeat(64);
     const AddressZero = "0x" + "0".repeat(40);
-    const regBond = 1000;
-    const regDeposit = 1000;
-    const regFine = 500;
+    const regBond = ethers.utils.parseEther("1");
+    const twoRegBond = ethers.utils.parseEther("2");
+    const threeRegBond = ethers.utils.parseEther("3");
+    const regDeposit = ethers.utils.parseEther("1");
+    const regFine = ethers.utils.parseEther("0.5");
     const maxThreshold = 1;
     const hundredETHBalance = ethers.utils.parseEther("100");
     const twoHundredETHBalance = ethers.utils.parseEther("200");
@@ -67,9 +72,6 @@ describe("Tokenomics integration", async () => {
     const payload = "0x";
     const E18 = 10**18;
     const delta = 10;
-    const oneWeek = 7 * 86400;
-    const oneYear = 365 * 24 * 3600;
-    const fourYears = 4 * oneYear;
 
     let signers;
     let deployer;
@@ -145,19 +147,19 @@ describe("Tokenomics integration", async () => {
         tokenomics = await ethers.getContractAt("Tokenomics", tokenomicsProxy.address);
 
         // Correct depository address is missing here, it will be defined just one line below
-        treasury = await treasuryFactory.deploy(olas.address, deployer.address, tokenomics.address, deployer.address);
+        treasury = await treasuryFactory.deploy(olas.address, tokenomics.address, deployer.address, deployer.address);
         // Deploy generic bond calculator contract
         const GenericBondCalculator = await ethers.getContractFactory("GenericBondCalculator");
         genericBondCalculator = await GenericBondCalculator.deploy(olas.address, tokenomics.address);
         await genericBondCalculator.deployed();
         // Deploy depository contract
-        depository = await depositoryFactory.deploy(olas.address, treasury.address, tokenomics.address,
+        depository = await depositoryFactory.deploy(olas.address, tokenomics.address, treasury.address,
             genericBondCalculator.address);
         // Deploy dispenser contract
         dispenser = await dispenserFactory.deploy(tokenomics.address, treasury.address);
         // Change to the correct addresses
-        await tokenomics.changeManagers(AddressZero, treasury.address, depository.address, dispenser.address);
-        await treasury.changeManagers(AddressZero, AddressZero, depository.address, dispenser.address);
+        await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
+        await treasury.changeManagers(AddressZero, depository.address, dispenser.address);
 
         // Airdrop from the deployer :)
         await dai.mint(deployer.address, initialMint);
@@ -298,9 +300,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId, [agentInstances[0], agentInstances[1]],
-                agentIds[0], {value: 2 * regBond});
+                agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -345,9 +347,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId, [agentInstances[0], agentInstances[1]],
-                agentIds[0], {value: 2 * regBond});
+                agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -396,9 +398,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1], agentInstances[2]], agentIds[0], {value: 3 * regBond});
+                [agentInstances[0], agentInstances[1], agentInstances[2]], agentIds[0], {value: threeRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[3], agentInstances[4]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -446,9 +448,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -606,7 +608,7 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(serviceOwner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(serviceOwner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2]],
                 agentIds[1], {value: regBond});
 
@@ -730,7 +732,7 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(serviceOwner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(serviceOwner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2]],
                 agentIds[1], {value: regBond});
 
@@ -916,11 +918,11 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 1, [agentInstances[0]],
                 agentIds[0], {value: regBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2,
-                [agentInstances[1], agentInstances[2]], agentIds[1], {value: 2 * regBond});
+                [agentInstances[1], agentInstances[2]], agentIds[1], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 3, [agentInstances[3]],
                 agentIds[2], {value: regBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 4,
-                [agentInstances[4], agentInstances[5]], agentIds[3], {value: 2 * regBond});
+                [agentInstances[4], agentInstances[5]], agentIds[3], {value: twoRegBond});
 
             // Deploy the service
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -1160,11 +1162,11 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 1, [agentInstances[0]],
                 agentIds[0], {value: regBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2,
-                [agentInstances[1], agentInstances[2]], agentIds[1], {value: 2 * regBond});
+                [agentInstances[1], agentInstances[2]], agentIds[1], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 3, [agentInstances[3]],
                 agentIds[2], {value: regBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 4,
-                [agentInstances[4], agentInstances[5]], agentIds[3], {value: 2 * regBond});
+                [agentInstances[4], agentInstances[5]], agentIds[3], {value: twoRegBond});
 
             // Deploy the service
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -1399,9 +1401,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -1558,7 +1560,6 @@ describe("Tokenomics integration", async () => {
             // Send service revenues for the next epoch
             await treasury.depositServiceDonationsETH([1, 2], [doubleRegServiceRevenue, regServiceRevenue],
                 {value: tripleRegServiceRevenue});
-
 
             // !!!!!!!!!!!!!!!!!!    EPOCH 2    !!!!!!!!!!!!!!!!!!!!
             await tokenomics.checkpoint();
@@ -1732,9 +1733,9 @@ describe("Tokenomics integration", async () => {
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, serviceId, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).activateRegistration(owner, 2, {value: regDeposit});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, serviceId,
-                [agentInstances[0], agentInstances[1]], agentIds[0], {value: 2 * regBond});
+                [agentInstances[0], agentInstances[1]], agentIds[0], {value: twoRegBond});
             await serviceRegistry.connect(serviceManager).registerAgents(operator, 2, [agentInstances[2], agentInstances[3]],
-                agentIds[1], {value: 2 * regBond});
+                agentIds[1], {value: twoRegBond});
 
             // Deploy services
             await serviceRegistry.changeMultisigPermission(gnosisSafeMultisig.address, true);
@@ -2043,7 +2044,7 @@ describe("Tokenomics integration", async () => {
             expect(balanceOperator).to.equal(regBond - regFine);
 
             // The overall slashing balance must be equal to regFine
-            const slashedFunds = Number(await serviceRegistry.slashedFunds());
+            const slashedFunds = await serviceRegistry.slashedFunds();
             expect(slashedFunds).to.equal(regFine);
 
             // Drain slashed funds by the drainer (treasury)
@@ -2063,13 +2064,12 @@ describe("Tokenomics integration", async () => {
 
             // Try to drain again
             // First one to check the drained amount to be zero with a static call
-            expect(await treasury.connect(deployer).callStatic.drainServiceSlashedFunds()).to.equal(0);
-            // Then do the real drain and make sure nothing has changed or failed
-            await treasury.connect(deployer).callStatic.drainServiceSlashedFunds();
-            expect(await serviceRegistry.slashedFunds()).to.equal(0);
+            await expect(
+                treasury.connect(deployer).drainServiceSlashedFunds()
+            ).to.be.revertedWithCustomError(treasury, "AmountLowerThan");
 
             // Check the treasury balances
-            const ETHOwned = Number(await treasury.ETHOwned());
+            const ETHOwned = await treasury.ETHOwned();
             expect(ETHOwned).to.equal(regFine);
             const balanceTreasury = await ethers.provider.getBalance(treasury.address);
             expect(balanceTreasury).to.equal(regFine);

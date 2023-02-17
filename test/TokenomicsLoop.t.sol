@@ -3,21 +3,24 @@ pragma solidity 0.8.17;
 import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
 import "forge-std/Test.sol";
+import {ZuniswapV2Factory} from "zuniswapv2/ZuniswapV2Factory.sol";
+import {ZuniswapV2Router} from "zuniswapv2/ZuniswapV2Router.sol";
+import {ZuniswapV2Pair} from "zuniswapv2/ZuniswapV2Pair.sol";
 import "./utils/Utils.sol";
-import "../lib/autonolas-governance/contracts/OLAS.sol";
-import "../lib/autonolas-governance/contracts/veOLAS.sol";
-import "../lib/autonolas-registries/contracts/AgentRegistry.sol";
-import "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
-import "../lib/autonolas-registries/contracts/RegistriesManager.sol";
-import "../lib/autonolas-registries/contracts/ServiceRegistry.sol";
-import "../lib/autonolas-registries/contracts/ServiceManager.sol";
-import "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
-import "../lib/autonolas-tokenomics/contracts/Depository.sol";
-import "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
-import "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
-import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
-import "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
-import "../lib/autonolas-tokenomics/contracts/Treasury.sol";
+import "autonolas-governance/OLAS.sol";
+import "autonolas-governance/veOLAS.sol";
+import "autonolas-registries/AgentRegistry.sol";
+import "autonolas-registries/ComponentRegistry.sol";
+import "autonolas-registries/RegistriesManager.sol";
+import "autonolas-registries/ServiceRegistry.sol";
+import "autonolas-registries/ServiceManager.sol";
+import "autonolas-registries/multisigs/GnosisSafeMultisig.sol";
+import "autonolas-tokenomics/Depository.sol";
+import "autonolas-tokenomics/Dispenser.sol";
+import "autonolas-tokenomics/GenericBondCalculator.sol";
+import "autonolas-tokenomics/Tokenomics.sol";
+import "autonolas-tokenomics/TokenomicsProxy.sol";
+import "autonolas-tokenomics/Treasury.sol";
 
 contract BaseSetup is Test {
     Utils internal utils;
@@ -37,6 +40,8 @@ contract BaseSetup is Test {
     Treasury internal treasury;
     Tokenomics internal tokenomics;
     GenericBondCalculator internal genericBondCalculator;
+    ZuniswapV2Factory internal factory;
+    ZuniswapV2Router internal router;
 
     uint32[] internal emptyArray32;
     uint32[] internal agent1Components;
@@ -58,11 +63,14 @@ contract BaseSetup is Test {
     uint256[] internal donationServiceAmounts;
     uint256[] internal unitTypes;
     uint256[] internal unitIds;
+    uint256[] internal productIds;
+    uint256[] internal bondIds;
     address internal deployer;
     address internal serviceOwner;
     address internal operator;
-    uint256 internal initialMint = 50_000_000e18;
-    uint256 internal largeApproval = 1_000_000_000e18;
+    address internal pair;
+    uint256 internal initialMint = 50_000_000 ether;
+    uint256 internal largeApproval = 1_000_000_000 ether;
     uint256 internal epochLen = 1 weeks;
     uint256 internal oneYear = 365 * 24 * 3600;
     uint32 internal threshold = 2;
@@ -75,6 +83,17 @@ contract BaseSetup is Test {
     uint256 internal globalRoundOffETH;
     uint256 internal globalRoundOffOLAS;
     uint256 internal maxNumUnits = 50;
+    uint256 internal initialLiquidity;
+    uint256 internal amountOLAS = 5_000_000 ether;
+    uint256 internal amountDAI = 5_000_000 ether;
+    uint256 internal minAmountOLAS = 5_00 ether;
+    uint256 internal minAmountDAI = 5_00 ether;
+    uint256 internal supplyProductOLAS =  2_000 ether;
+    uint256 internal defaultPriceLP = 2 ether;
+    uint256 internal vesting = 10 days;
+    uint256 internal priceLP;
+    uint256 internal productId;
+    uint256 internal bondId;
 
     bytes32 internal unitHash = 0x9999999999999999999999999999999999999999999999999999999999999999;
     bytes internal payload;
@@ -145,10 +164,11 @@ contract BaseSetup is Test {
 
         // Deploying tokens contracts
         olas = new OLAS();
-        olas.mint(deployer, initialMint);
+        olas.mint(address(deployer), initialMint);
+        olas.mint(address(this), initialMint);
         olas.mint(serviceOwner, initialMint);
         dai = new OLAS();
-        dai.mint(deployer, initialMint);
+        dai.mint(address(this), initialMint);
         ve = new veOLAS(address(olas), "Voting Escrow OLAS", "veOLAS");
 
         // Deploying tokenomics contracts
@@ -176,7 +196,39 @@ contract BaseSetup is Test {
         // Set treasury contract as a minter for OLAS
         olas.changeMinter(address(treasury));
 
-        // TODO Create OLAS-DAI pair
+        // Deploy factory and router
+        factory = new ZuniswapV2Factory();
+        router = new ZuniswapV2Router(address(factory));
+
+        // Create LP token
+        factory.createPair(address(olas), address(dai));
+        // Get the LP token address
+        pair = factory.pairs(address(olas), address(dai));
+
+        // Add liquidity
+        olas.approve(address(router), largeApproval);
+        dai.approve(address(router), largeApproval);
+
+        (, , initialLiquidity) = router.addLiquidity(
+            address(dai),
+            address(olas),
+            amountDAI,
+            amountOLAS,
+            amountDAI,
+            amountOLAS,
+            address(this)
+        );
+
+        // Enable LP token in treasury
+        treasury.enableToken(pair);
+        priceLP = depository.getCurrentPriceLP(pair);
+
+        // Give a large approval for treasury
+        vm.prank(deployer);
+        ZuniswapV2Pair(pair).approve(address(treasury), largeApproval);
+
+        // Transfer LP tokens to deployer
+        ZuniswapV2Pair(pair).transfer(deployer, 1_000_000 ether);
     }
 }
 
@@ -190,8 +242,6 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param amount0 Amount to donate to the first service.
     /// @param amount1 Amount to donate to the second service.
     function testTokenomicsBasic(uint64 amount0, uint64 amount1) public {
-        // TODO Add liquidity to the LP token, create a bonding program and deposit from epoch to epoch
-
         // Amounts must be bigger than a meaningful amount
         vm.assume(amount0 > treasury.minAcceptedETH());
         vm.assume(amount1 > treasury.minAcceptedETH());
@@ -252,13 +302,34 @@ contract TokenomicsLoopTest is BaseSetup {
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
+        // Move at least epochLen seconds in time
+        vm.warp(block.timestamp + epochLen);
+        // Skip the first epoch to apply tokenomics incentives changes
+        tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
-        uint256 endTime = 550 weeks;
+        uint256 endTime = 1 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
+            // Create a bond product
+            productId = depository.create(pair, priceLP, supplyProductOLAS, vesting);
+
+            // Deposit LP token for OLAS using half of the product supply considering that there will be the IDF multiplier
+            vm.prank(deployer);
+            (, , bondId) = depository.deposit(productId, supplyProductOLAS / 2);
+
+            // Check matured bonds up until the last created bond Id
+            delete bondIds;
+            (bondIds, ) = depository.getBonds(deployer, true);
+
+            // Redeem matured bonds
+            if (bondIds.length > 0) {
+                vm.prank(deployer);
+                depository.redeem(bondIds);
+            }
+
             // Send donations to services from the deployer
             (serviceAmounts[0], serviceAmounts[1]) = (amount0, amount1);
             // Set deployer balance to cover the max of two donations
@@ -276,7 +347,7 @@ contract TokenomicsLoopTest is BaseSetup {
             uint256 lastPoint = tokenomics.epochCounter() - 1;
 
             // Get the epoch point of the last epoch
-            EpochPoint memory ep = tokenomics.getEpochPoint(lastPoint);
+            EpochPoint memory ep = tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             UnitPoint[] memory up = new UnitPoint[](2);
             (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
@@ -310,8 +381,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = componentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(componentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(componentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, componentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -323,8 +401,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = agentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(agentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(agentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(agentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, agentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -355,6 +440,12 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         assertLt(globalRoundOffETH, globalDelta);
         assertLt(globalRoundOffOLAS, globalDelta);
+
+        // Move four more weeks in time
+        vm.warp(block.timestamp + 4 weeks);
+        // Check that all bond products are closed
+        productIds = depository.getProducts(true);
+        assertEq(productIds.length, 0);
     }
 
     /// @dev Tokenomics with changing number of services throughout 550 epochs.
@@ -428,6 +519,10 @@ contract TokenomicsLoopTest is BaseSetup {
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
+        // Move at least epochLen seconds in time
+        vm.warp(block.timestamp + epochLen);
+        // Skip the first epoch to apply tokenomics incentives changes
+        tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](3);
@@ -460,7 +555,7 @@ contract TokenomicsLoopTest is BaseSetup {
             uint256 lastPoint = tokenomics.epochCounter() - 1;
 
             // Get the epoch point of the last epoch
-            EpochPoint memory ep = tokenomics.getEpochPoint(lastPoint);
+            EpochPoint memory ep = tokenomics.mapEpochTokenomics(lastPoint);
             // Get the unit points of the last epoch
             UnitPoint[] memory up = new UnitPoint[](2);
             (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
@@ -484,7 +579,9 @@ contract TokenomicsLoopTest is BaseSetup {
             assertGt(topUps[2], 0);
             // Other epoch point values must not be zero as well
             assertGt(ep.idf, 0);
-            assertGt(ep.devsPerCapital, 0);
+            assertGt(tokenomics.devsPerCapital(), 0);
+            assertGt(tokenomics.componentWeight(), 0);
+            assertGt(tokenomics.agentWeight(), 0);
             assertGt(ep.endTime, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
@@ -501,8 +598,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = componentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(componentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(componentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, componentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
             }
@@ -514,8 +618,15 @@ contract TokenomicsLoopTest is BaseSetup {
                 uint256 balanceBeforeClaimETH = agentOwners[j].balance;
                 uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
                 unitIds[0] = j + 1;
-                vm.prank(agentOwners[j]);
-                dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(agentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(agentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, agentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
                 balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
                 balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
             }

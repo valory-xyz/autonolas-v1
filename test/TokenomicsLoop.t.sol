@@ -1,26 +1,26 @@
 pragma solidity 0.8.18;
 
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
-import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
-import "forge-std/Test.sol";
+import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
+import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
+import {Test} from "forge-std/Test.sol";
+import {Utils} from "./utils/Utils.sol";
 import {ZuniswapV2Factory} from "zuniswapv2/ZuniswapV2Factory.sol";
 import {ZuniswapV2Router} from "zuniswapv2/ZuniswapV2Router.sol";
 import {ZuniswapV2Pair} from "zuniswapv2/ZuniswapV2Pair.sol";
-import "./utils/Utils.sol";
-import "../lib/autonolas-governance/contracts/OLAS.sol";
-import "../lib/autonolas-governance/contracts/veOLAS.sol";
-import "../lib/autonolas-registries/contracts/AgentRegistry.sol";
-import "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
-import "../lib/autonolas-registries/contracts/RegistriesManager.sol";
+import {OLAS} from "../lib/autonolas-governance/contracts/OLAS.sol";
+import {veOLAS} from "../lib/autonolas-governance/contracts/veOLAS.sol";
+import {AgentRegistry} from "../lib/autonolas-registries/contracts/AgentRegistry.sol";
+import {ComponentRegistry} from "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
+import {RegistriesManager} from "../lib/autonolas-registries/contracts/RegistriesManager.sol";
 import "../lib/autonolas-registries/contracts/ServiceRegistry.sol";
-import "../lib/autonolas-registries/contracts/ServiceManager.sol";
-import "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
-import "../lib/autonolas-tokenomics/contracts/Depository.sol";
-import "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
+import {ServiceManager} from "../lib/autonolas-registries/contracts/ServiceManager.sol";
+import {GnosisSafeMultisig} from "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
+import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
+import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
 import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
 import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
-import "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
-import "../lib/autonolas-tokenomics/contracts/Treasury.sol";
+import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
+import {Treasury} from "../lib/autonolas-tokenomics/contracts/Treasury.sol";
 
 contract BaseSetup is Test {
     Utils internal utils;

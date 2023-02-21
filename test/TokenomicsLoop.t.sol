@@ -71,7 +71,7 @@ contract BaseSetup is Test {
     address internal pair;
     uint256 internal initialMint = 50_000_000 ether;
     uint256 internal largeApproval = 1_000_000_000 ether;
-    uint256 internal epochLen = 1 weeks;
+    uint256 internal epochLen = 30 days;
     uint256 internal oneYear = 365 * 24 * 3600;
     uint32 internal threshold = 2;
     uint96 internal regBond = 1000;
@@ -304,6 +304,8 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
         // Skip the first epoch to apply tokenomics incentives changes
         tokenomics.checkpoint();
 
@@ -339,6 +341,8 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Move at least epochLen seconds in time
             vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
 
             // Start new epoch and calculate tokenomics parameters and rewards
             tokenomics.checkpoint();
@@ -521,6 +525,8 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
         // Skip the first epoch to apply tokenomics incentives changes
         tokenomics.checkpoint();
 
@@ -547,6 +553,8 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Move at least epochLen seconds in time
             vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
 
             // Start new epoch and calculate tokenomics parameters and rewards
             tokenomics.checkpoint();
@@ -730,11 +738,14 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
         // Skip the first epoch to apply tokenomics incentives changes
         tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
         uint256[] memory topUps = new uint256[](3);
+        uint256 effectiveBond = tokenomics.effectiveBond();
 
         // Run for more than 10 years (more than 52 weeks in a year)
         uint256 endTime = 550 weeks;
@@ -756,6 +767,8 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Move at least epochLen seconds in time
             vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
 
             // Start new epoch and calculate tokenomics parameters and rewards
             tokenomics.checkpoint();
@@ -846,6 +859,9 @@ contract TokenomicsLoopTest is BaseSetup {
                 balanceETH = accountRewards - balanceETH;
             }
             assertLt(balanceETH, deltaMaxNumUnits);
+
+            // Check that the effective bond has not changed
+            assertEq(effectiveBond, tokenomics.effectiveBond());
 
             // Sum up the global round-off error
             globalRoundOffETH += balanceETH;

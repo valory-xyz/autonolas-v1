@@ -11,6 +11,7 @@ describe("Tokenomics integration", async () => {
     // Supply amount for the bonding product
     const supplyProductOLAS =  "20" + decimals;
     const oneWeek = 86400 * 7;
+    const oneMonth = 86400 * 30;
     const oneYear = 365 * 24 * 3600;
     const fourYears = 4 * oneYear;
 
@@ -40,7 +41,7 @@ describe("Tokenomics integration", async () => {
     let gnosisSafeProxyFactory;
     let defaultCallbackHandler;
     let router;
-    let epochLen = oneWeek;
+    let epochLen = oneMonth;
     let vesting = oneWeek;
 
     const componentHash = "0x" + "9".repeat(64);

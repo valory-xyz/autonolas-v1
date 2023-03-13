@@ -17,4 +17,4 @@ COPY hardhat.config.js .
 RUN npm run compile
 RUN npx hardhat deploy
 
-CMD [ "npx", "hardhat", "node", "--hostname", "0.0.0.0" ]
+CMD ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]

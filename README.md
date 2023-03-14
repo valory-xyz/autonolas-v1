@@ -59,8 +59,8 @@ Run the code with its deployment on the node:
 npx hardhat node
 ```
 
-### Internal audit
-The audit is provided internally as development matures. The latest audit report for a specific subproject can be found here:
+### Audits
+The audit is provided as development matures. The latest audit report for a specific subproject can be found here:
 - [Governance and Token audit](https://github.com/valory-xyz/autonolas-governance/blob/main/audits);
 - [Agent Services Functionality audit](https://github.com/valory-xyz/autonolas-registries/blob/main/audits);
 - [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits).
@@ -68,7 +68,7 @@ The audit is provided internally as development matures. The latest audit report
 The initial internal audit of the overall `autonolas-v1` pre-split repository is available here:
 - [Autonolas internal audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits).
 
-The initial external audit of the `autonolas-v1` pre-split repository is available here:
+The initial external review of the `autonolas-v1` pre-split repository is available here:
 - [Autonolas external audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits/Valory_Review_Final.pdf)
 
 ### Linters

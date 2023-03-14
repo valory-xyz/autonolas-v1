@@ -1,12 +1,12 @@
-# On-chain Protocol
+# Autonolas-v1
 
 ## Introduction
 
-This repository contains the entirety of contracts in form of cloned submodules, making up our on-chain protocol.
+This repository contains the entirety of contracts in form of cloned submodules, making up the full Autonolas on-chain protocol.
 
 A graphical overview is available here:
 
-![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v2.png?raw=true)
+![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v4.png?raw=true)
 
 The architecture is broken up into three main areas:
 
@@ -14,23 +14,20 @@ The architecture is broken up into three main areas:
 2. [Agent Services Functionality](https://github.com/valory-xyz/autonolas-registries);
 3. [Tokenomics](https://github.com/valory-xyz/autonolas-tokenomics).
 
-❗ Known issues: https://github.com/valory-xyz/autonolas-v1/issues/102
-
 ![launch](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/LaunchTimeline.png?raw=true)
 
 ## Development
 
 ### Prerequisites
 - This repository follows the standard [`Hardhat`](https://hardhat.org/tutorial/) development process.
-- The code is written on Solidity `0.8.15` and `0.8.16`.
-- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.10` and npx/npm `6.14.11` and node `v12.22.0`).
+- The code is written on Solidity `0.8.15`, `0.8.18` and `0.8.19`.
+- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `8.13.2` and node `v18.6.0`).
+- [`Foundry`](https://book.getfoundry.sh/) is required to run the foundry tests.
 
 ### Install the dependencies
-This repository utilizes submodules. Please clone with `--recursive` option.
-
-The dependency list is managed by the `package.json` file,
-and the setup parameters are stored in the `hardhat.config.js` file.
-Simply run the follwing command to install the project:
+The project has submodules to get the dependencies. Make sure you run `git clone --recursive` or init the submodules yourself.
+The dependency list is managed by the `package.json` file, and the setup parameters are stored in the `hardhat.config.js` file.
+Simply run the following command to install the project:
 ```
 yarn install
 ```
@@ -49,17 +46,21 @@ Compile the code:
 ```
 npm run compile
 ```
-Run the tests:
+Run tests with Hardhat:
 ```
 npx hardhat test
+```
+Run tests with Foundry:
+```
+forge test --hh -vv
 ```
 Run the code with its deployment on the node:
 ```
 npx hardhat node
 ```
 
-### Internal audit
-The audit is provided internally as development matures. The latest audit report for a specific subproject can be found here:
+### Audits
+The audit is provided as development matures. The latest audit report for a specific subproject can be found here:
 - [Governance and Token audit](https://github.com/valory-xyz/autonolas-governance/blob/main/audits);
 - [Agent Services Functionality audit](https://github.com/valory-xyz/autonolas-registries/blob/main/audits);
 - [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits).
@@ -67,7 +68,7 @@ The audit is provided internally as development matures. The latest audit report
 The initial internal audit of the overall `autonolas-v1` pre-split repository is available here:
 - [Autonolas internal audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits).
 
-The initial external audit of the `autonolas-v1` pre-split repository is available here:
+The initial external review of the `autonolas-v1` pre-split repository is available here:
 - [Autonolas external audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits/Valory_Review_Final.pdf)
 
 ### Linters
@@ -76,11 +77,17 @@ The initial external audit of the `autonolas-v1` pre-split repository is availab
 
 
 ### Github workflows
-The PR process is managed by github workflows, where the code undergoes
-several steps in order to be verified. Those include:
+The PR process is managed by github workflows, where the code undergoes several steps in order to be verified. Those include:
 - code installation
 - running linters
 - running tests
+
+
+## Deployed Protocol
+The list of mainnet addresses can be found in the following locations:
+- [Governance and Token addresses](https://github.com/valory-xyz/autonolas-governance/blob/main/docs/mainnet_addresses.json);
+- [Agent Services Functionality addresses](https://github.com/valory-xyz/autonolas-registries/blob/main/docs/mainnet_addresses.json);
+- [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/mainnet_addresses.json).
 
 
 ### Staging chain

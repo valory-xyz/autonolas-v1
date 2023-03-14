@@ -1,26 +1,26 @@
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
-import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
-import "forge-std/Test.sol";
+import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
+import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
+import {Test} from "forge-std/Test.sol";
+import {Utils} from "./utils/Utils.sol";
 import {ZuniswapV2Factory} from "zuniswapv2/ZuniswapV2Factory.sol";
 import {ZuniswapV2Router} from "zuniswapv2/ZuniswapV2Router.sol";
 import {ZuniswapV2Pair} from "zuniswapv2/ZuniswapV2Pair.sol";
-import "./utils/Utils.sol";
-import "autonolas-governance/OLAS.sol";
-import "autonolas-governance/veOLAS.sol";
-import "autonolas-registries/AgentRegistry.sol";
-import "autonolas-registries/ComponentRegistry.sol";
-import "autonolas-registries/RegistriesManager.sol";
-import "autonolas-registries/ServiceRegistry.sol";
-import "autonolas-registries/ServiceManager.sol";
-import "autonolas-registries/multisigs/GnosisSafeMultisig.sol";
-import "autonolas-tokenomics/Depository.sol";
-import "autonolas-tokenomics/Dispenser.sol";
-import "autonolas-tokenomics/GenericBondCalculator.sol";
-import "autonolas-tokenomics/Tokenomics.sol";
-import "autonolas-tokenomics/TokenomicsProxy.sol";
-import "autonolas-tokenomics/Treasury.sol";
+import {OLAS} from "../lib/autonolas-governance/contracts/OLAS.sol";
+import {veOLAS} from "../lib/autonolas-governance/contracts/veOLAS.sol";
+import {AgentRegistry} from "../lib/autonolas-registries/contracts/AgentRegistry.sol";
+import {ComponentRegistry} from "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
+import {RegistriesManager} from "../lib/autonolas-registries/contracts/RegistriesManager.sol";
+import "../lib/autonolas-registries/contracts/ServiceRegistry.sol";
+import {ServiceManager} from "../lib/autonolas-registries/contracts/ServiceManager.sol";
+import {GnosisSafeMultisig} from "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
+import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
+import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
+import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
+import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
+import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
+import {Treasury} from "../lib/autonolas-tokenomics/contracts/Treasury.sol";
 
 contract BaseSetup is Test {
     Utils internal utils;
@@ -71,7 +71,7 @@ contract BaseSetup is Test {
     address internal pair;
     uint256 internal initialMint = 50_000_000 ether;
     uint256 internal largeApproval = 1_000_000_000 ether;
-    uint256 internal epochLen = 1 weeks;
+    uint256 internal epochLen = 30 days;
     uint256 internal oneYear = 365 * 24 * 3600;
     uint32 internal threshold = 2;
     uint96 internal regBond = 1000;
@@ -304,6 +304,8 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
         // Skip the first epoch to apply tokenomics incentives changes
         tokenomics.checkpoint();
 
@@ -339,6 +341,8 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Move at least epochLen seconds in time
             vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
 
             // Start new epoch and calculate tokenomics parameters and rewards
             tokenomics.checkpoint();
@@ -521,6 +525,8 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
         // Skip the first epoch to apply tokenomics incentives changes
         tokenomics.checkpoint();
 
@@ -547,6 +553,8 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Move at least epochLen seconds in time
             vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
 
             // Start new epoch and calculate tokenomics parameters and rewards
             tokenomics.checkpoint();
@@ -580,8 +588,6 @@ contract TokenomicsLoopTest is BaseSetup {
             // Other epoch point values must not be zero as well
             assertGt(ep.idf, 0);
             assertGt(tokenomics.devsPerCapital(), 0);
-            assertGt(tokenomics.componentWeight(), 0);
-            assertGt(tokenomics.agentWeight(), 0);
             assertGt(ep.endTime, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
@@ -657,5 +663,209 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         assertLt(globalRoundOffETH, globalDeltaMaxNumUnits);
         assertLt(globalRoundOffOLAS, globalDeltaMaxNumUnits);
+    }
+
+    /// @dev Tokenomics with changing number of services throughout 550 epochs and all the zero top-up fractions.
+    /// @notice Assume that no single donation is bigger than 2^64 - 1.
+    /// @param donationAmount Amount to donate to the service.
+    /// @param numServices Number of services to donate to.
+    function testTokenomicsChangingNumberOfServicesZeroTopUps(uint64 donationAmount, uint256 numServices) public {
+        // Donation amount must be bigger than a meaningful amount
+        vm.assume(donationAmount > treasury.minAcceptedETH());
+        // The number of services is within the max number range
+        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+
+        // Create components and agents based on them
+        componentRegistry.changeManager(address(registriesManager));
+        agentRegistry.changeManager(address(registriesManager));
+        vm.startPrank(address(registriesManager));
+        for (uint256 i = 0; i < numServices; ++i) {
+            componentRegistry.create(componentOwners[i], unitHash, emptyArray32);
+            agentDefaultComponents[0] = uint32(i + 1);
+            agentRegistry.create(agentOwners[i], unitHash, agentDefaultComponents);
+        }
+        vm.stopPrank();
+
+        AgentParams[] memory agentParams = new AgentParams[](1);
+        agentParams[0].slots = 1;
+        agentParams[0].bond = regBond;
+        // Create maxNumUnits services with 1 agent (consisting of one component) each
+        serviceRegistry.changeManager(address(serviceManager));
+        vm.startPrank(address(serviceManager));
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultAgentIds[0] = uint32(i + 1);
+            serviceRegistry.create(serviceOwner, unitHash, defaultAgentIds, agentParams, 1);
+        }
+        vm.stopPrank();
+
+        // Activate registration by service owners
+        vm.startPrank(serviceOwner);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            serviceManager.activateRegistration{value: regDeposit}(defaultServiceIds[0]);
+        }
+        vm.stopPrank();
+
+        // Register agent instances by the operator
+        vm.startPrank(operator);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            defaultAgentIds[0] = uint32(i + 1);
+            defaultAgentInstances[0] = agentOwners[i];
+            serviceManager.registerAgents{value: regBond}(defaultServiceIds[0], defaultAgentInstances, defaultAgentIds);
+        }
+        vm.stopPrank();
+
+        // Deploy services
+        serviceRegistry.changeMultisigPermission(address(gnosisSafeMultisig), true);
+        vm.startPrank(serviceOwner);
+        for (uint256 i = 0; i < numServices; ++i) {
+            defaultServiceIds[0] = i + 1;
+            serviceManager.deploy(defaultServiceIds[0], address(gnosisSafeMultisig), payload);
+        }
+        vm.stopPrank();
+
+        // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
+        vm.startPrank(serviceOwner);
+        olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
+        // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
+        // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
+        ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
+        vm.stopPrank();
+
+        // Set treasury reward fraction to be more than zero
+        tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0);
+        // Move at least epochLen seconds in time
+        vm.warp(block.timestamp + epochLen);
+        // Mine a next block to avoid a flash loan attack condition
+        vm.roll(block.number + 1);
+        // Skip the first epoch to apply tokenomics incentives changes
+        tokenomics.checkpoint();
+
+        uint256[] memory rewards = new uint256[](3);
+        uint256[] memory topUps = new uint256[](3);
+        uint256 effectiveBond = tokenomics.effectiveBond();
+
+        // Run for more than 10 years (more than 52 weeks in a year)
+        uint256 endTime = 550 weeks;
+        for (uint256 i = 0; i < endTime; i += epochLen) {
+            // Send donations to services from the deployer
+            donationServiceIds = new uint256[](numServices);
+            donationServiceAmounts = new uint256[](numServices);
+            // All services will receive the same amount
+            uint256 sumDonation;
+            for (uint256 j = 0; j < numServices; ++j) {
+                donationServiceIds[j] = j + 1;
+                donationServiceAmounts[j] = donationAmount + j;
+                sumDonation += donationServiceAmounts[j];
+            }
+            // Set deployer balance to cover the max donation
+            vm.deal(deployer, type(uint128).max);
+            vm.prank(deployer);
+            treasury.depositServiceDonationsETH{value: sumDonation}(donationServiceIds, donationServiceAmounts);
+
+            // Move at least epochLen seconds in time
+            vm.warp(block.timestamp + epochLen);
+            // Mine a next block to avoid a flash loan attack condition
+            vm.roll(block.number + 1);
+
+            // Start new epoch and calculate tokenomics parameters and rewards
+            tokenomics.checkpoint();
+
+            // Get the last settled epoch counter
+            uint256 lastPoint = tokenomics.epochCounter() - 1;
+
+            // Get the epoch point of the last epoch
+            EpochPoint memory ep = tokenomics.mapEpochTokenomics(lastPoint);
+            // Get the unit points of the last epoch
+            UnitPoint[] memory up = new UnitPoint[](2);
+            (up[0], up[1]) = (tokenomics.getUnitPoint(lastPoint, 0), tokenomics.getUnitPoint(lastPoint, 1));
+
+            // Calculate rewards based on the points information
+            rewards[0] = (ep.totalDonationsETH * up[0].rewardUnitFraction) / 100;
+            rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
+            rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
+            uint256 accountRewards = rewards[0] + rewards[1];
+            // Calculate top-ups based on the points information
+            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
+            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
+            topUps[2] = (ep.totalTopUpsOLAS * ep.maxBondFraction) / 100;
+            uint256 accountTopUps = topUps[0] + topUps[1];
+
+            // Rewards and top-ups must not be zero
+            assertGt(accountRewards, 0);
+            assertEq(accountTopUps, 0);
+            assertGt(rewards[2], 0);
+            // maxBond must not be zero
+            assertEq(topUps[2], 0);
+            // Other epoch point values must not be zero as well
+            assertGt(ep.idf, 0);
+            assertGt(tokenomics.devsPerCapital(), 0);
+            assertGt(ep.endTime, 0);
+
+            // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
+            assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());
+
+            uint256 balanceETH;
+            uint256 balanceOLAS;
+
+            // Get owners rewards and sum up all of them
+            // We have maxNumUnits components
+            unitTypes[0] = 0;
+            for (uint256 j = 0; j < numServices; ++j) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = componentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(componentOwners[j]);
+                unitIds[0] = j + 1;
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(componentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(componentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, componentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
+                balanceETH += componentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(componentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+
+            // maxNumUnits agents
+            unitTypes[0] = 1;
+            for (uint256 j = 0; j < numServices; j++) {
+                // Subtract the balance owners had before claiming incentives
+                uint256 balanceBeforeClaimETH = agentOwners[j].balance;
+                uint256 balanceBeforeClaimOLAS = olas.balanceOf(agentOwners[j]);
+                unitIds[0] = j + 1;
+                (uint256 ownerRewards, uint256 ownerTopUps) = tokenomics.getOwnerIncentives(agentOwners[j], unitTypes, unitIds);
+                if ((ownerRewards + ownerTopUps) > 0) {
+                    vm.prank(agentOwners[j]);
+                    dispenser.claimOwnerIncentives(unitTypes, unitIds);
+                }
+                // Check that the incentive view function and claim return same results
+                assertEq(ownerRewards, agentOwners[j].balance - balanceBeforeClaimETH);
+                assertEq(ownerTopUps, olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS);
+                // Sum up incentives
+                balanceETH += agentOwners[j].balance - balanceBeforeClaimETH;
+                balanceOLAS += olas.balanceOf(agentOwners[j]) - balanceBeforeClaimOLAS;
+            }
+            assertEq(balanceOLAS, 0);
+
+            // Check the ETH and OLAS balance after receiving incentives
+            if (balanceETH > accountRewards) {
+                balanceETH -= accountRewards;
+            } else {
+                balanceETH = accountRewards - balanceETH;
+            }
+            assertLt(balanceETH, deltaMaxNumUnits);
+
+            // Check that the effective bond has not changed
+            assertEq(effectiveBond, tokenomics.effectiveBond());
+
+            // Sum up the global round-off error
+            globalRoundOffETH += balanceETH;
+        }
+        assertLt(globalRoundOffETH, globalDeltaMaxNumUnits);
     }
 }

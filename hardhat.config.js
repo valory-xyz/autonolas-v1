@@ -29,29 +29,29 @@ module.exports = {
     solidity: {
         compilers: [
             {
+                version: "0.8.19",
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 100,
+                    },
+                },
+            },
+            {
                 version: "0.8.15",
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 1000,
+                        runs: 100,
                     },
                 },
             },
             {
-                version: "0.8.17",
+                version: "0.8.18",
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 1000,
-                    },
-                },
-            },
-            {
-                version: "0.7.5",  // FixedPoint math from OlympusDAO, not compatible with 8.x
-                settings: {
-                    optimizer: {
-                        enabled: true,
-                        runs: 1000,
+                        runs: 100,
                     },
                 },
             },

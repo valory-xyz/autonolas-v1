@@ -90,7 +90,6 @@ contract BaseSetup is Test {
     uint256 internal minAmountDAI = 5_00 ether;
     uint256 internal supplyProductOLAS =  2_000 ether;
     uint256 internal defaultPriceLP = 2 ether;
-    uint256 internal vesting = 10 days;
     uint256 internal priceLP;
     uint256 internal productId;
     uint256 internal bondId;
@@ -241,10 +240,11 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @notice Assume that no single donation is bigger than 2^64 - 1.
     /// @param amount0 Amount to donate to the first service.
     /// @param amount1 Amount to donate to the second service.
-    function testTokenomicsBasic(uint64 amount0, uint64 amount1) public {
+    function testTokenomicsBasic(uint64 amount0, uint64 amount1, uint32 vesting) public {
         // Amounts must be bigger than a meaningful amount
         vm.assume(amount0 > treasury.minAcceptedETH());
         vm.assume(amount1 > treasury.minAcceptedETH());
+        vm.assume(vesting > 1 days && vesting < 4 * 365 days);
 
         // Create 4 components and 3 agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -313,7 +313,7 @@ contract TokenomicsLoopTest is BaseSetup {
         uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
-        uint256 endTime = 1 weeks;
+        uint256 endTime = 550 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
             // Create a bond product
             productId = depository.create(pair, priceLP, supplyProductOLAS, vesting);
@@ -321,6 +321,10 @@ contract TokenomicsLoopTest is BaseSetup {
             // Deposit LP token for OLAS using half of the product supply considering that there will be the IDF multiplier
             vm.prank(deployer);
             (, , bondId) = depository.deposit(productId, supplyProductOLAS / 2);
+
+            uint256[] memory productIds = new uint256[](1);
+            productIds[0] = productId;
+            depository.close(productIds);
 
             // Check matured bonds up until the last created bond Id
             delete bondIds;
@@ -445,9 +449,17 @@ contract TokenomicsLoopTest is BaseSetup {
         assertLt(globalRoundOffETH, globalDelta);
         assertLt(globalRoundOffOLAS, globalDelta);
 
-        // Move four more weeks in time
-        vm.warp(block.timestamp + 4 weeks);
-        // Check that all bond products are closed
+        // Move four years in time to cover the vesting for all possible bonds
+        vm.warp(block.timestamp + 4 * 365 days);
+
+        // Redeem all matured bonds
+        (bondIds, ) = depository.getBonds(deployer, true);
+        if (bondIds.length > 0) {
+            vm.prank(deployer);
+            depository.redeem(bondIds);
+        }
+
+        // Check that all bond products are not closed
         productIds = depository.getProducts(true);
         assertEq(productIds.length, 0);
     }

@@ -313,7 +313,7 @@ contract TokenomicsLoopTest is BaseSetup {
         uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
-        uint256 endTime = 1 weeks;
+        uint256 endTime = 100 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
             // Create a bond product
             productId = depository.create(pair, priceLP, supplyProductOLAS, vesting);
@@ -321,6 +321,10 @@ contract TokenomicsLoopTest is BaseSetup {
             // Deposit LP token for OLAS using half of the product supply considering that there will be the IDF multiplier
             vm.prank(deployer);
             (, , bondId) = depository.deposit(productId, supplyProductOLAS / 2);
+
+            uint256[] memory productIds = new uint256[](1);
+            productIds[0] = productId;
+            depository.close(productIds);
 
             // Check matured bonds up until the last created bond Id
             delete bondIds;
@@ -447,7 +451,7 @@ contract TokenomicsLoopTest is BaseSetup {
 
         // Move four more weeks in time
         vm.warp(block.timestamp + 4 weeks);
-        // Check that all bond products are closed
+        // Check that all bond products are not closed
         productIds = depository.getProducts(true);
         assertEq(productIds.length, 0);
     }

@@ -14,7 +14,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          token: ${{secrets.TOKEN}}
+
+      - name: Get a specific Node.js version such that hardhat does not hang periodically
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.15.0"
 
       # Install modules
       - name: Install modules
@@ -23,7 +27,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly
+          version: nightly-cc5637a979050c39b3d06bc4cc6134f0591ee8d0
 
       # Run linters
       - name: Run ESLint
@@ -74,7 +78,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-          token: ${{secrets.TOKEN}}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

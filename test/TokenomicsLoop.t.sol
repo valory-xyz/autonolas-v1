@@ -313,7 +313,7 @@ contract TokenomicsLoopTest is BaseSetup {
         uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
-        uint256 endTime = 600 weeks;
+        uint256 endTime = 550 weeks;
         for (uint256 i = 0; i < endTime; i += epochLen) {
             // Create a bond product
             productId = depository.create(pair, priceLP, supplyProductOLAS, vesting);

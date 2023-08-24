@@ -6,7 +6,7 @@ This repository contains the entirety of contracts in form of cloned submodules,
 
 A graphical overview is available here:
 
-![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v4.png?raw=true)
+![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v5.png?raw=true)
 
 The architecture is broken up into three main areas:
 

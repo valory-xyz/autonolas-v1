@@ -20,7 +20,7 @@ The architecture is broken up into three main areas:
 
 ### Prerequisites
 - This repository follows the standard [`Hardhat`](https://hardhat.org/tutorial/) development process.
-- The code is written on Solidity `0.8.15`, `0.8.18` and `0.8.19`.
+- The code is written on Solidity starting from the version `0.8.15`.
 - The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `8.13.2` and node `v18.6.0`).
 - [`Foundry`](https://book.getfoundry.sh/) is required to run the foundry tests.
 
@@ -84,12 +84,7 @@ The PR process is managed by github workflows, where the code undergoes several 
 
 
 ## Deployed Protocol
-The list of mainnet addresses can be found in the following locations:
-- [Governance and Token addresses](https://github.com/valory-xyz/autonolas-governance/blob/main/docs/mainnet_addresses.json);
-- [Agent Services Functionality addresses](https://github.com/valory-xyz/autonolas-registries/blob/main/docs/mainnet_addresses.json);
-- [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/mainnet_addresses.json).
-
-
-### Staging chain
-Merges into main trigger deployment into a freshly provisioned Ganache image. The node is accessible at https://staging.chain.autonolas.tech/ and the latest ABIs are accessible at https://staging.abi-server.autonolas.tech/.
-
+The list of mainnet addresses for different chains and their full contract configuration can be found in the following locations:
+- [Governance and Token addresses](https://github.com/valory-xyz/autonolas-governance/blob/main/docs/configuration.json);
+- [Agent Services Functionality addresses](https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json);
+- [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/configuration.json).

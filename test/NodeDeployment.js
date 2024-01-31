@@ -92,12 +92,15 @@ describe("Node deployment", function () {
         const gnosisSafeProxyFactory = await GnosisSafeProxyFactory.deploy();
         await gnosisSafeProxyFactory.deployed();
 
+        const bytecode = await ethers.provider.getCode(gnosisSafe.address);
+        const bytecodeHash = ethers.utils.keccak256(bytecode);
+
         const GnosisSafeMultisig = await ethers.getContractFactory("GnosisSafeMultisig");
         const gnosisSafeMultisig = await GnosisSafeMultisig.deploy(gnosisSafe.address, gnosisSafeProxyFactory.address);
         await gnosisSafeMultisig.deployed();
 
         const GnosisSafeSameAddressMultisig = await ethers.getContractFactory("GnosisSafeSameAddressMultisig");
-        const gnosisSafeSameAddressMultisig = await GnosisSafeSameAddressMultisig.deploy();
+        const gnosisSafeSameAddressMultisig = await GnosisSafeSameAddressMultisig.deploy(bytecodeHash);
         await gnosisSafeSameAddressMultisig.deployed();
 
         // Creating and updating a service

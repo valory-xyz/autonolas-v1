@@ -8,11 +8,13 @@ A graphical overview is available here:
 
 ![architecture](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/On-chain_architecture_v5.png?raw=true)
 
-The architecture is broken up into three main areas:
+The architecture is broken up into three main areas: Governance, Registries and Tokenomics,
+with the Solana lockbox being complimentary to them:
 
 1. [Governance and OLAS token](https://github.com/valory-xyz/autonolas-governance);
 2. [Agent Services Functionality](https://github.com/valory-xyz/autonolas-registries);
-3. [Tokenomics](https://github.com/valory-xyz/autonolas-tokenomics).
+3. [Tokenomics](https://github.com/valory-xyz/autonolas-tokenomics);
+4. [Lockbox Solana](https://github.com/valory-xyz/lockbox-solana).
 
 ![launch](https://github.com/valory-xyz/autonolas-v1/blob/main/docs/LaunchTimeline.png?raw=true)
 
@@ -21,7 +23,7 @@ The architecture is broken up into three main areas:
 ### Prerequisites
 - This repository follows the standard [`Hardhat`](https://hardhat.org/tutorial/) development process.
 - The code is written on Solidity starting from the version `0.8.15`.
-- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `8.13.2` and node `v18.6.0`).
+- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `10.1.0` and node `v18.6.0`).
 - [`Foundry`](https://book.getfoundry.sh/) is required to run the foundry tests.
 
 ### Install the dependencies
@@ -39,7 +41,9 @@ contracts
 deploy
 test
 ```
-This repository covers integration tests that combine functionality of other subprojects.
+
+This repository covers integration tests that combine functionality of other subprojects. Note that lockbox Solana
+is not the part of integration tests as it runs exclusively on Solana.
 
 ### Compile the code and run
 Compile the code:
@@ -63,7 +67,8 @@ npx hardhat node
 The audit is provided as development matures. The latest audit report for a specific subproject can be found here:
 - [Governance and Token audit](https://github.com/valory-xyz/autonolas-governance/blob/main/audits);
 - [Agent Services Functionality audit](https://github.com/valory-xyz/autonolas-registries/blob/main/audits);
-- [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits).
+- [Tokenomics audit](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/audits);
+- [Lockbox Solana audit](https://github.com/valory-xyz/lockbox-solana/blob/main/audits).
 
 The initial internal audit of the overall `autonolas-v1` pre-split repository is available here:
 - [Autonolas internal audit](https://github.com/valory-xyz/autonolas-v1/blob/main/audits).
@@ -87,4 +92,5 @@ The PR process is managed by github workflows, where the code undergoes several 
 The list of mainnet addresses for different chains and their full contract configuration can be found in the following locations:
 - [Governance and Token addresses](https://github.com/valory-xyz/autonolas-governance/blob/main/docs/configuration.json);
 - [Agent Services Functionality addresses](https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json);
-- [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/configuration.json).
+- [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/configuration.json);
+- [Lockbox Solana addresses](https://github.com/valory-xyz/lockbox-solana/blob/docs/configuration.json).

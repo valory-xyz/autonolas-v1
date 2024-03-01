@@ -23,7 +23,7 @@ with the Solana lockbox being complimentary to them:
 ### Prerequisites
 - This repository follows the standard [`Hardhat`](https://hardhat.org/tutorial/) development process.
 - The code is written on Solidity starting from the version `0.8.15`.
-- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `8.13.2` and node `v18.6.0`).
+- The standard versions of Node.js along with Yarn are required to proceed further (confirmed to work with Yarn `1.22.19` and npx/npm `10.1.0` and node `v18.6.0`).
 - [`Foundry`](https://book.getfoundry.sh/) is required to run the foundry tests.
 
 ### Install the dependencies

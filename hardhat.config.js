@@ -29,13 +29,14 @@ module.exports = {
     solidity: {
         compilers: [
             {
-                version: "0.8.23",
+                version: "0.8.25",
                 settings: {
                     optimizer: {
                         enabled: true,
                         runs: 100,
                     },
                 },
+                evmVersion: "cancun"
             },
             {
                 version: "0.5.16", // uniswap

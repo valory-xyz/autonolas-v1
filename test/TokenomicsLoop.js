@@ -14,6 +14,9 @@ describe("Tokenomics integration", async () => {
     const oneMonth = 86400 * 30;
     const oneYear = 365 * 24 * 3600;
     const fourYears = 4 * oneYear;
+    const maxNumClaimingEpochs = 10;
+    const maxNumStakingTargets = 100;
+    const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
     let erc20Token;
     let olaFactory;
@@ -54,7 +57,7 @@ describe("Tokenomics integration", async () => {
     const configHash = "0x" + "6".repeat(64);
     const configHash1 = "0x" + "7".repeat(64);
     const configHash2 = "0x" + "8".repeat(64);
-    const AddressZero = "0x" + "0".repeat(40);
+    const AddressZero = ethers.constants.AddressZero;
     const regBond = ethers.utils.parseEther("1");
     const twoRegBond = ethers.utils.parseEther("2");
     const threeRegBond = ethers.utils.parseEther("3");
@@ -156,7 +159,8 @@ describe("Tokenomics integration", async () => {
         depository = await depositoryFactory.deploy(olas.address, tokenomics.address, treasury.address,
             genericBondCalculator.address);
         // Deploy dispenser contract
-        dispenser = await dispenserFactory.deploy(tokenomics.address, treasury.address);
+        dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
+            retainer, maxNumClaimingEpochs, maxNumStakingTargets);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, depository.address, dispenser.address);

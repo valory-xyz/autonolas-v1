@@ -118,7 +118,6 @@ contract BaseSetup is Test {
         defaultAgentIds = new uint32[](1);
         unitTypes = new uint256[](1);
         unitIds = new uint256[](1);
-        retainer = bytes32(uint256(uint160(deployer)));
 
         utils = new Utils();
         users = utils.createUsers(20 + 2 * maxNumUnits);
@@ -126,6 +125,7 @@ contract BaseSetup is Test {
         vm.label(deployer, "Deployer");
         serviceOwner = users[3];
         operator = users[4];
+        retainer = bytes32(uint256(uint160(deployer)));
         // There are 2 agent instances in each service
         agentInstancesService1 = new address[](2);
         for (uint256 i = 0; i < 2; ++i) {
@@ -188,7 +188,7 @@ contract BaseSetup is Test {
         // Deploy depository contract
         depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
-        dispenser = new Dispenser(address(olas), deployer, deployer, deployer, retainer, 100, 100);
+        dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100);
 
         // Change contract addresses to the correct ones
         tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));

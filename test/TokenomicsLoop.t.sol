@@ -1,4 +1,4 @@
-pragma solidity =0.8.20;
+pragma solidity =0.8.25;
 
 import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
@@ -93,6 +93,7 @@ contract BaseSetup is Test {
     uint256 internal priceLP;
     uint256 internal productId;
     uint256 internal bondId;
+    bytes32 internal retainer;
 
     bytes32 internal unitHash = 0x9999999999999999999999999999999999999999999999999999999999999999;
     bytes internal payload;
@@ -117,6 +118,7 @@ contract BaseSetup is Test {
         defaultAgentIds = new uint32[](1);
         unitTypes = new uint256[](1);
         unitIds = new uint256[](1);
+        retainer = bytes32(uint256(uint160(deployer)));
 
         utils = new Utils();
         users = utils.createUsers(20 + 2 * maxNumUnits);
@@ -186,7 +188,7 @@ contract BaseSetup is Test {
         // Deploy depository contract
         depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
-        dispenser = new Dispenser(address(tokenomics), address(treasury));
+        dispenser = new Dispenser(address(olas), deployer, deployer, deployer, retainer, 100, 100);
 
         // Change contract addresses to the correct ones
         tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));
@@ -301,7 +303,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
+        tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition
@@ -534,7 +536,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
+        tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition
@@ -747,7 +749,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0);
+        tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition

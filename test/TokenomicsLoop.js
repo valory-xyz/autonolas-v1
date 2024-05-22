@@ -1945,7 +1945,7 @@ describe("Tokenomics integration", async () => {
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.06
             // idf = 1 + fKD = 1.06
-            const idf = await tokenomics.getIDF(currentPoint);
+            const idf = await tokenomics.getLastIDF();
             expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch
@@ -2279,7 +2279,7 @@ describe("Tokenomics integration", async () => {
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.06
             // idf = 1 + fKD = 1.06
-            const idf = await tokenomics.getIDF(currentPoint);
+            const idf = await tokenomics.getLastIDF();
             expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch

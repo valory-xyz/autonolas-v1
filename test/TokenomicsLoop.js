@@ -19,7 +19,7 @@ describe("Tokenomics integration", async () => {
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
     let erc20Token;
-    let olaFactory;
+    let olasFactory;
     let depositoryFactory;
     let tokenomicsFactory;
     let genericBondCalculator;
@@ -85,7 +85,7 @@ describe("Tokenomics integration", async () => {
      */
     beforeEach(async () => {
         signers = await ethers.getSigners();
-        olaFactory = await ethers.getContractFactory("OLAS");
+        olasFactory = await ethers.getContractFactory("OLAS");
         // It does not matter what is the second ERC20 token, let's make it based on OLAS sa well
         erc20Token = await ethers.getContractFactory("OLAS");
         depositoryFactory = await ethers.getContractFactory("Depository");
@@ -131,7 +131,7 @@ describe("Tokenomics integration", async () => {
 
         deployer = signers[0];
         dai = await erc20Token.deploy();
-        olas = await olaFactory.deploy();
+        olas = await olasFactory.deploy();
         ve = await veFactory.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
 
         // Deploy master tokenomics contract

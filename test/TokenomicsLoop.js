@@ -1931,7 +1931,6 @@ describe("Tokenomics integration", async () => {
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
@@ -2265,7 +2264,6 @@ describe("Tokenomics integration", async () => {
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0

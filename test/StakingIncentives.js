@@ -10,10 +10,8 @@ describe("StakingIncentives", async () => {
     const defaultHash = "0x" + "5".repeat(64);
     const oneYear = 365 * 24 * 3600;
     const oneMonth = 86400 * 30;
-    const oneWeek = 86400 * 7;
     const chainId = 31337;
     const gnosisChainId = 100;
-    const defaultWeight = 1000;
     const maxWeight = 10000;
     const numClaimedEpochs = 1;
     const bridgePayload = "0x";
@@ -21,7 +19,6 @@ describe("StakingIncentives", async () => {
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
     const numInstances = 3;
-    const defaultGasLimit = "2000000";
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
     const livenessRatio = "1" + "0".repeat(16); // 0.01 transaction per second (TPS)
     let serviceParams = {
@@ -64,7 +61,6 @@ describe("StakingIncentives", async () => {
     let bridgeRelayer;
     let gnosisDepositProcessorL1;
     let gnosisTargetDispenserL2;
-    let wormholeDepositProcessorL1;
 
     function compare(a, b) {
         if (a.toString() < b.toString()){

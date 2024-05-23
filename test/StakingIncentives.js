@@ -212,7 +212,7 @@ describe("StakingIncentives", async () => {
     });
 
     context("Staking incentives", async function () {
-        it.only("Claim staking incentives with total veOLAS power bigger than inflation", async () => {
+        it("Claim staking incentives with total veOLAS power bigger than inflation", async () => {
             // Take a snapshot of the current state of the blockchain
             const snapshot = await helpers.takeSnapshot();
 

@@ -45,5 +45,8 @@ module.exports = {
                 version: "0.6.6", // uniswap
             }
         ]
+    },
+    gasReporter: {
+        enabled: true
     }
 };

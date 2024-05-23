@@ -14,25 +14,25 @@ describe("StakingIncentives", async () => {
     const chainId = 31337;
     const gnosisChainId = 100;
     const defaultWeight = 1000;
+    const maxWeight = 10000;
     const numClaimedEpochs = 1;
     const bridgePayload = "0x";
     const epochLen = oneMonth;
-    const delta = 100;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
-    const maxUint256 = ethers.constants.MaxUint256;
+    const numInstances = 3;
     const defaultGasLimit = "2000000";
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
     const livenessRatio = "1" + "0".repeat(16); // 0.01 transaction per second (TPS)
     let serviceParams = {
         metadataHash: defaultHash,
         maxNumServices: 3,
-        rewardsPerSecond: "1" + "0".repeat(15),
+        rewardsPerSecond: "1" + "0".repeat(18),
         minStakingDeposit: 10,
         minNumStakingPeriods: 3,
         maxNumInactivityPeriods: 3,
         livenessPeriod: 10, // Ten seconds
-        timeForEmissions: 100,
+        timeForEmissions: 100000000,
         numAgentInstances: 1,
         agentIds: [],
         threshold: 0,
@@ -41,7 +41,10 @@ describe("StakingIncentives", async () => {
         serviceRegistry: AddressZero,
         activityChecker: AddressZero
     };
-    const maxInactivity = serviceParams.maxNumInactivityPeriods * serviceParams.livenessPeriod + 1;
+    // Double (fload) delta
+    const dDelta = 1. / 10**10;
+    // Big number delta
+    const bnDelta = 10**7;
 
     let signers;
     let deployer;
@@ -51,7 +54,9 @@ describe("StakingIncentives", async () => {
     let stakingActivityChecker;
     let stakingFactory;
     let stakingTokenImplementation;
-    let stakingInstance;
+    let stakingInstances = new Array(numInstances);
+    let stakingInstanceAddresses = new Array(numInstances);
+    let stakingInstanceAddresses32 = new Array(numInstances);
     let tokenomics;
     let treasury;
     let dispenser;
@@ -60,6 +65,16 @@ describe("StakingIncentives", async () => {
     let gnosisDepositProcessorL1;
     let gnosisTargetDispenserL2;
     let wormholeDepositProcessorL1;
+
+    function compare(a, b) {
+        if (a.toString() < b.toString()){
+            return -1;
+        }
+        if (a.toString() > b.toString()){
+            return 1;
+        }
+        return 0;
+    }
 
     function convertAddressToBytes32(account) {
         return ("0x" + "0".repeat(24) + account.slice(2)).toLowerCase();
@@ -112,9 +127,16 @@ describe("StakingIncentives", async () => {
         // Note serviceRegistryTokenUtility is also irrelevant for this testing (substituting with deployer)
         const initPayload = stakingTokenImplementation.interface.encodeFunctionData("initialize",
             [serviceParams, deployer.address, olas.address]);
-        const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
-        await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
-        stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
+        // Create staking proxy instances
+        for (let i = 0; i < numInstances; i++) {
+            const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
+            await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+            const stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
+            stakingInstances[i] = stakingInstance;
+            stakingInstanceAddresses[i] = stakingTokenAddress;
+            stakingInstanceAddresses32[i] = convertAddressToBytes32(stakingTokenAddress);
+        }
+
 
         // Tokenomics contracts
         const Dispenser = await ethers.getContractFactory("Dispenser");
@@ -190,14 +212,98 @@ describe("StakingIncentives", async () => {
     });
 
     context("Staking incentives", async function () {
-        it("Claim staking incentives for a single nominee", async () => {
+        it.only("Claim staking incentives with total veOLAS power bigger than inflation", async () => {
             // Take a snapshot of the current state of the blockchain
             const snapshot = await helpers.takeSnapshot();
 
             // Set staking fraction to 100%
             await tokenomics.changeIncentiveFractions(0, 0, 0, 0, 0, 100);
-            // Changing staking parameters
-            await tokenomics.changeStakingParams(50, 10);
+            // Changing staking parameters (max staking amount, min weight (in 10_000 form, so 100 is 1%))
+            await tokenomics.changeStakingParams(ethers.utils.parseEther("300000"), 100);
+
+            // Checkpoint to apply changes
+            await helpers.time.increase(epochLen);
+            await tokenomics.checkpoint();
+
+            // Unpause the dispenser
+            await dispenser.setPauseState(0);
+
+            // Lock veOLAS
+            await olas.approve(ve.address, initialMint);
+            await ve.createLock(ethers.utils.parseEther("100000"), oneYear * 4);
+            // Transfer OLAS to another account
+            await olas.transfer(signers[1].address, ethers.utils.parseEther("200000"));
+            await olas.connect(signers[1]).approve(ve.address, initialMint);
+            await ve.connect(signers[1]).createLock(ethers.utils.parseEther("200000"), oneYear * 4);
+
+            // Add a staking instances as nominees
+            for (let i = 0; i < numInstances; i++) {
+                await vw.addNomineeEVM(stakingInstances[i].address, chainId);
+            }
+
+            const chainIds = new Array(numInstances).fill(chainId);
+            // Vote for the nominees by the deployer
+            const weights = [maxWeight / 2, maxWeight / 2, 0];
+            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
+            // Vote for the nominees by the deployer
+            const weights2 = [Math.floor(maxWeight / 3), Math.floor(maxWeight / 3), Math.floor(maxWeight / 3) + 1];
+            await vw.connect(signers[1]).voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights2);
+
+            // Checkpoint to apply changes
+            await helpers.time.increase(epochLen);
+            await tokenomics.checkpoint();
+
+            // Get the staking inflation for the previous epoch
+            const lastPoint = await tokenomics.epochCounter() - 1;
+            // Get the staking point of the last epoch
+            const sp = await tokenomics.mapEpochStakingPoints(lastPoint);
+
+            // Calculate total staking incentive and return amounts
+            let totalStakingIncentive = ethers.BigNumber.from(0);
+            let totalReturnAmount = ethers.BigNumber.from(0);
+            for (let i = 0; i < numInstances; i++) {
+                const res = await dispenser.callStatic.calculateStakingIncentives(numClaimedEpochs, chainId,
+                    stakingInstanceAddresses32[i], 18);
+                totalStakingIncentive = totalStakingIncentive.add(res.totalStakingIncentive);
+                totalReturnAmount = totalReturnAmount.add(res.totalReturnAmount);
+            }
+
+            // Get the difference: staking inflation - (staking incentive + staking return)
+            let diff = sp.stakingIncentive.sub(totalStakingIncentive.add(totalReturnAmount));
+            expect(diff).to.lt(bnDelta);
+
+            // Sort staking addresses
+            stakingInstanceAddresses32.sort(compare);
+            // Claim staking incentives
+            await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [chainId], [stakingInstanceAddresses32],
+                [bridgePayload], [0]);
+
+            // Check that the target contract got OLAS
+            let sumBalance = ethers.BigNumber.from(0);
+            let balances = new Array(numInstances).fill(0);
+            for (let i = 0; i < numInstances; i++) {
+                balances[i] = await olas.balanceOf(stakingInstances[i].address);
+                sumBalance = sumBalance.add(balances[i]);
+                expect(balances[i]).to.gt(0);
+            }
+
+            // Since the veOLAS power is bigger than staking inflation, all the staking inflation must be used
+            diff = sp.stakingIncentive.sub(sumBalance);
+            expect(diff).to.lt(bnDelta);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+
+        it("Claim staking incentives with total veOLAS power smaller than inflation", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            // Set staking fraction to 100%
+            await tokenomics.changeIncentiveFractions(0, 0, 0, 0, 0, 100);
+            // Changing staking parameters (max staking amount, min weight (in 10_000 form, so 100 is 1%))
+            // The limit is much smaller than the staking inflation
+            await tokenomics.changeStakingParams(ethers.utils.parseEther("3"), 100);
 
             // Checkpoint to apply changes
             await helpers.time.increase(epochLen);
@@ -209,25 +315,79 @@ describe("StakingIncentives", async () => {
             // Lock veOLAS
             await olas.approve(ve.address, initialMint);
             await ve.createLock(ethers.utils.parseEther("1"), oneYear);
+            // Transfer OLAS to another account
+            await olas.transfer(signers[1].address, ethers.utils.parseEther("2"));
+            await olas.connect(signers[1]).approve(ve.address, initialMint);
+            await ve.connect(signers[1]).createLock(ethers.utils.parseEther("2"), oneYear);
 
-            // Add a staking instance as a nominee
-            await vw.addNomineeEVM(stakingInstance.address, chainId);
+            // Add a staking instances as nominees
+            for (let i = 0; i < numInstances; i++) {
+                await vw.addNomineeEVM(stakingInstances[i].address, chainId);
+            }
 
-            // Vote for the nominee
-            const stakingTarget = convertAddressToBytes32(stakingInstance.address);
-            await vw.voteForNomineeWeights(stakingTarget, chainId, defaultWeight);
+            const chainIds = new Array(numInstances).fill(chainId);
+            // Vote for the nominees by the deployer
+            const weights = [maxWeight / 2, maxWeight / 2, 0];
+            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
+            // Vote for the nominees by the deployer
+            const weights2 = [Math.floor(maxWeight / 3), Math.floor(maxWeight / 3), Math.floor(maxWeight / 3) + 1];
+            await vw.connect(signers[1]).voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights2);
 
             // Checkpoint to apply changes
             await helpers.time.increase(epochLen);
             await tokenomics.checkpoint();
 
+            // Get the staking inflation for the previous epoch
+            const lastPoint = await tokenomics.epochCounter() - 1;
+            // Get the staking point of the last epoch
+            const sp = await tokenomics.mapEpochStakingPoints(lastPoint);
+
+            // Calculate total staking incentive and return amounts
+            let totalStakingIncentive = ethers.BigNumber.from(0);
+            let totalReturnAmount = ethers.BigNumber.from(0);
+            for (let i = 0; i < numInstances; i++) {
+                const res = await dispenser.callStatic.calculateStakingIncentives(numClaimedEpochs, chainId,
+                    stakingInstanceAddresses32[i], 18);
+                totalStakingIncentive = totalStakingIncentive.add(res.totalStakingIncentive);
+                totalReturnAmount = totalReturnAmount.add(res.totalReturnAmount);
+            }
+            
+            // Get the difference: staking inflation - (staking incentive + staking return)
+            const diff = sp.stakingIncentive.sub(totalStakingIncentive.add(totalReturnAmount));
+            expect(diff).to.lt(bnDelta);
+
+            // Sort staking addresses
+            stakingInstanceAddresses32.sort(compare);
             // Claim staking incentives
-            await dispenser.claimStakingIncentives(numClaimedEpochs, chainId, stakingTarget, bridgePayload);
+            await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [chainId], [stakingInstanceAddresses32],
+                [bridgePayload], [0]);
 
             // Check that the target contract got OLAS
-            let olasBalance = await olas.balanceOf(stakingInstance.address);
-            expect(olasBalance).to.gt(0);
-            console.log(olasBalance);
+            let balances = new Array(numInstances).fill(0);
+            let totalWeights = new Array(numInstances).fill(0);
+            let ratios = new Array(numInstances).fill(0);
+            let ratioSum = 0;
+            for (let i = 0; i < numInstances; i++) {
+                const weightBN = ethers.BigNumber.from(weights[i]);
+                const weightBN2 = ethers.BigNumber.from(weights2[i]);
+                const maxWeightBN = ethers.BigNumber.from(maxWeight);
+
+                totalWeights[i] = ((await ve.getVotes(deployer.address)).mul(weightBN).
+                    add((await ve.getVotes(signers[1].address)).mul(weightBN2))).div(maxWeightBN);
+
+                balances[i] = await olas.balanceOf(stakingInstances[i].address);
+                expect(balances[i]).to.gt(0);
+
+                ratios[i] = Number(totalWeights[i]) / Number(balances[i]);
+                ratioSum += ratios[i];
+            }
+
+            // The weight / balance ratio must be approximately the same for all the elements
+            const ratioAverage = ratioSum / numInstances;
+            for (let i = 0; i < numInstances; i++) {
+                const diff = Math.abs(ratios[i] - ratioAverage);
+                expect(diff).to.lt(dDelta);
+            }
 
             // Restore to the state of the snapshot
             await snapshot.restore();

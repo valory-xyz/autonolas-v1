@@ -276,12 +276,25 @@ describe("StakingIncentives", async () => {
 
             // Check that the target contract got OLAS
             let sumBalance = ethers.BigNumber.from(0);
+            let sumWeights = ethers.BigNumber.from(0);
             let balances = new Array(numInstances).fill(0);
+            let totalWeights = new Array(numInstances).fill(0);
             for (let i = 0; i < numInstances; i++) {
+                const weightBN = ethers.BigNumber.from(weights[i]);
+                const weightBN2 = ethers.BigNumber.from(weights2[i]);
+                const maxWeightBN = ethers.BigNumber.from(maxWeight);
+
+                totalWeights[i] = ((await ve.getVotes(deployer.address)).mul(weightBN).
+                    add((await ve.getVotes(signers[1].address)).mul(weightBN2))).div(maxWeightBN);
+                sumWeights = sumWeights.add(totalWeights[i]);
+
                 balances[i] = await olas.balanceOf(stakingInstances[i].address);
                 sumBalance = sumBalance.add(balances[i]);
                 expect(balances[i]).to.gt(0);
             }
+
+            // The overall veOLAS power must be bigger than the inflation
+            expect(sumWeights).to.gt(sp.stakingIncentive);
 
             // Since the veOLAS power is bigger than staking inflation, all the staking inflation must be used
             diff = sp.stakingIncentive.sub(sumBalance);

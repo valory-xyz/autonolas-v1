@@ -12,13 +12,14 @@ describe("StakingIncentives", async () => {
     const oneMonth = 86400 * 30;
     const chainId = 31337;
     const gnosisChainId = 100;
+    const mockChainId = 200;
     const maxWeight = 10000;
-    const numClaimedEpochs = 1;
+    let numClaimedEpochs = 1;
     const bridgePayload = "0x";
     const epochLen = oneMonth;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
-    const numInstances = 3;
+    let numInstances = 3;
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
     const livenessRatio = "1" + "0".repeat(16); // 0.01 transaction per second (TPS)
     let serviceParams = {
@@ -61,6 +62,7 @@ describe("StakingIncentives", async () => {
     let bridgeRelayer;
     let gnosisDepositProcessorL1;
     let gnosisTargetDispenserL2;
+    let mockDepositProcessorL1;
 
     function compare(a, b) {
         if (a.toString() < b.toString()){
@@ -202,9 +204,14 @@ describe("StakingIncentives", async () => {
         // Set the gnosisTargetDispenserL2 address in gnosisDepositProcessorL1
         await gnosisDepositProcessorL1.setL2TargetDispenser(gnosisTargetDispenserL2.address);
 
+        const MockDepositProcessorL1 = await ethers.getContractFactory("MockDepositProcessorL1");
+        mockDepositProcessorL1 = await MockDepositProcessorL1.deploy(olas.address, dispenser.address);
+        await mockDepositProcessorL1.deployed();
+
         // Whitelist deposit processors
         await dispenser.setDepositProcessorChainIds(
-            [ethereumDepositProcessor.address, gnosisDepositProcessorL1.address], [chainId, gnosisChainId]);
+            [ethereumDepositProcessor.address, gnosisDepositProcessorL1.address, mockDepositProcessorL1.address],
+            [chainId, gnosisChainId, mockChainId]);
     });
 
     context("Staking incentives", async function () {
@@ -232,7 +239,7 @@ describe("StakingIncentives", async () => {
             await olas.connect(signers[1]).approve(ve.address, initialMint);
             await ve.connect(signers[1]).createLock(ethers.utils.parseEther("200000"), oneYear * 4);
 
-            // Add a staking instances as nominees
+            // Add staking instances as nominees
             for (let i = 0; i < numInstances; i++) {
                 await vw.addNomineeEVM(stakingInstances[i].address, chainId);
             }
@@ -241,7 +248,7 @@ describe("StakingIncentives", async () => {
             // Vote for the nominees by the deployer
             const weights = [maxWeight / 2, maxWeight / 2, 0];
             await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
-            // Vote for the nominees by the deployer
+            // Vote for the nominees by another wallet
             const weights2 = [Math.floor(maxWeight / 3), Math.floor(maxWeight / 3), Math.floor(maxWeight / 3) + 1];
             await vw.connect(signers[1]).voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights2);
 
@@ -329,7 +336,7 @@ describe("StakingIncentives", async () => {
             await olas.connect(signers[1]).approve(ve.address, initialMint);
             await ve.connect(signers[1]).createLock(ethers.utils.parseEther("2"), oneYear);
 
-            // Add a staking instances as nominees
+            // Add staking instances as nominees
             for (let i = 0; i < numInstances; i++) {
                 await vw.addNomineeEVM(stakingInstances[i].address, chainId);
             }
@@ -338,7 +345,7 @@ describe("StakingIncentives", async () => {
             // Vote for the nominees by the deployer
             const weights = [maxWeight / 2, maxWeight / 2, 0];
             await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
-            // Vote for the nominees by the deployer
+            // Vote for the nominees by another wallet
             const weights2 = [Math.floor(maxWeight / 3), Math.floor(maxWeight / 3), Math.floor(maxWeight / 3) + 1];
             await vw.connect(signers[1]).voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights2);
 
@@ -397,6 +404,212 @@ describe("StakingIncentives", async () => {
                 const diff = Math.abs(ratios[i] - ratioAverage);
                 expect(diff).to.lt(dDelta);
             }
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+    });
+
+    context("Limits", async function () {
+        it("Number of epochs to claim with a single staking contracts", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            numClaimedEpochs = 10;
+
+            // Set staking fraction to 100%
+            await tokenomics.changeIncentiveFractions(0, 0, 0, 0, 0, 100);
+            // Changing staking parameters (max staking amount, min weight (in 10_000 form, so 100 is 1%))
+            await tokenomics.changeStakingParams(ethers.utils.parseEther("10"), 100);
+
+            // Checkpoint to apply changes
+            await helpers.time.increase(epochLen);
+            await tokenomics.checkpoint();
+
+            // Unpause the dispenser
+            await dispenser.setPauseState(0);
+
+            // Lock veOLAS
+            await olas.approve(ve.address, initialMint);
+            await ve.createLock(ethers.utils.parseEther("10"), oneYear * 4);
+
+            // Add a staking instances as a nominee
+            await vw.addNomineeEVM(stakingInstances[0].address, mockChainId);
+
+            // Vote for the nominee by the deployer
+            await vw.voteForNomineeWeightsBatch([stakingInstanceAddresses32[0]], [mockChainId], [maxWeight]);
+
+            // Checkpoint for the number of claimed epochs
+            for (let i = 0; i < numClaimedEpochs; i++) {
+                await helpers.time.increase(epochLen);
+                await tokenomics.checkpoint();
+            }
+
+            // Claim staking incentives
+            await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [mockChainId], [[stakingInstanceAddresses32[0]]],
+                [bridgePayload], [0]);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+
+        it("Number of epochs to claim with 100 staking contracts", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            numClaimedEpochs = 10;
+
+            // Set staking fraction to 100%
+            await tokenomics.changeIncentiveFractions(0, 0, 0, 0, 0, 100);
+            // Changing staking parameters (max staking amount, min weight (in 10_000 form, so 100 is 1%))
+            await tokenomics.changeStakingParams(ethers.utils.parseEther("10"), 100);
+
+            // Checkpoint to apply changes
+            await helpers.time.increase(epochLen);
+            await tokenomics.checkpoint();
+
+            // Unpause the dispenser
+            await dispenser.setPauseState(0);
+
+            // Lock veOLAS
+            await olas.approve(ve.address, initialMint);
+            await ve.createLock(ethers.utils.parseEther("10"), oneYear * 4);
+
+            // Add staking instances as nominees
+            for (let i = 0; i < numInstances; i++) {
+                await vw.addNomineeEVM(stakingInstances[i].address, mockChainId);
+            }
+
+            const chainIds = new Array(numInstances).fill(mockChainId);
+            // Vote for the nominees by the deployer
+            const weights = [Math.floor(maxWeight / 3), Math.floor(maxWeight / 3), Math.floor(maxWeight / 3) + 1];
+            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
+
+            // Checkpoint for the number of claimed epochs
+            for (let i = 0; i < numClaimedEpochs; i++) {
+                await helpers.time.increase(epochLen);
+                await tokenomics.checkpoint();
+            }
+
+            // Sort staking addresses
+            stakingInstanceAddresses32.sort(compare);
+            // Claim staking incentives
+            await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [mockChainId], [stakingInstanceAddresses32],
+                [bridgePayload], [0]);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+
+        it("Number of epochs to claim with max limiting values", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            numClaimedEpochs = 1;
+            numInstances = 100;
+
+            stakingInstances = new Array(numInstances);
+            stakingInstanceAddresses = new Array(numInstances);
+            stakingInstanceAddresses32 = new Array(numInstances);
+
+            // Get the standard service staking payload
+            const initPayload = stakingTokenImplementation.interface.encodeFunctionData("initialize",
+                [serviceParams, deployer.address, olas.address]);
+            // Create staking proxy instances
+            for (let i = 0; i < numInstances; i++) {
+                const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
+                await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+                const stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
+                stakingInstances[i] = stakingInstance;
+                stakingInstanceAddresses[i] = stakingTokenAddress;
+                stakingInstanceAddresses32[i] = convertAddressToBytes32(stakingTokenAddress);
+            }
+
+            // Set staking fraction to 100%
+            await tokenomics.changeIncentiveFractions(0, 0, 0, 0, 0, 100);
+            // Changing staking parameters (max staking amount, min weight (in 10_000 form, so 100 is 1%))
+            await tokenomics.changeStakingParams(ethers.utils.parseEther("10"), 100);
+
+            // Checkpoint to apply changes
+            await helpers.time.increase(epochLen);
+            await tokenomics.checkpoint();
+
+            // Unpause the dispenser
+            await dispenser.setPauseState(0);
+
+            // Lock veOLAS
+            await olas.approve(ve.address, initialMint);
+            await ve.createLock(ethers.utils.parseEther("10"), oneYear * 4);
+
+            // Add staking instances as nominees
+            for (let i = 0; i < numInstances; i++) {
+                await vw.addNomineeEVM(stakingInstances[i].address, mockChainId);
+            }
+
+            const chainIds = new Array(numInstances).fill(mockChainId);
+            // Vote for the nominees by the deployer
+            const weights = new Array(numInstances).fill(Math.floor(maxWeight / numInstances));
+            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
+
+            // Sort staking addresses
+            stakingInstanceAddresses32.sort(compare);
+
+            // Checkpoint for the number of claimed epochs
+            for (let i = 0; i < numClaimedEpochs; i++) {
+                await helpers.time.increase(epochLen);
+                await tokenomics.checkpoint();
+            }
+
+            // Claim staking incentives
+            await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [mockChainId], [stakingInstanceAddresses32],
+                [bridgePayload], [0]);
+
+            // Restore to the state of the snapshot
+            await snapshot.restore();
+        });
+
+        it("Limiting values on L2 side", async () => {
+            // Take a snapshot of the current state of the blockchain
+            const snapshot = await helpers.takeSnapshot();
+
+            numInstances = 50;
+
+            stakingInstances = new Array(numInstances);
+            stakingInstanceAddresses = new Array(numInstances);
+            stakingInstanceAddresses32 = new Array(numInstances);
+
+            // Get the standard service staking payload
+            const initPayload = stakingTokenImplementation.interface.encodeFunctionData("initialize",
+                [serviceParams, deployer.address, olas.address]);
+            // Create staking proxy instances
+            for (let i = 0; i < numInstances; i++) {
+                const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
+                await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+                const stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
+                stakingInstanceAddresses[i] = stakingTokenAddress;
+            }
+
+            // Mock the processing of staking contracts
+            const MockStakingDispenser = await ethers.getContractFactory("MockStakingDispenser");
+            dispenser = await MockStakingDispenser.deploy(olas.address);
+            await dispenser.deployed();
+
+            // Update dispenser address in treasury and tokenomics
+            await treasury.changeManagers(AddressZero, AddressZero, dispenser.address);
+            await tokenomics.changeManagers(AddressZero, AddressZero, dispenser.address);
+            await olas.changeMinter(dispenser.address);
+
+            const EthereumDepositProcessor = await ethers.getContractFactory("EthereumDepositProcessor");
+            ethereumDepositProcessor = await EthereumDepositProcessor.deploy(olas.address, dispenser.address,
+                stakingFactory.address, deployer.address);
+            await ethereumDepositProcessor.deployed();
+
+            const amount = 1000;
+            const stakingIncentives = new Array(numInstances).fill(amount);
+
+            // Claim staking incentives
+            await dispenser.sendMessageBatch(ethereumDepositProcessor.address, stakingInstanceAddresses,
+                stakingIncentives, bridgePayload, amount * numInstances);
 
             // Restore to the state of the snapshot
             await snapshot.restore();

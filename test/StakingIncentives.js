@@ -19,6 +19,8 @@ describe("StakingIncentives", async () => {
     const epochLen = oneMonth;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
+    const defaultMinStakingWeight = 100;
+    const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
     let numInstances = 3;
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
     const livenessRatio = "1" + "0".repeat(16); // 0.01 transaction per second (TPS)
@@ -139,7 +141,7 @@ describe("StakingIncentives", async () => {
         // Tokenomics contracts
         const Dispenser = await ethers.getContractFactory("Dispenser");
         dispenser = await Dispenser.deploy(olas.address, deployer.address, deployer.address, vw.address,
-            retainer, maxNumClaimingEpochs, maxNumStakingTargets);
+            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
         await dispenser.deployed();
 
         // Set Dispenser in Vote Weighting

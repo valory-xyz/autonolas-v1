@@ -188,7 +188,8 @@ contract BaseSetup is Test {
         // Deploy depository contract
         depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
-        dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100);
+        dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100,
+            100, 100);
 
         // Change contract addresses to the correct ones
         tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));

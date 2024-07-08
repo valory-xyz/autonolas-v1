@@ -16,6 +16,8 @@ describe("Tokenomics integration", async () => {
     const fourYears = 4 * oneYear;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
+    const defaultMinStakingWeight = 100;
+    const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
     let erc20Token;
@@ -160,7 +162,7 @@ describe("Tokenomics integration", async () => {
             genericBondCalculator.address);
         // Deploy dispenser contract
         dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
-            retainer, maxNumClaimingEpochs, maxNumStakingTargets);
+            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, depository.address, dispenser.address);

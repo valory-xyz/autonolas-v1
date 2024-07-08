@@ -245,9 +245,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param amount1 Amount to donate to the second service.
     function testTokenomicsBasic(uint64 amount0, uint64 amount1, uint32 vesting) public {
         // Amounts must be bigger than a meaningful amount
-        vm.assume(amount0 > treasury.minAcceptedETH());
-        vm.assume(amount1 > treasury.minAcceptedETH());
-        vm.assume(vesting > 1 days && vesting < 4 * 365 days);
+        amount0 = uint64(bound(amount0, treasury.minAcceptedETH(), type(uint64).max));
+        amount1 = uint64(bound(amount1, treasury.minAcceptedETH(), type(uint64).max));
+        vesting = uint32(bound(vesting, 1 days, 4 * 365 days));
 
         // Create 4 components and 3 agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -473,9 +473,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param numServices Number of services to donate to.
     function testTokenomicsChangingNumberOfServices(uint64 donationAmount, uint256 numServices) public {
         // Donation amount must be bigger than a meaningful amount
-        vm.assume(donationAmount > treasury.minAcceptedETH());
+        donationAmount = uint64(bound(donationAmount, treasury.minAcceptedETH(), type(uint64).max));
         // The number of services is within the max number range
-        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+        numServices = bound(numServices, 1, maxNumUnits);
 
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -686,9 +686,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param numServices Number of services to donate to.
     function testTokenomicsChangingNumberOfServicesZeroTopUps(uint64 donationAmount, uint256 numServices) public {
         // Donation amount must be bigger than a meaningful amount
-        vm.assume(donationAmount > treasury.minAcceptedETH());
+        donationAmount = uint64(bound(donationAmount, treasury.minAcceptedETH(), type(uint64).max));
         // The number of services is within the max number range
-        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+        numServices = bound(numServices, 1, maxNumUnits);
 
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));

@@ -3,7 +3,7 @@ pragma solidity ^0.8.25;
 
 // Importing all the necessary Autonolas tokenomics contracts
 import {DonatorBlacklist} from "../lib/autonolas-tokenomics/contracts/DonatorBlacklist.sol";
-import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
+import {BondCalculator} from "../lib/autonolas-tokenomics/contracts/BondCalculator.sol";
 import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
 import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
 import {Tokenomics} from "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";

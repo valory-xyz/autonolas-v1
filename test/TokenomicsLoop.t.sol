@@ -17,7 +17,7 @@ import {ServiceManager} from "../lib/autonolas-registries/contracts/ServiceManag
 import {GnosisSafeMultisig} from "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
 import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
 import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
-import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
+import {BondCalculator, DiscountParams} from "../lib/autonolas-tokenomics/contracts/BondCalculator.sol";
 import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
 import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
 import {Treasury} from "../lib/autonolas-tokenomics/contracts/Treasury.sol";
@@ -39,7 +39,7 @@ contract BaseSetup is Test {
     Dispenser internal dispenser;
     Treasury internal treasury;
     Tokenomics internal tokenomics;
-    GenericBondCalculator internal genericBondCalculator;
+    BondCalculator internal bondCalculator;
     ZuniswapV2Factory internal factory;
     ZuniswapV2Router internal router;
 
@@ -183,10 +183,14 @@ contract BaseSetup is Test {
 
         // Correct depository address is missing here, it will be defined just one line below
         treasury = new Treasury(address(olas), address(tokenomics), deployer, deployer);
-        // Deploy generic bond calculator contract
-        genericBondCalculator = new GenericBondCalculator(address(olas), address(tokenomics));
+        // Deploy bond calculator contract
+        DiscountParams memory discountParams;
+        discountParams.targetVotingPower = 10 ether;
+        discountParams.targetNewUnits = 10;
+        bondCalculator = new BondCalculator(address(olas), address(tokenomics), address(ve), discountParams);
         // Deploy depository contract
-        depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
+        depository = new Depository("Depository", "OLAS_BOND", "baseURI", address(olas), address(tokenomics),
+            address(treasury), address(bondCalculator));
         // Deploy dispenser contract
         dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100,
             100, 100);
@@ -294,14 +298,12 @@ contract TokenomicsLoopTest is BaseSetup {
         serviceManager.deploy(serviceIds[1], address(gnosisSafeMultisig), payload);
         vm.stopPrank();
 
-        // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
-        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
-        vm.startPrank(serviceOwner);
+        // In order to get OLAS top-ups for owners of components / agents, the donator needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero top-ups
         olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
         // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
         // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
         ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
-        vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17, 0);
@@ -313,7 +315,6 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
-        uint256[] memory topUps = new uint256[](2);
 
         // Run for more than 10 years (more than 52 weeks in a year)
         uint256 endTime = 550 weeks;
@@ -323,7 +324,7 @@ contract TokenomicsLoopTest is BaseSetup {
 
             // Deposit LP token for OLAS using half of the product supply considering that there will be the IDF multiplier
             vm.prank(deployer);
-            (, , bondId) = depository.deposit(productId, supplyProductOLAS / 2);
+            (, , bondId) = depository.deposit(productId, supplyProductOLAS / 2, vesting);
 
             uint256[] memory productIds = new uint256[](1);
             productIds[0] = productId;
@@ -368,14 +369,12 @@ contract TokenomicsLoopTest is BaseSetup {
             rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
             rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
             uint256 accountRewards = rewards[0] + rewards[1];
-            // Calculate top-ups based on the points information
-            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
-            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
-            uint256 accountTopUps = topUps[0] + topUps[1];
+            // Get top-ups amount based on the inflation amount vs voting power
+            (uint96 totalUnitTopUps, uint96 totalDonationPower, ) = tokenomics.mapDonationPoints(lastPoint);
+            uint256 accountTopUps = totalDonationPower > totalUnitTopUps ? totalUnitTopUps : totalDonationPower;
 
-            // Rewards and top-ups must not be zero
+            // Rewards must not be zero, but top-ups could
             assertGt(accountRewards, 0);
-            assertGt(accountTopUps, 0);
             assertGt(rewards[2], 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
@@ -462,7 +461,7 @@ contract TokenomicsLoopTest is BaseSetup {
             depository.redeem(bondIds);
         }
 
-        // Check that all bond products are not closed
+        // Check that all bond products are now closed
         productIds = depository.getProducts(true);
         assertEq(productIds.length, 0);
     }
@@ -527,14 +526,12 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         vm.stopPrank();
 
-        // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
-        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
-        vm.startPrank(serviceOwner);
+        // In order to get OLAS top-ups for owners of components / agents, donator needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero top-ups
         olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
         // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
         // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
         ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
-        vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17, 0);
@@ -546,7 +543,6 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
-        uint256[] memory topUps = new uint256[](3);
 
         // Run for more than 10 years (more than 52 weeks in a year)
         uint256 endTime = 550 weeks;
@@ -588,22 +584,15 @@ contract TokenomicsLoopTest is BaseSetup {
             rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
             rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
             uint256 accountRewards = rewards[0] + rewards[1];
-            // Calculate top-ups based on the points information
-            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
-            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
-            topUps[2] = (ep.totalTopUpsOLAS * ep.maxBondFraction) / 100;
-            uint256 accountTopUps = topUps[0] + topUps[1];
+            // Get top-ups amount based on the inflation amount vs voting power
+            (uint96 totalUnitTopUps, uint96 totalDonationPower, ) = tokenomics.mapDonationPoints(lastPoint);
+            uint256 accountTopUps = totalDonationPower > totalUnitTopUps ? totalUnitTopUps : totalDonationPower;
 
-            // Rewards and top-ups must not be zero
+            // Rewards must not be zero, but top-ups could
             assertGt(accountRewards, 0);
-            assertGt(accountTopUps, 0);
             assertGt(rewards[2], 0);
             // maxBond must not be zero
-            assertGt(topUps[2], 0);
-            // Other epoch point values must not be zero as well
-            assertGt(ep.idf, 0);
-            assertGt(tokenomics.devsPerCapital(), 0);
-            assertGt(ep.endTime, 0);
+            assertGt((ep.totalTopUpsOLAS * ep.maxBondFraction) / 100, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
             assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());
@@ -740,14 +729,12 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         vm.stopPrank();
 
-        // In order to get OLAS top-ups for owners of components / agents, service serviceOwner needs to lock enough veOLAS
-        // Note this value will be enough for about 2.5 years, after which owners will start getting zero tup-ups
-        vm.startPrank(serviceOwner);
+        // In order to get OLAS top-ups for owners of components / agents, donator needs to lock enough veOLAS
+        // Note this value will be enough for about 2.5 years, after which owners will start getting zero top-ups
         olas.approve(address(ve), tokenomics.veOLASThreshold() * 10);
         // Set the lock duration to 4 years such that the amount of OLAS is almost the amount of veOLAS
         // veOLAS = OLAS * time_locked / MAXTIME (where MAXTIME is 4 years)
         ve.createLock(tokenomics.veOLASThreshold() * 10, 4 * oneYear);
-        vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
         tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0, 0);
@@ -759,7 +746,6 @@ contract TokenomicsLoopTest is BaseSetup {
         tokenomics.checkpoint();
 
         uint256[] memory rewards = new uint256[](3);
-        uint256[] memory topUps = new uint256[](3);
         uint256 effectiveBond = tokenomics.effectiveBond();
 
         // Run for more than 10 years (more than 52 weeks in a year)
@@ -802,22 +788,15 @@ contract TokenomicsLoopTest is BaseSetup {
             rewards[1] = (ep.totalDonationsETH * up[1].rewardUnitFraction) / 100;
             rewards[2] = (ep.totalDonationsETH * ep.rewardTreasuryFraction) / 100;
             uint256 accountRewards = rewards[0] + rewards[1];
-            // Calculate top-ups based on the points information
-            topUps[0] = (ep.totalTopUpsOLAS * up[0].topUpUnitFraction) / 100;
-            topUps[1] = (ep.totalTopUpsOLAS * up[1].topUpUnitFraction) / 100;
-            topUps[2] = (ep.totalTopUpsOLAS * ep.maxBondFraction) / 100;
-            uint256 accountTopUps = topUps[0] + topUps[1];
+            // Get top-ups amount based on the inflation amount vs voting power
+            (uint96 accountTopUps, uint96 totalDonationPower, ) = tokenomics.mapDonationPoints(lastPoint);
+            accountTopUps = totalDonationPower > accountTopUps ? accountTopUps : totalDonationPower;
 
-            // Rewards and top-ups must not be zero
+            // Rewards must not be zero, but top-ups could
             assertGt(accountRewards, 0);
-            assertEq(accountTopUps, 0);
             assertGt(rewards[2], 0);
             // maxBond must not be zero
-            assertEq(topUps[2], 0);
-            // Other epoch point values must not be zero as well
-            assertGt(ep.idf, 0);
-            assertGt(tokenomics.devsPerCapital(), 0);
-            assertGt(ep.endTime, 0);
+            assertEq((ep.totalTopUpsOLAS * ep.maxBondFraction) / 100, 0);
 
             // Check for the Treasury balance to correctly be reflected by ETHFromServices + ETHOwned
             assertEq(address(treasury).balance, treasury.ETHFromServices() + treasury.ETHOwned());

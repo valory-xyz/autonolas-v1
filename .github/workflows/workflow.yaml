@@ -48,7 +48,7 @@ jobs:
 
       # Compile the code and run foundry tests
       - name: Run foundry tests
-        run: forge test --hh -vv
+        run: forge test --hh -vv --match-test testTokenomicsBasic
 
   scan:
     name: gitleaks

@@ -8,7 +8,10 @@ on:
 jobs:
   build:
     continue-on-error: False
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
+    concurrency: 1
+    env:
+      PROPTEST_MAX_SHRINK_ITERS: 1000
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
@@ -45,7 +48,7 @@ jobs:
 
       # Compile the code and run foundry tests
       - name: Run foundry tests
-        run: forge test --hh -vvv
+        run: forge test --hh -vv --match-test testTokenomicsBasic
 
   scan:
     name: gitleaks

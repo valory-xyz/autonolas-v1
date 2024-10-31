@@ -36,6 +36,11 @@ describe("Node deployment", function () {
         const epochLen = oneMonth;
         const supplyProductOLAS =  "20" + decimals;
         const vesting = oneWeek;
+        const maxNumClaimingEpochs = 10;
+        const maxNumStakingTargets = 100;
+        const defaultMinStakingWeight = 100;
+        const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
+        const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
         const signers = await ethers.getSigners();
         const deployer = signers[0];
@@ -271,7 +276,8 @@ describe("Node deployment", function () {
         await depository.deployed();
         // Deploy dispenser contract
         const Dispenser = await ethers.getContractFactory("Dispenser");
-        const dispenser = await Dispenser.deploy(tokenomics.address, treasury.address);
+        const dispenser = await Dispenser.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
+            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
         await dispenser.deployed();
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);

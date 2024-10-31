@@ -14,9 +14,14 @@ describe("Tokenomics integration", async () => {
     const oneMonth = 86400 * 30;
     const oneYear = 365 * 24 * 3600;
     const fourYears = 4 * oneYear;
+    const maxNumClaimingEpochs = 10;
+    const maxNumStakingTargets = 100;
+    const defaultMinStakingWeight = 100;
+    const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
+    const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
     let erc20Token;
-    let olaFactory;
+    let olasFactory;
     let depositoryFactory;
     let tokenomicsFactory;
     let genericBondCalculator;
@@ -54,7 +59,7 @@ describe("Tokenomics integration", async () => {
     const configHash = "0x" + "6".repeat(64);
     const configHash1 = "0x" + "7".repeat(64);
     const configHash2 = "0x" + "8".repeat(64);
-    const AddressZero = "0x" + "0".repeat(40);
+    const AddressZero = ethers.constants.AddressZero;
     const regBond = ethers.utils.parseEther("1");
     const twoRegBond = ethers.utils.parseEther("2");
     const threeRegBond = ethers.utils.parseEther("3");
@@ -82,7 +87,7 @@ describe("Tokenomics integration", async () => {
      */
     beforeEach(async () => {
         signers = await ethers.getSigners();
-        olaFactory = await ethers.getContractFactory("OLAS");
+        olasFactory = await ethers.getContractFactory("OLAS");
         // It does not matter what is the second ERC20 token, let's make it based on OLAS sa well
         erc20Token = await ethers.getContractFactory("OLAS");
         depositoryFactory = await ethers.getContractFactory("Depository");
@@ -128,7 +133,7 @@ describe("Tokenomics integration", async () => {
 
         deployer = signers[0];
         dai = await erc20Token.deploy();
-        olas = await olaFactory.deploy();
+        olas = await olasFactory.deploy();
         ve = await veFactory.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
 
         // Deploy master tokenomics contract
@@ -156,7 +161,8 @@ describe("Tokenomics integration", async () => {
         depository = await depositoryFactory.deploy(olas.address, tokenomics.address, treasury.address,
             genericBondCalculator.address);
         // Deploy dispenser contract
-        dispenser = await dispenserFactory.deploy(tokenomics.address, treasury.address);
+        dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
+            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, depository.address, dispenser.address);
@@ -1927,7 +1933,6 @@ describe("Tokenomics integration", async () => {
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
@@ -1941,7 +1946,7 @@ describe("Tokenomics integration", async () => {
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.06
             // idf = 1 + fKD = 1.06
-            const idf = await tokenomics.getIDF(currentPoint);
+            const idf = await tokenomics.getLastIDF();
             expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch
@@ -2261,7 +2266,6 @@ describe("Tokenomics integration", async () => {
             await tokenomics.checkpoint();
 
             // Get the last settled epoch counter
-            let currentPoint = await tokenomics.epochCounter();
             // Check the inverse discount factor caltulation
             // f(K(e), D(e)) = d * k * K(e) + d * D(e)
             // Default treasury reward is 0, so K(e) = 0
@@ -2275,7 +2279,7 @@ describe("Tokenomics integration", async () => {
             // fKD = fKD > epsilonRate ? fkD : epsilonRate
             // fKD = 0.06
             // idf = 1 + fKD = 1.06
-            const idf = await tokenomics.getIDF(currentPoint);
+            const idf = await tokenomics.getLastIDF();
             expect(idf).to.equal("106" + "0".repeat(16));
 
             // Get the epoch point of the last epoch

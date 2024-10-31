@@ -1,4 +1,4 @@
-pragma solidity =0.8.20;
+pragma solidity =0.8.25;
 
 import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
@@ -93,6 +93,7 @@ contract BaseSetup is Test {
     uint256 internal priceLP;
     uint256 internal productId;
     uint256 internal bondId;
+    bytes32 internal retainer;
 
     bytes32 internal unitHash = 0x9999999999999999999999999999999999999999999999999999999999999999;
     bytes internal payload;
@@ -124,6 +125,7 @@ contract BaseSetup is Test {
         vm.label(deployer, "Deployer");
         serviceOwner = users[3];
         operator = users[4];
+        retainer = bytes32(uint256(uint160(deployer)));
         // There are 2 agent instances in each service
         agentInstancesService1 = new address[](2);
         for (uint256 i = 0; i < 2; ++i) {
@@ -186,7 +188,8 @@ contract BaseSetup is Test {
         // Deploy depository contract
         depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
-        dispenser = new Dispenser(address(tokenomics), address(treasury));
+        dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100,
+            100, 100);
 
         // Change contract addresses to the correct ones
         tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));
@@ -242,9 +245,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param amount1 Amount to donate to the second service.
     function testTokenomicsBasic(uint64 amount0, uint64 amount1, uint32 vesting) public {
         // Amounts must be bigger than a meaningful amount
-        vm.assume(amount0 > treasury.minAcceptedETH());
-        vm.assume(amount1 > treasury.minAcceptedETH());
-        vm.assume(vesting > 1 days && vesting < 4 * 365 days);
+        amount0 = uint64(bound(amount0, treasury.minAcceptedETH(), type(uint64).max));
+        amount1 = uint64(bound(amount1, treasury.minAcceptedETH(), type(uint64).max));
+        vesting = uint32(bound(vesting, 1 days, 4 * 365 days));
 
         // Create 4 components and 3 agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -301,7 +304,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17);
+        tokenomics.changeIncentiveFractions(50, 25, 49, 34, 17, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition
@@ -470,9 +473,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param numServices Number of services to donate to.
     function testTokenomicsChangingNumberOfServices(uint64 donationAmount, uint256 numServices) public {
         // Donation amount must be bigger than a meaningful amount
-        vm.assume(donationAmount > treasury.minAcceptedETH());
+        donationAmount = uint64(bound(donationAmount, treasury.minAcceptedETH(), type(uint64).max));
         // The number of services is within the max number range
-        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+        numServices = bound(numServices, 1, maxNumUnits);
 
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -534,7 +537,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17);
+        tokenomics.changeIncentiveFractions(40, 20, 49, 34, 17, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition
@@ -683,9 +686,9 @@ contract TokenomicsLoopTest is BaseSetup {
     /// @param numServices Number of services to donate to.
     function testTokenomicsChangingNumberOfServicesZeroTopUps(uint64 donationAmount, uint256 numServices) public {
         // Donation amount must be bigger than a meaningful amount
-        vm.assume(donationAmount > treasury.minAcceptedETH());
+        donationAmount = uint64(bound(donationAmount, treasury.minAcceptedETH(), type(uint64).max));
         // The number of services is within the max number range
-        vm.assume(numServices > 0 && numServices <= maxNumUnits);
+        numServices = bound(numServices, 1, maxNumUnits);
 
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -747,7 +750,7 @@ contract TokenomicsLoopTest is BaseSetup {
         vm.stopPrank();
 
         // Set treasury reward fraction to be more than zero
-        tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0);
+        tokenomics.changeIncentiveFractions(40, 20, 0, 0, 0, 0);
         // Move at least epochLen seconds in time
         vm.warp(block.timestamp + epochLen);
         // Mine a next block to avoid a flash loan attack condition

@@ -14,9 +14,6 @@ const accounts = {
 };
 
 module.exports = {
-    gasReporter: {
-        enabled: true
-    },
     networks: {
         local: {
             url: "http://localhost:8545",
@@ -29,13 +26,14 @@ module.exports = {
     solidity: {
         compilers: [
             {
-                version: "0.8.23",
+                version: "0.8.28",
                 settings: {
                     optimizer: {
                         enabled: true,
                         runs: 100,
                     },
                 },
+                evmVersion: "cancun"
             },
             {
                 version: "0.5.16", // uniswap
@@ -44,5 +42,8 @@ module.exports = {
                 version: "0.6.6", // uniswap
             }
         ]
+    },
+    gasReporter: {
+        enabled: true
     }
 };

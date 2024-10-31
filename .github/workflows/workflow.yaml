@@ -10,6 +10,8 @@ jobs:
     continue-on-error: False
     runs-on: macos-latest
     concurrency: 1
+    env:
+      PROPTEST_MAX_SHRINK_ITERS: 1000
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v3

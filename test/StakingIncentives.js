@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const helpers = require("@nomicfoundation/hardhat-network-helpers");
 
-describe.only("StakingIncentives", async () => {
+describe("StakingIncentives", async () => {
     const initialMint = "1" + "0".repeat(26);
     const AddressZero = ethers.constants.AddressZero;
     const HashZero = ethers.constants.HashZero;
@@ -129,8 +129,10 @@ describe.only("StakingIncentives", async () => {
             [serviceParams, deployer.address, olas.address]);
         // Create staking proxy instances
         for (let i = 0; i < numInstances; i++) {
-            const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
-            await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+            const tx = await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+            const res = await tx.wait();
+            // Get staking contract instance address from the event
+            const stakingTokenAddress = "0x" + res.logs[0].topics[2].slice(26);
             const stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
             stakingInstances[i] = stakingInstance;
             stakingInstanceAddresses[i] = stakingTokenAddress;
@@ -199,8 +201,7 @@ describe.only("StakingIncentives", async () => {
 
         const GnosisTargetDispenserL2 = await ethers.getContractFactory("GnosisTargetDispenserL2");
         gnosisTargetDispenserL2 = await GnosisTargetDispenserL2.deploy(olas.address,
-            stakingFactory.address, bridgeRelayer.address, gnosisDepositProcessorL1.address, chainId,
-            bridgeRelayer.address);
+            stakingFactory.address, bridgeRelayer.address, gnosisDepositProcessorL1.address, chainId);
         await gnosisTargetDispenserL2.deployed();
 
         // Set the gnosisTargetDispenserL2 address in gnosisDepositProcessorL1
@@ -585,8 +586,10 @@ describe.only("StakingIncentives", async () => {
                 [serviceParams, deployer.address, olas.address]);
             // Create staking proxy instances
             for (let i = 0; i < numInstances; i++) {
-                const stakingTokenAddress = await stakingFactory.getProxyAddress(stakingTokenImplementation.address);
-                await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+                const tx = await stakingFactory.createStakingInstance(stakingTokenImplementation.address, initPayload);
+                const res = await tx.wait();
+                // Get staking contract instance address from the event
+                const stakingTokenAddress = "0x" + res.logs[0].topics[2].slice(26);
                 const stakingInstance = await ethers.getContractAt("StakingToken", stakingTokenAddress);
                 stakingInstanceAddresses[i] = stakingTokenAddress;
             }

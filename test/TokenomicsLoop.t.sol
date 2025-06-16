@@ -1,4 +1,4 @@
-pragma solidity =0.8.25;
+pragma solidity =0.8.30;
 
 import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
@@ -477,6 +477,8 @@ contract TokenomicsLoopTest is BaseSetup {
         // The number of services is within the max number range
         numServices = bound(numServices, 1, maxNumUnits);
 
+        vm.pauseGasMetering();
+
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));
         agentRegistry.changeManager(address(registriesManager));
@@ -678,6 +680,8 @@ contract TokenomicsLoopTest is BaseSetup {
         }
         assertLt(globalRoundOffETH, globalDeltaMaxNumUnits);
         assertLt(globalRoundOffOLAS, globalDeltaMaxNumUnits);
+
+        vm.resumeGasMetering();
     }
 
     /// @dev Tokenomics with changing number of services throughout 550 epochs and all the zero top-up fractions.
@@ -689,6 +693,8 @@ contract TokenomicsLoopTest is BaseSetup {
         donationAmount = uint64(bound(donationAmount, treasury.minAcceptedETH(), type(uint64).max));
         // The number of services is within the max number range
         numServices = bound(numServices, 1, maxNumUnits);
+
+        vm.pauseGasMetering();
 
         // Create components and agents based on them
         componentRegistry.changeManager(address(registriesManager));
@@ -882,5 +888,7 @@ contract TokenomicsLoopTest is BaseSetup {
             globalRoundOffETH += balanceETH;
         }
         assertLt(globalRoundOffETH, globalDeltaMaxNumUnits);
+
+        vm.resumeGasMetering();
     }
 }

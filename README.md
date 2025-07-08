@@ -93,4 +93,4 @@ The list of mainnet addresses for different chains and their full contract confi
 - [Governance and Token addresses](https://github.com/valory-xyz/autonolas-governance/blob/main/docs/configuration.json);
 - [Agent Services Functionality addresses](https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json);
 - [Tokenomics addresses](https://github.com/valory-xyz/autonolas-tokenomics/blob/main/docs/configuration.json);
-- [Lockbox Solana addresses](https://github.com/valory-xyz/lockbox-solana/blob/docs/configuration.json).
+- [Lockbox Solana addresses](https://github.com/valory-xyz/lockbox-solana/blob/main/README.md#addresses).

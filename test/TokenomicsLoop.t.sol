@@ -1,4 +1,4 @@
-pragma solidity =0.8.25;
+pragma solidity ^0.8.30;
 
 import {GnosisSafe} from "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import {GnosisSafeProxyFactory} from "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.25;
+pragma solidity ^0.8.30;
 
 // Importing all the necessary Autonolas governance contracts
 import {buOLAS} from "../lib/autonolas-governance/contracts/buOLAS.sol";

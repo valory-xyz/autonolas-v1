@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.25;
+pragma solidity ^0.8.30;
 
 // Importing all the necessary Autonolas registries contracts
 import {AgentRegistry} from "../lib/autonolas-registries/contracts/AgentRegistry.sol";

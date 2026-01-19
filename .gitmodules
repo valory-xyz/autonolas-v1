@@ -10,3 +10,9 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/autonolas-marketplace"]
+	path = lib/autonolas-marketplace
+	url = https://github.com/valory-xyz/autonolas-marketplace.git
+[submodule "lib/autonolas-staking-programmes"]
+	path = lib/autonolas-staking-programmes
+	url = https://github.com/valory-xyz/autonolas-staking-programmes.git

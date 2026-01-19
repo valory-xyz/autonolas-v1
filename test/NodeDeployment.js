@@ -26,6 +26,7 @@ describe("Node deployment", function () {
 
         // Governance related
         const minDelay = 1;
+        const governorDelay = 10;
         const initialVotingDelay = 1; // blocks
         const initialVotingPeriod = 45818; // blocks ±= 1 week
         const initialProposalThreshold = 0; // voting power
@@ -116,17 +117,30 @@ describe("Node deployment", function () {
         const maxThreshold = agentParams[0][0];
         const serviceId = 1;
 
+        // Deploying service registry and service registry token utility along with the service manager token contracts
         const ServiceRegistry = await ethers.getContractFactory("ServiceRegistry");
         const serviceRegistry = await ServiceRegistry.deploy("service registry", "SERVICE", "https://localhost/service/",
             agentRegistry.address);
         await serviceRegistry.deployed();
 
+        const ServiceRegistryTokenUtility = await ethers.getContractFactory("ServiceRegistryTokenUtility");
+        const serviceRegistryTokenUtility = await ServiceRegistryTokenUtility.deploy(serviceRegistry.address);
+        await serviceRegistryTokenUtility.deployed();
+
         const ServiceManager = await ethers.getContractFactory("ServiceManager");
-        const serviceManager = await ServiceManager.deploy(serviceRegistry.address);
+        const serviceManager = await ServiceManager.deploy(serviceRegistry.address, serviceRegistryTokenUtility.address);
         await serviceManager.deployed();
 
+        let proxyData = serviceManager.interface.encodeFunctionData("initialize", []);
+        // Deploy serviceManager proxy based on the needed serviceManager initialization
+        const ServiceManagerProxy = await ethers.getContractFactory("ServiceManagerProxy");
+        const serviceManagerProxy = await ServiceManagerProxy.deploy(serviceManager.address, proxyData);
+        await serviceManagerProxy.deployed();
+
         console.log("ServiceRegistry deployed to:", serviceRegistry.address);
+        console.log("ServiceRegistryTokenUtility deployed to:", serviceRegistryTokenUtility.address);
         console.log("ServiceManager deployed to:", serviceManager.address);
+        console.log("ServiceManagerProxy deployed to:", serviceManagerProxy.address);
 
         // Create a service
         await serviceRegistry.changeManager(deployer.address);
@@ -207,7 +221,7 @@ describe("Node deployment", function () {
         // Deploy Governor OLAS pointing to the wrapped veOLAS token
         const GovernorOLAS = await ethers.getContractFactory("GovernorOLAS");
         const governor = await GovernorOLAS.deploy(wve.address, timelock.address, initialVotingDelay,
-            initialVotingPeriod, initialProposalThreshold, quorum);
+            initialVotingPeriod, initialProposalThreshold, quorum, governorDelay);
         await governor.deployed();
         console.log("Governor OLAS deployed to", governor.address);
 
@@ -250,7 +264,7 @@ describe("Node deployment", function () {
         await tokenomicsMaster.deployed();
 
         // Correct treasury, depository and dispenser addresses are missing here, they will be defined below
-        const proxyData = tokenomicsMaster.interface.encodeFunctionData("initializeTokenomics",
+        proxyData = tokenomicsMaster.interface.encodeFunctionData("initializeTokenomics",
             [olas.address, deployer.address, deployer.address, deployer.address, ve.address, epochLen,
                 componentRegistry.address, agentRegistry.address, serviceRegistry.address, donatorBlacklist.address]);
         // Deploy tokenomics proxy based on the needed tokenomics initialization

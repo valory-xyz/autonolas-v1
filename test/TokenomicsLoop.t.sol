@@ -13,13 +13,15 @@ import {AgentRegistry} from "../lib/autonolas-registries/contracts/AgentRegistry
 import {ComponentRegistry} from "../lib/autonolas-registries/contracts/ComponentRegistry.sol";
 import {RegistriesManager} from "../lib/autonolas-registries/contracts/RegistriesManager.sol";
 import "../lib/autonolas-registries/contracts/ServiceRegistry.sol";
+import {ServiceRegistryTokenUtility} from "../lib/autonolas-registries/contracts/ServiceRegistryTokenUtility.sol";
 import {ServiceManager} from "../lib/autonolas-registries/contracts/ServiceManager.sol";
+import {ServiceManagerProxy} from "../lib/autonolas-registries/contracts/ServiceManagerProxy.sol";
 import {GnosisSafeMultisig} from "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
 import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
 import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
 import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
 import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
-import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/TokenomicsProxy.sol";
+import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/proxies/TokenomicsProxy.sol";
 import {Treasury} from "../lib/autonolas-tokenomics/contracts/Treasury.sol";
 
 contract BaseSetup is Test {
@@ -30,6 +32,7 @@ contract BaseSetup is Test {
     ComponentRegistry internal componentRegistry;
     AgentRegistry internal agentRegistry;
     ServiceRegistry internal serviceRegistry;
+    ServiceRegistryTokenUtility internal serviceRegistryTokenUtility;
     RegistriesManager internal registriesManager;
     ServiceManager internal serviceManager;
     GnosisSafe internal gnosisSafe;
@@ -155,8 +158,13 @@ contract BaseSetup is Test {
         componentRegistry = new ComponentRegistry("Component Registry", "COMPONENT", "https://localhost/component/");
         agentRegistry = new AgentRegistry("Agent Registry", "AGENT", "https://localhost/agent/", address(componentRegistry));
         serviceRegistry = new ServiceRegistry("Service Registry", "SERVICE", "https://localhost/service/", address(agentRegistry));
+        serviceRegistryTokenUtility = new ServiceRegistryTokenUtility(address(serviceRegistry));
         registriesManager = new RegistriesManager(address(componentRegistry), address(agentRegistry));
-        serviceManager = new ServiceManager(address(serviceRegistry));
+
+        serviceManager = new ServiceManager(address(serviceRegistry), address(serviceRegistryTokenUtility));
+        bytes memory proxyData = abi.encodeWithSelector(serviceManager.initialize.selector, "");
+        ServiceManagerProxy serviceManagerProxy = new ServiceManagerProxy(address(serviceManager), proxyData);
+        serviceManager = ServiceManager(address(serviceManagerProxy));
 
         // Deploying multisig contracts and multisig implementation
         gnosisSafe = new GnosisSafe();
@@ -175,7 +183,7 @@ contract BaseSetup is Test {
         // Deploying tokenomics contracts
         Tokenomics tokenomicsMaster = new Tokenomics();
         // Correct treasury, depository and dispenser addresses are missing here, they will be defined below
-        bytes memory proxyData = abi.encodeWithSelector(tokenomicsMaster.initializeTokenomics.selector,
+        proxyData = abi.encodeWithSelector(tokenomicsMaster.initializeTokenomics.selector,
             address(olas), deployer, deployer, deployer, address(ve), epochLen,
             address(componentRegistry), address(agentRegistry), address(serviceRegistry), address(0));
         TokenomicsProxy tokenomicsProxy = new TokenomicsProxy(address(tokenomicsMaster), proxyData);
@@ -270,6 +278,7 @@ contract TokenomicsLoopTest is BaseSetup {
         agentParams[1].bond = regBond;
         // Create 2 services
         serviceRegistry.changeManager(address(serviceManager));
+        serviceRegistryTokenUtility.changeManager(address(serviceManager));
         vm.startPrank(address(serviceManager));
         serviceRegistry.create(serviceOwner, unitHash, agentIds[0], agentParams, threshold);
         serviceRegistry.create(serviceOwner, unitHash, agentIds[1], agentParams, threshold);
@@ -495,6 +504,7 @@ contract TokenomicsLoopTest is BaseSetup {
         agentParams[0].bond = regBond;
         // Create maxNumUnits services with 1 agent (consisting of one component) each
         serviceRegistry.changeManager(address(serviceManager));
+        serviceRegistryTokenUtility.changeManager(address(serviceManager));
         vm.startPrank(address(serviceManager));
         for (uint256 i = 0; i < numServices; ++i) {
             defaultAgentIds[0] = uint32(i + 1);
@@ -712,6 +722,7 @@ contract TokenomicsLoopTest is BaseSetup {
         agentParams[0].bond = regBond;
         // Create maxNumUnits services with 1 agent (consisting of one component) each
         serviceRegistry.changeManager(address(serviceManager));
+        serviceRegistryTokenUtility.changeManager(address(serviceManager));
         vm.startPrank(address(serviceManager));
         for (uint256 i = 0; i < numServices; ++i) {
             defaultAgentIds[0] = uint32(i + 1);

@@ -28,7 +28,10 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly
+          # Pin a concrete release: the `nightly`/`stable` channels make foundryup
+          # query the GitHub API to resolve the tag, which gets rate-limited (HTTP 403)
+          # on shared CI runners. A concrete version skips that API call.
+          version: v1.7.1
 
       # Run linters
       - name: Run ESLint

@@ -8,3 +8,7 @@ typechain
 # Hardhat files
 cache
 artifacts
+
+# Foundry
+foundry.lock
+out/

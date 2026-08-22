@@ -79,7 +79,7 @@ describe.only("Governance integration", function () {
             // console.log("Governor Bravo deployed to", governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (deployer by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
@@ -135,7 +135,7 @@ describe.only("Governance integration", function () {
             await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (deployer by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
@@ -207,7 +207,7 @@ describe.only("Governance integration", function () {
             await timelock.grantRole(cancellerRole, governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (deployer by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
@@ -307,7 +307,7 @@ describe.only("Governance integration", function () {
             await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (deployer by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
@@ -411,7 +411,7 @@ describe.only("Governance integration", function () {
             await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (signers[0] by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);
@@ -522,7 +522,7 @@ describe.only("Governance integration", function () {
             await timelock.grantRole(executorRole, governor.address);
 
             // Setting the governor of a controlled contract
-            testServiceRegistry.changeManager(timelock.address);
+            await testServiceRegistry.changeManager(timelock.address);
 
             // Schedule an operation from timelock via a proposer (signers[0] by default)
             const callData = testServiceRegistry.interface.encodeFunctionData("executeByGovernor", [controlValue]);

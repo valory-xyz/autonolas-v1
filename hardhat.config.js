@@ -30,10 +30,17 @@ module.exports = {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 100,
+                        runs: 200,
                     },
+                    // evmVersion and viaIR must live inside `settings` - hardhat ignores them as
+                    // siblings of it, which is why this config previously compiled against solc's
+                    // default EVM target rather than prague.
+                    evmVersion: "prague",
+                    // Required by lib/autonolas-tokenomics: Dispenser.sol does not compile without
+                    // it ("Stack too deep"). Matches that repo's own hardhat.config.js and
+                    // foundry.toml, so contracts are built here exactly as they are upstream.
+                    viaIR: true,
                 },
-                evmVersion: "prague"
             },
             {
                 version: "0.5.16", // uniswap

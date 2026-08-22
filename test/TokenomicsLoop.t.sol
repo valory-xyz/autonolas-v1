@@ -19,6 +19,7 @@ import {ServiceManagerProxy} from "../lib/autonolas-registries/contracts/Service
 import {GnosisSafeMultisig} from "../lib/autonolas-registries/contracts/multisigs/GnosisSafeMultisig.sol";
 import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
 import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
+import {DispenserProxy} from "../lib/autonolas-tokenomics/contracts/proxies/DispenserProxy.sol";
 import {GenericBondCalculator} from "../lib/autonolas-tokenomics/contracts/GenericBondCalculator.sol";
 import "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
 import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/proxies/TokenomicsProxy.sol";
@@ -196,8 +197,12 @@ contract BaseSetup is Test {
         // Deploy depository contract
         depository = new Depository(address(olas), address(tokenomics), address(treasury), address(genericBondCalculator));
         // Deploy dispenser contract
-        dispenser = new Dispenser(address(olas), address(tokenomics), address(treasury), deployer, retainer, 100, 100,
-            100, 100);
+        // Dispenser sits behind DispenserProxy: the constructor takes only the immutables, and the
+        // mutable state is set by initialize(), delegatecall-ed from the proxy constructor.
+        Dispenser dispenserMaster = new Dispenser(address(olas), address(tokenomics), retainer);
+        bytes memory dispenserData = abi.encodeWithSelector(Dispenser.initialize.selector,
+            address(treasury), deployer, 100, 100);
+        dispenser = Dispenser(address(new DispenserProxy(address(dispenserMaster), dispenserData)));
 
         // Change contract addresses to the correct ones
         tokenomics.changeManagers(address(treasury), address(depository), address(dispenser));
@@ -476,6 +481,20 @@ contract TokenomicsLoopTest is BaseSetup {
         assertEq(productIds.length, 0);
     }
 
+
+}
+
+/// @dev The variable-service-count loops live in their own contract.
+/// @notice Kept out of TokenomicsLoopTest deliberately. These two are near-identical ~200-line
+///         functions, and with all three loop tests in one contract solc's IR codegen overflows the
+///         Yul stack ("Variable size_5 is 14 too deep") - removing either one is enough to make it
+///         compile, so it is whole-contract pressure rather than any single function. Splitting on
+///         the contract boundary keeps every test and every assertion intact.
+contract TokenomicsServicesLoopTest is BaseSetup {
+    function setUp() public override {
+        super.setUp();
+    }
+
     /// @dev Tokenomics with changing number of services throughout 550 epochs.
     /// @notice Assume that no single donation is bigger than 2^64 - 1.
     /// @param donationAmount Amount to donate to the service.
@@ -692,6 +711,13 @@ contract TokenomicsLoopTest is BaseSetup {
         assertLt(globalRoundOffOLAS, globalDeltaMaxNumUnits);
 
         vm.resumeGasMetering();
+    }
+}
+
+/// @dev The zero-top-ups variant, in its own contract - see the note above.
+contract TokenomicsServicesZeroTopUpsLoopTest is BaseSetup {
+    function setUp() public override {
+        super.setUp();
     }
 
     /// @dev Tokenomics with changing number of services throughout 550 epochs and all the zero top-up fractions.

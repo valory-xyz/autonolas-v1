@@ -4,7 +4,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const helpers = require("@nomicfoundation/hardhat-network-helpers");
 
-describe.only("Governance integration", function () {
+describe("Governance integration", function () {
     let gnosisSafe;
     let gnosisSafeProxyFactory;
     let testServiceRegistry;

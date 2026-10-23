@@ -20,6 +20,12 @@ module.exports = {
         },
         hardhat: {
             allowUnlimitedContractSize: true,
+            // Pin the network to the same hardfork the contracts compile against (see solidity
+            // evmVersion below). Hardhat now defaults to osaka/Fusaka, whose EIP-7825 caps every
+            // transaction at 2^24 (~16.7M) gas — that cap makes the max-limit staking batches
+            // (up to 100 targets in a single tx, ~17-24M gas) unexecutable even though they fit
+            // comfortably within the block gas limit.
+            hardfork: "prague",
             accounts
         },
     },

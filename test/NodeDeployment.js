@@ -39,8 +39,6 @@ describe("Node deployment", function () {
         const vesting = oneWeek;
         const maxNumClaimingEpochs = 10;
         const maxNumStakingTargets = 100;
-        const defaultMinStakingWeight = 100;
-        const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
         const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
         const signers = await ethers.getSigners();
@@ -106,7 +104,7 @@ describe("Node deployment", function () {
         await gnosisSafeMultisig.deployed();
 
         const GnosisSafeSameAddressMultisig = await ethers.getContractFactory("GnosisSafeSameAddressMultisig");
-        const gnosisSafeSameAddressMultisig = await GnosisSafeSameAddressMultisig.deploy(bytecodeHash);
+        const gnosisSafeSameAddressMultisig = await GnosisSafeSameAddressMultisig.deploy(bytecodeHash, gnosisSafe.address);
         await gnosisSafeSameAddressMultisig.deployed();
 
         // Creating and updating a service
@@ -289,10 +287,17 @@ describe("Node deployment", function () {
             genericBondCalculator.address);
         await depository.deployed();
         // Deploy dispenser contract
+        // Dispenser is an implementation behind DispenserProxy; mutable state is set via initialize().
+        // Vote Weighting is intentionally zero here and wired afterwards via changeManagers().
         const Dispenser = await ethers.getContractFactory("Dispenser");
-        const dispenser = await Dispenser.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
-            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
-        await dispenser.deployed();
+        const dispenserMaster = await Dispenser.deploy(olas.address, tokenomics.address, retainer);
+        await dispenserMaster.deployed();
+        const dispenserData = dispenserMaster.interface.encodeFunctionData("initialize",
+            [treasury.address, AddressZero, maxNumClaimingEpochs, maxNumStakingTargets]);
+        const DispenserProxy = await ethers.getContractFactory("DispenserProxy");
+        const dispenserProxy = await DispenserProxy.deploy(dispenserMaster.address, dispenserData);
+        await dispenserProxy.deployed();
+        const dispenser = await ethers.getContractAt("Dispenser", dispenserProxy.address);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, depository.address, dispenser.address);

@@ -19,8 +19,6 @@ describe("StakingIncentives", async () => {
     const epochLen = oneMonth;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
-    const defaultMinStakingWeight = 100;
-    const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
     let numInstances = 3;
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
     const livenessRatio = "1" + "0".repeat(16); // 0.01 transaction per second (TPS)
@@ -98,10 +96,6 @@ describe("StakingIncentives", async () => {
         ve = await VEOLAS.deploy(olas.address, "Voting Escrow OLAS", "veOLAS");
         await ve.deployed();
 
-        const VoteWeighting = await ethers.getContractFactory("VoteWeighting");
-        vw = await VoteWeighting.deploy(ve.address);
-        await vw.deployed();
-
         // Registries contracts
         const StakingActivityChecker = await ethers.getContractFactory("StakingActivityChecker");
         stakingActivityChecker = await StakingActivityChecker.deploy(livenessRatio);
@@ -141,28 +135,14 @@ describe("StakingIncentives", async () => {
 
 
         // Tokenomics contracts
-        const Dispenser = await ethers.getContractFactory("Dispenser");
-        dispenser = await Dispenser.deploy(olas.address, deployer.address, deployer.address, vw.address,
-            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
-        await dispenser.deployed();
-
-        // Set Dispenser in Vote Weighting
-        vw.changeDispenser(dispenser.address);
-
-        const Treasury = await ethers.getContractFactory("Treasury");
-        treasury = await Treasury.deploy(olas.address, deployer.address, deployer.address, dispenser.address);
-        await treasury.deployed();
-
-        // Update for the correct treasury contract
-        await dispenser.changeManagers(AddressZero, treasury.address, AddressZero);
-
+        // Deploy master tokenomics contract. Correct treasury/dispenser addresses are missing here;
+        // they are wired below via changeManagers() once those contracts exist.
         const tokenomicsFactory = await ethers.getContractFactory("Tokenomics");
-        // Deploy master tokenomics contract
         const tokenomicsMaster = await tokenomicsFactory.deploy();
         await tokenomicsMaster.deployed();
 
         const proxyData = tokenomicsMaster.interface.encodeFunctionData("initializeTokenomics",
-            [olas.address, treasury.address, deployer.address, dispenser.address, deployer.address, epochLen,
+            [olas.address, deployer.address, deployer.address, deployer.address, deployer.address, epochLen,
                 deployer.address, deployer.address, deployer.address, AddressZero]);
         // Deploy tokenomics proxy based on the needed tokenomics initialization
         const TokenomicsProxy = await ethers.getContractFactory("TokenomicsProxy");
@@ -172,11 +152,32 @@ describe("StakingIncentives", async () => {
         // Get the tokenomics proxy contract
         tokenomics = await ethers.getContractAt("Tokenomics", tokenomicsProxy.address);
 
-        // Change the tokenomics and treasury addresses in the dispenser to correct ones
-        await dispenser.changeManagers(tokenomics.address, treasury.address, vw.address);
+        // Treasury (tokenomics is immutable at construction; depository/dispenser wired below)
+        const Treasury = await ethers.getContractFactory("Treasury");
+        treasury = await Treasury.deploy(olas.address, tokenomics.address, deployer.address, deployer.address);
+        await treasury.deployed();
 
-        // Update tokenomics address in treasury
-        await treasury.changeManagers(tokenomics.address, AddressZero, AddressZero);
+        // Dispenser is an implementation behind DispenserProxy; mutable state is set via initialize().
+        // Vote Weighting is intentionally zero here and wired afterwards via changeManagers().
+        const Dispenser = await ethers.getContractFactory("Dispenser");
+        const dispenserMaster = await Dispenser.deploy(olas.address, tokenomics.address, retainer);
+        await dispenserMaster.deployed();
+        const dispenserData = dispenserMaster.interface.encodeFunctionData("initialize",
+            [treasury.address, AddressZero, maxNumClaimingEpochs, maxNumStakingTargets]);
+        const DispenserProxy = await ethers.getContractFactory("DispenserProxy");
+        const dispenserProxy = await DispenserProxy.deploy(dispenserMaster.address, dispenserData);
+        await dispenserProxy.deployed();
+        dispenser = await ethers.getContractAt("Dispenser", dispenserProxy.address);
+
+        // Vote Weighting (dispenser is immutable at construction)
+        const VoteWeighting = await ethers.getContractFactory("VoteWeighting");
+        vw = await VoteWeighting.deploy(ve.address, dispenser.address);
+        await vw.deployed();
+
+        // Change to the correct addresses
+        await dispenser.changeManagers(treasury.address, vw.address);
+        await tokenomics.changeManagers(treasury.address, deployer.address, dispenser.address);
+        await treasury.changeManagers(AddressZero, deployer.address, dispenser.address);
 
         // Mint the initial balance
         await olas.mint(deployer.address, initialMint);
@@ -552,7 +553,9 @@ describe("StakingIncentives", async () => {
             const chainIds = new Array(numInstances).fill(mockChainId);
             // Vote for the nominees by the deployer
             const weights = new Array(numInstances).fill(Math.floor(maxWeight / numInstances));
-            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights);
+            // Explicit gas: EDR's estimateGas under-provisions these 100-target batches, so let the
+            // call take the headroom it needs (still well under the block gas limit).
+            await vw.voteForNomineeWeightsBatch(stakingInstanceAddresses32, chainIds, weights, {gasLimit: 29000000});
 
             // Sort staking addresses
             stakingInstanceAddresses32.sort(compare);
@@ -563,9 +566,9 @@ describe("StakingIncentives", async () => {
                 await tokenomics.checkpoint();
             }
 
-            // Claim staking incentives
+            // Claim staking incentives (explicit gas for the same estimateGas reason as the vote above)
             await dispenser.claimStakingIncentivesBatch(numClaimedEpochs, [mockChainId], [stakingInstanceAddresses32],
-                [bridgePayload], [0]);
+                [bridgePayload], [0], {gasLimit: 29000000});
 
             // Restore to the state of the snapshot
             await snapshot.restore();

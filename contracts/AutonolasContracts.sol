@@ -31,6 +31,7 @@ import {Depository} from "../lib/autonolas-tokenomics/contracts/Depository.sol";
 import {Dispenser} from "../lib/autonolas-tokenomics/contracts/Dispenser.sol";
 import {Tokenomics} from "../lib/autonolas-tokenomics/contracts/Tokenomics.sol";
 import {TokenomicsProxy} from "../lib/autonolas-tokenomics/contracts/proxies/TokenomicsProxy.sol";
+import {DispenserProxy} from "../lib/autonolas-tokenomics/contracts/proxies/DispenserProxy.sol";
 import {Treasury} from "../lib/autonolas-tokenomics/contracts/Treasury.sol";
 import {BridgeRelayer} from "../lib/autonolas-tokenomics/contracts/staking/test/BridgeRelayer.sol";
 import {EthereumDepositProcessor} from "../lib/autonolas-tokenomics/contracts/staking/EthereumDepositProcessor.sol";

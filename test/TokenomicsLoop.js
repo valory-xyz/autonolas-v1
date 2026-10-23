@@ -16,8 +16,6 @@ describe("Tokenomics integration", async () => {
     const fourYears = 4 * oneYear;
     const maxNumClaimingEpochs = 10;
     const maxNumStakingTargets = 100;
-    const defaultMinStakingWeight = 100;
-    const defaultMaxStakingIncentive = ethers.utils.parseEther("1");
     const retainer = "0x" + "0".repeat(24) + "5".repeat(40);
 
     let erc20Token;
@@ -160,9 +158,16 @@ describe("Tokenomics integration", async () => {
         // Deploy depository contract
         depository = await depositoryFactory.deploy(olas.address, tokenomics.address, treasury.address,
             genericBondCalculator.address);
-        // Deploy dispenser contract
-        dispenser = await dispenserFactory.deploy(olas.address, tokenomics.address, treasury.address, deployer.address,
-            retainer, maxNumClaimingEpochs, maxNumStakingTargets, defaultMinStakingWeight, defaultMaxStakingIncentive);
+        // Deploy dispenser implementation behind its proxy; mutable state is set via initialize().
+        // Vote Weighting is zero here (owner-incentive claims only) and can be wired via changeManagers().
+        const dispenserMaster = await dispenserFactory.deploy(olas.address, tokenomics.address, retainer);
+        await dispenserMaster.deployed();
+        const dispenserData = dispenserMaster.interface.encodeFunctionData("initialize",
+            [treasury.address, AddressZero, maxNumClaimingEpochs, maxNumStakingTargets]);
+        const DispenserProxy = await ethers.getContractFactory("DispenserProxy");
+        const dispenserProxy = await DispenserProxy.deploy(dispenserMaster.address, dispenserData);
+        await dispenserProxy.deployed();
+        dispenser = await ethers.getContractAt("Dispenser", dispenserProxy.address);
         // Change to the correct addresses
         await tokenomics.changeManagers(treasury.address, depository.address, dispenser.address);
         await treasury.changeManagers(AddressZero, depository.address, dispenser.address);
